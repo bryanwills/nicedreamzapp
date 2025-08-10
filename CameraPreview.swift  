@@ -1,0 +1,131 @@
+import SwiftUI
+import AVFoundation
+
+// MARK: - Camera Preview for OCR
+struct CameraPreview: UIViewRepresentable {
+    let onFrame: (CVPixelBuffer) -> Void
+    
+    func makeUIView(context: Context) -> CameraPreviewView {
+        let view = CameraPreviewView()
+        view.onFrame = onFrame
+        return view
+    }
+    
+    func updateUIView(_ uiView: CameraPreviewView, context: Context) {
+        // No updates needed
+    }
+    
+    static func dismantleUIView(_ uiView: CameraPreviewView, coordinator: ()) {
+        uiView.stopSession()
+    }
+}
+
+// MARK: - Camera Preview UIView
+class CameraPreviewView: UIView {
+    private let session = AVCaptureSession()
+    private let videoOutput = AVCaptureVideoDataOutput()
+    private let sessionQueue = DispatchQueue(label: "ocr.camera.session")
+    private let videoQueue = DispatchQueue(label: "ocr.camera.video", qos: .userInitiated)
+    
+    var onFrame: ((CVPixelBuffer) -> Void)?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupCamera()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupCamera()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        previewLayer?.frame = bounds
+    }
+    
+    private var previewLayer: AVCaptureVideoPreviewLayer? {
+        return layer as? AVCaptureVideoPreviewLayer
+    }
+    
+    override class var layerClass: AnyClass {
+        return AVCaptureVideoPreviewLayer.self
+    }
+    
+    private func setupCamera() {
+        sessionQueue.async { [weak self] in
+            self?.configureSession()
+        }
+    }
+    
+    private func configureSession() {
+        session.beginConfiguration()
+        
+        // Configure session preset for OCR (lower resolution is fine)
+        session.sessionPreset = .hd1280x720
+        
+        // Add camera input
+        guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
+            print("Failed to get camera device")
+            session.commitConfiguration()
+            return
+        }
+        
+        do {
+            let input = try AVCaptureDeviceInput(device: camera)
+            if session.canAddInput(input) {
+                session.addInput(input)
+            }
+        } catch {
+            print("Failed to create camera input: \(error)")
+            session.commitConfiguration()
+            return
+        }
+        
+        // Configure video output
+        videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
+        videoOutput.videoSettings = [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
+        ]
+        videoOutput.alwaysDiscardsLateVideoFrames = true
+        
+        if session.canAddOutput(videoOutput) {
+            session.addOutput(videoOutput)
+        }
+        
+        // Set video orientation
+        if let connection = videoOutput.connection(with: .video) {
+            if connection.isVideoOrientationSupported {
+                connection.videoOrientation = .portrait
+            }
+        }
+        
+        session.commitConfiguration()
+        
+        // Configure preview layer
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            if let previewLayer = self.layer as? AVCaptureVideoPreviewLayer {
+                previewLayer.session = self.session
+                previewLayer.videoGravity = .resizeAspectFill
+            }
+        }
+        
+        // Start session
+        session.startRunning()
+    }
+    
+    func stopSession() {
+        sessionQueue.async { [weak self] in
+            self?.session.stopRunning()
+        }
+    }
+}
+
+// MARK: - Video Output Delegate
+extension CameraPreviewView: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        onFrame?(pixelBuffer)
+    }
+}
