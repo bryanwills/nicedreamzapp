@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "99BA102F2E34CF71001E5140"
-               BuildableName = "RealTime Ai Camera.app"
-               BlueprintName = "RealTime Ai Camera"
-               ReferencedContainer = "container:RealTime Ai Camera.xcodeproj">
+               BuildableName = "RealTime Ai Cam.app"
+               BlueprintName = "RealTime Ai Cam"
+               ReferencedContainer = "container:RealTime Ai Cam.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -36,9 +36,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "99BA103C2E34CF71001E5140"
-               BuildableName = "RealTime Ai CameraTests.xctest"
-               BlueprintName = "RealTime Ai CameraTests"
-               ReferencedContainer = "container:RealTime Ai Camera.xcodeproj">
+               BuildableName = "RealTime Ai CamTests.xctest"
+               BlueprintName = "RealTime Ai CamTests"
+               ReferencedContainer = "container:RealTime Ai Cam.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -47,9 +47,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "99BA10462E34CF71001E5140"
-               BuildableName = "RealTime Ai CameraUITests.xctest"
-               BlueprintName = "RealTime Ai CameraUITests"
-               ReferencedContainer = "container:RealTime Ai Camera.xcodeproj">
+               BuildableName = "RealTime Ai CamUITests.xctest"
+               BlueprintName = "RealTime Ai CamUITests"
+               ReferencedContainer = "container:RealTime Ai Cam.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -69,9 +69,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "99BA102F2E34CF71001E5140"
-            BuildableName = "RealTime Ai Camera.app"
-            BlueprintName = "RealTime Ai Camera"
-            ReferencedContainer = "container:RealTime Ai Camera.xcodeproj">
+            BuildableName = "RealTime Ai Cam.app"
+            BlueprintName = "RealTime Ai Cam"
+            ReferencedContainer = "container:RealTime Ai Cam.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -86,9 +86,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "99BA102F2E34CF71001E5140"
-            BuildableName = "RealTime Ai Camera.app"
-            BlueprintName = "RealTime Ai Camera"
-            ReferencedContainer = "container:RealTime Ai Camera.xcodeproj">
+            BuildableName = "RealTime Ai Cam.app"
+            BlueprintName = "RealTime Ai Cam"
+            ReferencedContainer = "container:RealTime Ai Cam.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
