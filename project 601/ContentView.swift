@@ -331,9 +331,9 @@ struct HomeScreenView: View {
                                     ShadedEmoji(emoji: "🗣️", size: 26)
                                 }
                                 .padding(.vertical, 18)
-                                .padding(.horizontal, 32)
                             }
-                            .frame(width: geometry.size.width - 48)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.horizontal, 24)
                             .background(
                                 Capsule().fill(Color.blue.opacity(0.20))
                             )
@@ -359,10 +359,9 @@ struct HomeScreenView: View {
                                     Text("Translate").font(.system(size: 21, weight: .bold, design: .rounded))
                                 }
                                 .padding(.vertical, 18)
-                                .padding(.horizontal, 32)
-                                .frame(maxWidth: .infinity)
                             }
-                            .frame(width: geometry.size.width - 24)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.horizontal, 24)
                             .background(
                                 Capsule().fill(Color.green.opacity(0.20))
                             )
@@ -385,10 +384,9 @@ struct HomeScreenView: View {
                                         .font(.system(size: 21, weight: .bold, design: .rounded))
                                 }
                                 .padding(.vertical, 18)
-                                .padding(.horizontal, 32)
-                                .frame(maxWidth: .infinity)
                             }
-                            .frame(width: geometry.size.width - 48)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.horizontal, 24)
                             .background(
                                 Capsule().fill(Color.orange.opacity(0.20))
                             )
@@ -923,8 +921,8 @@ struct ObjectDetectionView: View {
                             }
                         }
                     )
-                    .accessibilityLabel(lidar.isActive ? "Turn off LiDAR distance" : "Turn on LiDAR distance")
-                    .accessibilityHint("Measures distance to detected objects using LiDAR sensor")
+                    .accessibilityLabel(lidar.isActive ? "Turn off LiDAR ruler (distance measurement)" : "Turn on LiDAR ruler (distance measurement)")
+                    .accessibilityHint("This button uses the ruler icon and toggles LiDAR distance measurement to objects in view.")
                 }
                 
                 Button(action: {
@@ -1084,8 +1082,8 @@ struct ObjectDetectionView: View {
                         }
                     }
                 )
-                .accessibilityLabel(lidar.isActive ? "Turn off LiDAR distance" : "Turn on LiDAR distance")
-                .accessibilityHint("Measures distance to detected objects using LiDAR sensor")
+                .accessibilityLabel(lidar.isActive ? "Turn off LiDAR ruler (distance measurement)" : "Turn on LiDAR ruler (distance measurement)")
+                .accessibilityHint("This button uses the ruler icon and toggles LiDAR distance measurement to objects in view.")
             }
             
             // REPLACED speech toggle button body:

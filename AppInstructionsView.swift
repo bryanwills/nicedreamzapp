@@ -1,127 +1,200 @@
-// This file provides the missing AppInstructionsView for the project.
-// It presents a simple set of usage instructions for the RealTime Ai Camera app.
-
 import SwiftUI
 import AVFoundation
+import ARKit
+import Combine   // ✅ Needed for ObservableObject / @Published
+
+// Small speaker helper so we can track speaking state and stop on dismiss
+final class InstructionsSpeaker: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
+    @Published var isSpeaking = false
+    private let synth = AVSpeechSynthesizer()
+
+    override init() {
+        super.init()
+        synth.delegate = self
+    }
+
+    func play(script: String, voiceId: String? = nil, rate: Float = 0.48) {
+        // Stop anything already playing to avoid overlap
+        stop()
+
+        let utterance = AVSpeechUtterance(string: script)
+        utterance.rate = rate
+        utterance.volume = 1.0
+        if let voiceId, let v = AVSpeechSynthesisVoice(identifier: voiceId) {
+            utterance.voice = v
+        } else {
+            utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        }
+
+        // Activate audio (mix with others so it doesn't kill other audio)
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.mixWithOthers])
+        try? AVAudioSession.sharedInstance().setActive(true)
+
+        synth.speak(utterance)
+    }
+
+    func stop() {
+        if synth.isSpeaking {
+            synth.stopSpeaking(at: .immediate)
+        }
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        isSpeaking = false
+    }
+
+    // MARK: AVSpeechSynthesizerDelegate
+    func speechSynthesizer(_ synth: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
+        DispatchQueue.main.async { self.isSpeaking = true }
+    }
+
+    func speechSynthesizer(_ synth: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        DispatchQueue.main.async {
+            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+            self.isSpeaking = false
+        }
+    }
+
+    func speechSynthesizer(_ synth: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        DispatchQueue.main.async {
+            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+            self.isSpeaking = false
+        }
+    }
+}
 
 struct AppInstructionsView: View {
     @Environment(\.dismiss) private var dismiss
-    
+    @StateObject private var speaker = InstructionsSpeaker()
+
+    // Only used to slightly tailor the audio line
+    private var supportsLiDAR: Bool {
+        if #available(iOS 14.0, *) {
+            return ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth)
+        }
+        return false
+    }
+
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("👋 Welcome to RealTime Ai Camera!")
+
+                    // Title
+                    Text("👋 Welcome to RealTime AI Camera!")
                         .font(.largeTitle.bold())
-                    
-                    Button(action: playAudioInstructions) {
-                        HStack {
-                            Image(systemName: "speaker.wave.3.fill")
-                                .font(.title2)
-                            Text("Play Complete Audio Tutorial")
-                                .font(.headline)
+
+                    // Play / Stop toggle
+                    Button(action: {
+                        if speaker.isSpeaking {
+                            speaker.stop()
+                        } else {
+                            speaker.play(script: audioScript(liDARAvailable: supportsLiDAR))
+                        }
+                    }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: speaker.isSpeaking ? "stop.fill" : "speaker.wave.2.fill")
+                            Text(speaker.isSpeaking ? "⏹ Stop Audio" : "🎧 Play Full Audio Tutorial")
+                                .fontWeight(.semibold)
                         }
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue.opacity(0.2))
+                        .background((speaker.isSpeaking ? Color.red : Color.blue).opacity(0.18))
                         .cornerRadius(12)
                     }
-                    .accessibilityLabel("Play complete audio tutorial")
-                    .accessibilityHint("Plays detailed voice instructions for using the app")
+                    .accessibilityLabel(speaker.isSpeaking ? "Stop audio tutorial" : "Play full audio tutorial")
+                    .accessibilityHint(speaker.isSpeaking ? "Stops the spoken instructions" : "Speaks a detailed guide for screen-reader users")
 
-                    Text("Snap, Detect, Translate—All in Real Time!")
-                        .font(.title2)
-                        .padding(.bottom, 6)
-                    
-                    Text("🔒 100% Private · 📴 Works fully offline—even in ✈️ Airplane Mode · 🚀 Best-in-class AI, just for you.")
-                        .font(.callout)
-                        .foregroundColor(.secondary)
-                        .padding(.bottom, 10)
+                    // Tagline
+                    Text("Snap, Detect, Translate — all on-device.")
+                        .font(.title3)
 
+                    // Modes (exact button names)
                     Group {
-                        Text("✨ What you can do:")
+                        Text("✨ **Modes**")
                             .font(.headline)
-                        Text("📖 English OCR: Instantly read and hear English text from your camera.")
-                        Text("🇲🇽Span🇺🇸Eng🌎Translate: Translate Spanish text to English—hear it spoken.")
-                        Text("🐶 Object Detection: Spot objects and get audio feedback.")
-                        HStack(alignment: .center, spacing: 8) {
-                            ShadedEmoji(emoji: "🗣️", size: 22)
-                            Text("Voice Picker: Pick your favorite voice for feedback.")
+
+                        // 🐕 Object Detection + 📏 LiDAR sub-feature
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("🐕 **Object Detection**")
+                                .font(.title2).fontWeight(.semibold)
+                            Text("Live identification of objects (up to 601 classes) — fast, private, and works offline.")
+                            Text("📏 **LiDAR Distance Assist** — In Object Detection on supported devices, tap the white ruler (turns green when active) to add distance after detections, e.g., **“Dog — 3 ft.”**")
                         }
-                        Text("🤏 Pinch-to-zoom: Use two fingers to zoom the camera in Spanish OCR or Object Detection.")
-                        Text("🔄 Switch Camera: Use to swap front/rear cameras.")
-                        Text("🌐 Wide/Ultra-wide: Use the grid button to toggle lenses (if available).")
-                        Text("🔦 Torch: Tap the flashlight to adjust brightness.")
-                        Text("💬 Overlay: Toggle text overlay with the speech bubble.")
-                        HStack(alignment: .center, spacing: 8) {
-                            ShadedEmoji(emoji: "🗣️", size: 22)
-                            Text("Speak: Tap to hear the recognized or translated text.")
+                        .padding(.top, 4)
+
+                        // 🔠 English OCR
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("🔠 **English OCR**")
+                                .font(.title2).fontWeight(.semibold)
+                            Text("Scan printed English text and hear it read aloud or copy it to history.")
                         }
-                        Text("📋 Copy: Tap to copy text to your history.")
-                        Text("⚙️ Settings: Access settings and history.")
+                        .padding(.top, 8)
+
+                        // 🇲🇽→🇺🇸 Spanish → English
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("🇲🇽→🇺🇸 **Spanish to English Translate**")
+                                .font(.title2).fontWeight(.semibold)
+                            Text("Point at printed Spanish to see instant English translation, spoken aloud and ready to copy.")
+                        }
+                        .padding(.top, 8)
                     }
-                    .font(.body)
-                    .padding(.bottom, 4)
 
-                    Divider().padding(.vertical, 6)
-
+                    // Controls
                     Group {
-                        Text("🔧 Quick Tips:")
+                        Text("🎛️ **Controls**")
                             .font(.headline)
-                        Text("🔄: Switch front/rear cameras.")
-                        Text("🌐: Toggle wide/ultra-wide lens.")
-                        Text("🔦: Adjust flashlight.")
-                        Text("💬: Show/hide text overlay.")
-                        HStack(alignment: .center, spacing: 8) {
-                            ShadedEmoji(emoji: "🗣️", size: 22)
-                            Text("Speak or stop speaking.")
-                        }
-                        Text("📋: Copy detected or translated text.")
-                        Text("⚙️: Open settings and see history.")
-                        Text("🤏: Pinch to zoom camera.")
+                            .padding(.top, 6)
+                        Text("🔄 Switch Camera — Front / Rear")
+                        Text("🌐 Lens Toggle — Wide ↔ Ultra-wide")
+                        Text("🔦 Torch — 25% / 50% / 75% / 100%")
+                        Text("🤏 Pinch to Zoom")
+                        Text("💬 Show / Hide Text Overlay")
+                        Text("🗣️ Speak Detected / Translated Text")
+                        Text("📋 Copy to History")
+                        Text("⚙️ Settings")
                     }
-                    .font(.body)
-                    .padding(.bottom, 4)
 
-                    Divider().padding(.vertical, 6)
-
-                    Text("📷 Please allow camera access for best results!")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
+                    // Privacy
+                    Group {
+                        Text("🔒 **Privacy First**")
+                            .font(.headline)
+                            .padding(.top, 6)
+                        Text("Works 100% offline — no internet required.")
+                        Text("No data collection. No tracking. No location access.")
+                        Text("Runs perfectly in Airplane Mode.")
+                        Text("Built for iPhone — all processing stays on your device.")
+                    }
+                    .foregroundColor(.secondary)
                 }
                 .padding(24)
             }
             .navigationTitle("Instructions")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") { dismiss() }
+                    Button("Done") {
+                        speaker.stop()       // stop narration on close
+                        dismiss()
+                    }
                 }
             }
         }
+        // Also stop if user swipes down to dismiss
+        .onDisappear { speaker.stop() }
     }
-    
-    private func playAudioInstructions() {
-        let instructions = """
-        Welcome to RealTime AI Camera. This app has three main modes:
 
-        First, English Text to Speech. Point your camera at any English text, and the app will read it aloud automatically. Great for reading signs, documents, or menus.
-
-        Second, Spanish to English Translation. Point your camera at Spanish text, and it will translate to English and speak it. Perfect for travel or learning.
-
-        Third, Object Detection. The camera will identify objects around you and announce them. Helpful for navigation and understanding your environment.
-
-        Navigation tips: All buttons have voice labels when using VoiceOver. Double-tap to activate any button. The app works completely offline for your privacy.
-
-        In all camera modes, you can pinch to zoom, and use the flashlight button for better lighting. The back button is always available to return to the home screen.
-
-        For best results, hold the phone steady and ensure good lighting when scanning text or objects.
-        """
-
-        let utterance = AVSpeechUtterance(string: instructions)
-        utterance.rate = 0.45
-        utterance.volume = 1.0
-
-        let speechSynthesizer = AVSpeechSynthesizer()
-        speechSynthesizer.speak(utterance)
+    // MARK: - Audio script (richer than on-screen text; avoids overlap issues)
+    private func audioScript(liDARAvailable: Bool) -> String {
+        var lines: [String] = []
+        lines.append("Welcome to RealTime A I Camera.")
+        lines.append("There are three main modes. Object Detection. English O C R. And Spanish to English Translate.")
+        if liDARAvailable {
+            lines.append("In Object Detection, you can turn on LiDAR Distance Assist by tapping the white ruler. It turns green when active and adds an approximate distance after the item, for example, Dog, three feet.")
+        } else {
+            lines.append("LiDAR Distance Assist is not available on this device.")
+        }
+        lines.append("English O C R reads printed English aloud, and you can copy the text to history.")
+        lines.append("Spanish to English Translate lets you point at printed Spanish and hear a natural English translation while also displaying it on screen.")
+        lines.append("You can switch cameras, toggle wide or ultra wide lenses, change torch brightness, and pinch to zoom. You can show or hide the on screen text, speak the text again, and copy it.")
+        lines.append("This app is built for iPhone and designed for privacy. Everything runs entirely offline. There is no data collection, no tracking, and no location access. It works perfectly in Airplane Mode.")
+        return lines.joined(separator: " ")
     }
 }

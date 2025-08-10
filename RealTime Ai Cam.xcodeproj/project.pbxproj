@@ -24,7 +24,6 @@
 		9998FD862E3B4209006F41F7 /* LiveOCRViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9998FD852E3B4200006F41F7 /* LiveOCRViewModel.swift */; };
 		9998FD8C2E3B4E85006F41F7 /* LiveOCRView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9998FD872E3B4615006F41F7 /* LiveOCRView.swift */; };
 		9998FD942E3B5AA6006F41F7 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9998FD912E3B5A4E006F41F7 /* CameraPreview.swift */; };
-		99A62B862E45E59E005E098B /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A62B852E45E59E005E098B /* CameraManager.swift */; };
 		99A922CA2E39BA0E0070BDB5 /* yolov8n_oiv7.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 99A922C92E39BA0E0070BDB5 /* yolov8n_oiv7.mlpackage */; };
 		99A922CC2E39BB7A0070BDB5 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99A922CB2E39BB7A0070BDB5 /* Accelerate.framework */; };
 		99A922CE2E39BB8C0070BDB5 /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99A922CD2E39BB8C0070BDB5 /* Vision.framework */; };
@@ -73,7 +72,6 @@
 		9998FD852E3B4200006F41F7 /* LiveOCRViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveOCRViewModel.swift; sourceTree = "<group>"; };
 		9998FD872E3B4615006F41F7 /* LiveOCRView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveOCRView.swift; sourceTree = "<group>"; };
 		9998FD912E3B5A4E006F41F7 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
-		99A62B852E45E59E005E098B /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
 		99A922C92E39BA0E0070BDB5 /* yolov8n_oiv7.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = yolov8n_oiv7.mlpackage; sourceTree = "<group>"; };
 		99A922CB2E39BB7A0070BDB5 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		99A922CD2E39BB8C0070BDB5 /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
@@ -191,7 +189,6 @@
 				99BA10312E34CF71001E5140 /* Products */,
 				99A922C92E39BA0E0070BDB5 /* yolov8n_oiv7.mlpackage */,
 				99D77E882E4359E8005583DC /* AppInstructionsView.swift */,
-				99A62B852E45E59E005E098B /* CameraManager.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -357,7 +354,6 @@
 				996522532E3D8D680025D82D /* SettingsOverlayView.swift in Sources */,
 				996F5DE02E41DF120087DEE0 /* TorchControlView.swift in Sources */,
 				99BA10612E34D126001E5140 /* YOLODetection.swift in Sources */,
-				99A62B862E45E59E005E098B /* CameraManager.swift in Sources */,
 				99D3023C2E3CF34A00CAF01A /* SpeechManager.swift in Sources */,
 				998D7F862E47856C002A9A09 /* LiDARManager.swift in Sources */,
 				9998FD942E3B5AA6006F41F7 /* CameraPreview.swift in Sources */,

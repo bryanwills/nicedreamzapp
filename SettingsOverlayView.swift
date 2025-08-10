@@ -222,7 +222,6 @@ struct SettingsOverlayView: View {
                                 Text("• 🤏 Pinch to zoom the camera")
                                 Text("• 🗣️ Speak detected objects")
                                 Text("• 🔦 Adjust flashlight")
-                                Text("• 🔄 Switch front/rear cameras")
                                 Text("• 🌐 Toggle wide/ultra-wide lens")
                                 Text("• ⚙️ Open settings")
                             } else {
