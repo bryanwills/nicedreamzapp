@@ -50,4 +50,4 @@ You may freely view, modify, and build from this code for personal or educationa
 
 ## 📬 Contact
 
-If you have questions about contributions, licensing, or App Store deployment permissions, please open an Issue or email me at: **[your email]**
+If you have questions about contributions, licensing, or App Store deployment permissions, please open an Issue or email me at: info@nicedreamzwholesale.com
