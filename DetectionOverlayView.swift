@@ -220,25 +220,43 @@ struct DetectionOverlayView: View {
     private func buildCompactLabel(for detection: YOLODetection) -> String {
         // Confidence as int percent
         let pct = max(0, min(100, Int((detection.score * 100).rounded())))
+        
+        // Only calculate side if LiDAR is active
         let side: String = {
-            let x = detection.rect.midX
-            if x < 0.4 { return "L" }
-            if x > 0.6 { return "R" }
-            return "C"
+            if LiDARManager.shared.isRunning && LiDARManager.shared.isSupported {
+                let x = detection.rect.midX
+                if x < 0.4 { return "L" }
+                if x > 0.6 { return "R" }
+                return "C"
+            }
+            return ""
         }()
+        
         let area = detection.rect.width * detection.rect.height
         let center = CGPoint(x: detection.rect.midX, y: detection.rect.midY)
 
         var label: String
-        if area >= 0.05 && area <= 0.30, LiDARManager.shared.isRunning, LiDARManager.shared.isSupported {
-            if let feet = LiDARManager.shared.smoothedDistanceFeet(for: detection.id, at: center), feet >= 1, feet <= 15 {
-                label = "\(detection.className.lowercased()) \(pct)% \(Int(round(Double(feet))))ft \(side)"
+        
+        // Check if LiDAR is running
+        if LiDARManager.shared.isRunning && LiDARManager.shared.isSupported {
+            // LiDAR is ON - try to get distance
+            if area >= 0.04 && area <= 0.35 {  // Slightly wider range
+                if let feet = LiDARManager.shared.smoothedDistanceFeet(for: detection.id, at: center), feet >= 1, feet <= 15 {
+                    // Have distance: "className X% Yft L/R/C"
+                    label = "\(detection.className.lowercased()) \(pct)% \(Int(round(Double(feet))))ft \(side)"
+                } else {
+                    // No distance but LiDAR on: "className X% L/R/C"
+                    label = "\(detection.className.lowercased()) \(pct)% \(side)"
+                }
             } else {
+                // Object too big/small but LiDAR on: "className X% L/R/C"
                 label = "\(detection.className.lowercased()) \(pct)% \(side)"
             }
         } else {
-            label = "\(detection.className.lowercased()) \(pct)% \(side)"
+            // LiDAR is OFF: "className X%" only
+            label = "\(detection.className.lowercased()) \(pct)%"
         }
+        
         return label
     }
 

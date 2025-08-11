@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		990EECF12E489EBD00B7CD8C /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 990EECF02E489EBD00B7CD8C /* LICENSE */; };
+		990EECF32E489ECB00B7CD8C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 990EECF22E489ECB00B7CD8C /* README.md */; };
 		99489BB42E4724F600FFB06A /* DevicePerf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99489BB32E4724EF00FFB06A /* DevicePerf.swift */; };
 		996522532E3D8D680025D82D /* SettingsOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996522522E3D8D640025D82D /* SettingsOverlayView.swift */; };
 		996B92FF2E3894BF00AE22AA /* class_names.txt in Resources */ = {isa = PBXBuildFile; fileRef = 996B92FE2E3894BF00AE22AA /* class_names.txt */; };
@@ -55,6 +57,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		990EECF02E489EBD00B7CD8C /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		990EECF22E489ECB00B7CD8C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		99489BB32E4724EF00FFB06A /* DevicePerf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicePerf.swift; sourceTree = "<group>"; };
 		996522522E3D8D640025D82D /* SettingsOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsOverlayView.swift; sourceTree = "<group>"; };
 		996B92FE2E3894BF00AE22AA /* class_names.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = class_names.txt; sourceTree = "<group>"; };
@@ -164,6 +168,8 @@
 		99BA10272E34CF71001E5140 = {
 			isa = PBXGroup;
 			children = (
+				990EECF22E489ECB00B7CD8C /* README.md */,
+				990EECF02E489EBD00B7CD8C /* LICENSE */,
 				998D7F852E47855E002A9A09 /* LiDARManager.swift */,
 				99D7E6A42E4761E9007BBFB7 /* PrivacyInfo.xcprivacy */,
 				99489BB32E4724EF00FFB06A /* DevicePerf.swift */,
@@ -324,7 +330,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				99D7E6A72E47639F007BBFB7 /* PrivacyInfo.xcprivacy in Resources */,
+				990EECF12E489EBD00B7CD8C /* LICENSE in Resources */,
 				996B92FF2E3894BF00AE22AA /* class_names.txt in Resources */,
+				990EECF32E489ECB00B7CD8C /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

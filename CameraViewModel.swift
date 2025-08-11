@@ -169,7 +169,9 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     private var rotationCoordinator: Any?  // No @available attribute
     
     // Zoom
-    var initialZoomFactor: CGFloat = 1.0
+        var initialZoomFactor: CGFloat = 1.0
+        private var minimumZoomFactor: CGFloat = 1.0  // Track the minimum zoom for current camera
+        private var maximumZoomFactor: CGFloat = 5.0  // Track the maximum zoom for current camera
     
     // MARK: - Initialization
     override init() {
@@ -256,151 +258,201 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     }
     
     // MARK: - Zoom Control
-    func handlePinchGesture(_ scale: CGFloat) {
-        guard let device = currentDevice else { return }
-        
-        let newZoomFactor = initialZoomFactor * scale
-        let clampedZoom = max(1.0, min(newZoomFactor, min(device.maxAvailableVideoZoomFactor, 5.0)))
-        
-        configureDevice(device) { dev in
-            dev.videoZoomFactor = clampedZoom
-            DispatchQueue.main.async {
-                self.currentZoomLevel = clampedZoom
+        func handlePinchGesture(_ scale: CGFloat) {
+            guard let device = currentDevice else { return }
+            
+            // Calculate the target zoom
+            let targetZoom = initialZoomFactor * scale
+            
+            // Clamp to valid range for this camera
+            let clampedZoom = max(minimumZoomFactor, min(targetZoom, maximumZoomFactor))
+            
+            // Only update if the zoom actually changed (prevents unnecessary updates)
+            if abs(device.videoZoomFactor - clampedZoom) > 0.01 {
+                configureDevice(device) { dev in
+                    dev.videoZoomFactor = clampedZoom
+                    DispatchQueue.main.async {
+                        self.currentZoomLevel = clampedZoom
+                        // Update initial zoom if we're at the limits to prevent snap-back
+                        if clampedZoom == self.minimumZoomFactor || clampedZoom == self.maximumZoomFactor {
+                            self.initialZoomFactor = clampedZoom
+                        }
+                    }
+                }
             }
         }
-    }
-    
-    func setPinchGestureStartZoom() {
-        initialZoomFactor = currentDevice?.videoZoomFactor ?? 1.0
-    }
+        
+        func setPinchGestureStartZoom() {
+            // Always use the current zoom level as the starting point
+            if let device = currentDevice {
+                initialZoomFactor = device.videoZoomFactor
+            } else {
+                initialZoomFactor = currentZoomLevel
+            }
+        }
     
     // MARK: - Camera Setup
-    private func setupCamera() {
-        guard AVCaptureDevice.authorizationStatus(for: .video) == .authorized else {
-            return
+        private func setupCamera() {
+            guard AVCaptureDevice.authorizationStatus(for: .video) == .authorized else {
+                return
+            }
+            
+            session.beginConfiguration()
+            configureSessionPreset()
+            
+            guard let device = selectCamera() else {
+                session.commitConfiguration()
+                return
+            }
+            
+            currentDevice = device
+            configureCamera(device)
+            setupRotationCoordinator()
+            setupCameraInput(device: device)
         }
         
-        session.beginConfiguration()
-        configureSessionPreset()
-        
-        guard let device = selectCamera() else {
-            session.commitConfiguration()
-            return
+        private func configureSessionPreset() {
+            if session.canSetSessionPreset(.hd1920x1080) {
+                session.sessionPreset = .hd1920x1080
+            } else if session.canSetSessionPreset(.hd1280x720) {
+                session.sessionPreset = .hd1280x720
+            }
         }
         
-        currentDevice = device
-        configureCamera(device)
-        setupRotationCoordinator()
-        setupCameraInput(device: device)
-    }
-    
-    private func configureSessionPreset() {
-        if session.canSetSessionPreset(.hd1920x1080) {
-            session.sessionPreset = .hd1920x1080
-        } else if session.canSetSessionPreset(.hd1280x720) {
-            session.sessionPreset = .hd1280x720
-        }
-    }
-    
     private func selectCamera() -> AVCaptureDevice? {
-        if cameraPosition == .front {
-            DispatchQueue.main.async { self.isUltraWide = false }
-            return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-        } else {
-            // Check ultra-wide FIRST before LiDAR
-            if isUltraWide {
-                if let ultraWide = AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .back) {
-                    return ultraWide
-                } else {
-                    DispatchQueue.main.async { self.isUltraWide = false }
+            if cameraPosition == .front {
+                DispatchQueue.main.async {
+                    self.isUltraWide = false
+                    // LiDAR not available on front camera
+                    LiDARManager.shared.setAvailable(false)
                 }
-            }
-            
-            // Then try LiDAR camera if not ultra-wide
-            if !isUltraWide, let lidarCamera = AVCaptureDevice.default(.builtInLiDARDepthCamera, for: .video, position: .back) {
-                return lidarCamera
-            }
-            
-            // Fall back to regular wide camera
-            return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-        }
-    }
-    
-    private func configureCamera(_ camera: AVCaptureDevice) {
-        configureDevice(camera) { device in
-            let needsDepth = LiDARManager.shared.isSupported && self.cameraPosition == .back
-            let targetFPS: Double = 60.0
-            var selectedFormat: AVCaptureDevice.Format?
-            var selectedMaxFrameRate: Double = 0
-            
-            for format in device.formats {
-                let desc = format.formatDescription
-                let dimensions = CMVideoFormatDescriptionGetDimensions(desc)
-                
-                let matchesPreset = (session.sessionPreset == .hd1920x1080 && dimensions.width == 1920 && dimensions.height == 1080) ||
-                                   (session.sessionPreset == .hd1280x720 && dimensions.width == 1280 && dimensions.height == 720)
-                
-                if !matchesPreset { continue }
-                
-                // Check if format supports depth if needed
-                if needsDepth && format.supportedDepthDataFormats.isEmpty {
-                    continue
-                }
-                
-                for range in format.videoSupportedFrameRateRanges {
-                    let maxFPS = range.maxFrameRate
-                    if maxFPS >= targetFPS && maxFPS > selectedMaxFrameRate {
-                        selectedFormat = format
-                        selectedMaxFrameRate = maxFPS
-                    } else if selectedFormat == nil && maxFPS > selectedMaxFrameRate {
-                        selectedFormat = format
-                        selectedMaxFrameRate = maxFPS
+                return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+            } else {
+                // Check ultra-wide FIRST before LiDAR
+                if isUltraWide {
+                    if let ultraWide = AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .back) {
+                        // LiDAR not available on ultra-wide
+                        DispatchQueue.main.async {
+                            LiDARManager.shared.setAvailable(false)
+                        }
+                        return ultraWide
+                    } else {
+                        DispatchQueue.main.async { self.isUltraWide = false }
                     }
                 }
+                
+                // Then try LiDAR camera if not ultra-wide
+                if !isUltraWide, let lidarCamera = AVCaptureDevice.default(.builtInLiDARDepthCamera, for: .video, position: .back) {
+                    // LiDAR IS available on this camera
+                    DispatchQueue.main.async {
+                        LiDARManager.shared.setAvailable(true)
+                    }
+                    return lidarCamera
+                }
+                
+                // Fall back to regular wide camera - check if it supports depth
+                if let wideCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+                    // Check if this camera supports depth
+                    let supportsDepth = !wideCamera.activeFormat.supportedDepthDataFormats.isEmpty
+                    DispatchQueue.main.async {
+                        LiDARManager.shared.setAvailable(supportsDepth)
+                    }
+                    return wideCamera
+                }
+                
+                return nil
             }
-            
-            // If no format with depth was found but depth is needed, find any format with depth
-            if selectedFormat == nil && needsDepth {
+        }
+        
+        private func configureCamera(_ camera: AVCaptureDevice) {
+            configureDevice(camera) { device in
+                // Track zoom limits for this camera - be conservative to avoid hitting hardware limits
+                self.minimumZoomFactor = device.minAvailableVideoZoomFactor
+                // Use a slightly lower max to avoid hardware reset issues
+                let deviceMax = device.maxAvailableVideoZoomFactor
+                self.maximumZoomFactor = min(deviceMax * 0.95, 5.0)  // Use 95% of max or 5.0, whichever is less
+                
+                let needsDepth = LiDARManager.shared.isSupported && self.cameraPosition == .back
+                let targetFPS: Double = 60.0
+                var selectedFormat: AVCaptureDevice.Format?
+                var selectedMaxFrameRate: Double = 0
+                
                 for format in device.formats {
+                    let desc = format.formatDescription
+                    let dimensions = CMVideoFormatDescriptionGetDimensions(desc)
+                    
+                    let matchesPreset = (session.sessionPreset == .hd1920x1080 && dimensions.width == 1920 && dimensions.height == 1080) ||
+                                       (session.sessionPreset == .hd1280x720 && dimensions.width == 1280 && dimensions.height == 720)
+                    
+                    if !matchesPreset { continue }
+                    
+                    // Check if format supports depth if needed
+                    if needsDepth && format.supportedDepthDataFormats.isEmpty {
+                        continue
+                    }
+                    
+                    for range in format.videoSupportedFrameRateRanges {
+                        let maxFPS = range.maxFrameRate
+                        if maxFPS >= targetFPS && maxFPS > selectedMaxFrameRate {
+                            selectedFormat = format
+                            selectedMaxFrameRate = maxFPS
+                        } else if selectedFormat == nil && maxFPS > selectedMaxFrameRate {
+                            selectedFormat = format
+                            selectedMaxFrameRate = maxFPS
+                        }
+                    }
+                }
+                
+                // If no format with depth was found but depth is needed, find any format with depth
+                if selectedFormat == nil && needsDepth {
+                    for format in device.formats {
+                        if !format.supportedDepthDataFormats.isEmpty {
+                            selectedFormat = format
+                            break
+                        }
+                    }
+                }
+                
+                if let format = selectedFormat {
+                    device.activeFormat = format
+                    
+                    // Select appropriate depth format if available
                     if !format.supportedDepthDataFormats.isEmpty {
-                        selectedFormat = format
-                        break
+                        // Choose the best depth format (usually the first one is fine)
+                        if let depthFormat = format.supportedDepthDataFormats.first {
+                            device.activeDepthDataFormat = depthFormat
+                            print("CameraViewModel: Set depth data format")
+                        }
                     }
-                }
-            }
-            
-            if let format = selectedFormat {
-                device.activeFormat = format
-                
-                // Select appropriate depth format if available
-                if !format.supportedDepthDataFormats.isEmpty {
-                    // Choose the best depth format (usually the first one is fine)
-                    if let depthFormat = format.supportedDepthDataFormats.first {
-                        device.activeDepthDataFormat = depthFormat
-                        print("CameraViewModel: Set depth data format")
-                    }
+                    
+                    let duration = CMTime(value: 1, timescale: Int32(targetFPS))
+                    device.activeVideoMinFrameDuration = duration
+                    device.activeVideoMaxFrameDuration = duration
                 }
                 
-                let duration = CMTime(value: 1, timescale: Int32(targetFPS))
-                device.activeVideoMinFrameDuration = duration
-                device.activeVideoMaxFrameDuration = duration
-            }
-            
-            if device.isFocusModeSupported(.continuousAutoFocus) {
-                device.focusMode = .continuousAutoFocus
-            }
-            if device.isExposureModeSupported(.continuousAutoExposure) {
-                device.exposureMode = .continuousAutoExposure
-            }
-            
-            if device.deviceType == .builtInWideAngleCamera {
-                let minZoom = device.minAvailableVideoZoomFactor
-                if minZoom < 1.0 {
-                    device.videoZoomFactor = minZoom
+                if device.isFocusModeSupported(.continuousAutoFocus) {
+                    device.focusMode = .continuousAutoFocus
+                }
+                if device.isExposureModeSupported(.continuousAutoExposure) {
+                    device.exposureMode = .continuousAutoExposure
+                }
+                
+                // Set initial zoom based on camera type
+                if device.deviceType == .builtInUltraWideCamera {
+                    // For ultra-wide, start at minimum zoom to show full wide view
+                    device.videoZoomFactor = self.minimumZoomFactor
+                    DispatchQueue.main.async {
+                        self.currentZoomLevel = self.minimumZoomFactor
+                    }
+                } else {
+                    // For regular camera, start at 1.0
+                    device.videoZoomFactor = 1.0
+                    DispatchQueue.main.async {
+                        self.currentZoomLevel = 1.0
+                    }
                 }
             }
         }
-    }
     
     private func setupRotationCoordinator() {
         guard let device = currentDevice else { return }

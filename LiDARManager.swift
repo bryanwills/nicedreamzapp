@@ -17,21 +17,21 @@ final class LiDARManager: NSObject, ObservableObject {
     static let shared = LiDARManager()
 
     // MARK: - Public state
-    @Published private(set) var isSupported: Bool = false
-    @Published private(set) var isRunning: Bool = false
-    @Published private(set) var isEnabled: Bool = false
-    
-    // Simple active state
-    var isActive: Bool {
-        return isEnabled
-    }
+        @Published private(set) var isSupported: Bool = false  // Device capability
+        @Published private(set) var isRunning: Bool = false    // Actually processing
+        @Published private(set) var isEnabled: Bool = false    // User toggle state
+        @Published private(set) var isAvailable: Bool = false  // Current camera supports it
+        
+        // Simple active state
+        var isActive: Bool {
+            return isEnabled && isAvailable
+        }
 
     // MARK: - Private
     private var latestDepthData: AVDepthData?
     private let processingQueue = DispatchQueue(label: "lidar.processing", qos: .userInitiated)
     private var depthHistory: [UUID: [Double]] = [:]
-    private let maxHistorySize = 5
-    
+    private let maxHistorySize = 7    
     // MARK: - Init
     private override init() {
         super.init()
@@ -74,40 +74,56 @@ final class LiDARManager: NSObject, ObservableObject {
         print("LiDAR Support Check: \(isSupported)")
     }
 
-    // MARK: - Control
-    func setEnabled(_ enabled: Bool) {
-        // FIXED: Ensure UI updates happen on main thread
-        DispatchQueue.main.async { [weak self] in
-            self?.isEnabled = enabled
-            self?.isRunning = enabled
-        }
-    }
-    
-    // Simple toggle
-    func toggle() {
-        // Toggle on main thread
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            // Toggle the state
-            let newState = !self.isEnabled
-            self.isEnabled = newState
-            self.isRunning = newState
-            print("LiDAR toggled: isEnabled = \(self.isEnabled), isRunning = \(self.isRunning)")
-            // Clear depth data when disabled
-            if !newState {
-                self.latestDepthData = nil
+    // LiDARManager.swift
+
+        // MARK: - Control
+        func setEnabled(_ enabled: Bool) {
+            // FIXED: Ensure UI updates happen on main thread
+            DispatchQueue.main.async { [weak self] in
+                self?.isEnabled = enabled
+                self?.isRunning = enabled
             }
         }
-    }
-
-    func start() {
-        // FIXED: Ensure UI updates happen on main thread
-        DispatchQueue.main.async { [weak self] in
-            self?.isEnabled = true
-            self?.isRunning = true
-            print("LiDAR started")
+        
+        func toggle() {
+            // Toggle on main thread
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                // Toggle the state
+                let newState = !self.isEnabled
+                self.isEnabled = newState
+                self.isRunning = newState
+                print("LiDAR toggled: isEnabled = \(self.isEnabled), isRunning = \(self.isRunning)")
+                // Clear depth data when disabled
+                if !newState {
+                    self.latestDepthData = nil
+                }
+            }
         }
-    }
+
+        // MARK: - Availability Check     <--- ADD THIS SECTION HERE
+        func setAvailable(_ available: Bool) {
+            DispatchQueue.main.async { [weak self] in
+                self?.isAvailable = available
+                // If not available but enabled, we need to pause
+                if !available && self?.isEnabled == true {
+                    self?.isRunning = false
+                } else if available && self?.isEnabled == true {
+                    self?.isRunning = true
+                }
+            }
+        }
+
+        func start() {
+            // FIXED: Ensure UI updates happen on main thread
+            DispatchQueue.main.async { [weak self] in
+                self?.isEnabled = true
+                self?.isRunning = true
+                print("LiDAR started")
+            }
+        }
+        
+        // ... rest of the file continues
 
     func stop() {
         // FIXED: Ensure UI updates happen on main thread

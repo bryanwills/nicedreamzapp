@@ -184,28 +184,28 @@ struct SettingsOverlayView: View {
                         }
                         
                         // Current Zoom Level Indicator (all modes)
-                        if viewModel.currentZoomLevel > 1.0 {
-                            HStack {
-                                Image(systemName: "camera.viewfinder")
-                                    .font(.system(size: 20))
-                                    .foregroundStyle(.purple)
-                                
-                                Text("Camera Zoom")
-                                    .font(.headline)
-                                
-                                Spacer()
-                                
-                                Text(String(format: "%.1fx", viewModel.currentZoomLevel))
-                                    .font(.system(.title3, design: .rounded))
-                                    .fontWeight(.medium)
-                                    .foregroundStyle(.purple)
-                            }
-                            .padding()
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(.ultraThinMaterial.opacity(0.3))
-                            )
-                        }
+                                                if viewModel.currentZoomLevel > 1.05 || viewModel.currentZoomLevel < 0.95 {
+                                                    HStack {
+                                                        Image(systemName: "camera.viewfinder")
+                                                            .font(.system(size: 20))
+                                                            .foregroundStyle(.purple)
+                                                        
+                                                        Text("Camera Zoom")
+                                                            .font(.headline)
+                                                        
+                                                        Spacer()
+                                                        
+                                                        Text(String(format: "%.1fx", viewModel.currentZoomLevel))
+                                                            .font(.system(.title3, design: .rounded))
+                                                            .fontWeight(.medium)
+                                                            .foregroundStyle(.purple)
+                                                    }
+                                                    .padding()
+                                                    .background(
+                                                        RoundedRectangle(cornerRadius: 12)
+                                                            .fill(.ultraThinMaterial.opacity(0.3))
+                                                    )
+                                                }
                         
                         // Instructions
                         VStack(alignment: .leading, spacing: 8) {

@@ -14,24 +14,46 @@ final class InstructionsSpeaker: NSObject, ObservableObject, AVSpeechSynthesizer
     }
 
     func play(script: String, voiceId: String? = nil, rate: Float = 0.48) {
-        // Stop anything already playing to avoid overlap
-        stop()
+            // Stop anything already playing to avoid overlap
+            stop()
 
-        let utterance = AVSpeechUtterance(string: script)
-        utterance.rate = rate
-        utterance.volume = 1.0
-        if let voiceId, let v = AVSpeechSynthesisVoice(identifier: voiceId) {
-            utterance.voice = v
-        } else {
-            utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+            let utterance = AVSpeechUtterance(string: script)
+            utterance.rate = rate
+            utterance.volume = 1.0
+            
+            // Debug logging
+            print("InstructionsSpeaker.play() - voiceId parameter: \(voiceId ?? "nil")")
+            
+            // Try to use the provided voice ID first
+            if let voiceId = voiceId, !voiceId.isEmpty {
+                if let voice = AVSpeechSynthesisVoice(identifier: voiceId) {
+                    utterance.voice = voice
+                    print("InstructionsSpeaker: Using selected voice: \(voice.name) (\(voiceId))")
+                } else {
+                    print("InstructionsSpeaker: Failed to create voice with ID: \(voiceId)")
+                    // Try to find a matching voice by partial ID match
+                    let allVoices = AVSpeechSynthesisVoice.speechVoices()
+                    if let matchingVoice = allVoices.first(where: { $0.identifier == voiceId }) {
+                        utterance.voice = matchingVoice
+                        print("InstructionsSpeaker: Found matching voice: \(matchingVoice.name)")
+                    } else {
+                        // Fallback to default English voice
+                        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+                        print("InstructionsSpeaker: Using fallback voice")
+                    }
+                }
+            } else {
+                // No voice ID provided, use default
+                utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+                print("InstructionsSpeaker: Using default voice (no ID provided)")
+            }
+
+            // Activate audio (mix with others so it doesn't kill other audio)
+            try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.mixWithOthers])
+            try? AVAudioSession.sharedInstance().setActive(true)
+
+            synth.speak(utterance)
         }
-
-        // Activate audio (mix with others so it doesn't kill other audio)
-        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.mixWithOthers])
-        try? AVAudioSession.sharedInstance().setActive(true)
-
-        synth.speak(utterance)
-    }
 
     func stop() {
         if synth.isSpeaking {
@@ -64,6 +86,7 @@ final class InstructionsSpeaker: NSObject, ObservableObject, AVSpeechSynthesizer
 struct AppInstructionsView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var speaker = InstructionsSpeaker()
+    let selectedVoiceIdentifier: String  // Make it non-optional with default
 
     // Only used to slightly tailor the audio line
     private var supportsLiDAR: Bool {
@@ -71,6 +94,14 @@ struct AppInstructionsView: View {
             return ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth)
         }
         return false
+    }
+    
+    // In AppInstructionsView
+    init(selectedVoiceIdentifier: String? = nil) {
+        // Try passed voice, then UserDefaults, then system default
+        self.selectedVoiceIdentifier = selectedVoiceIdentifier ??
+            UserDefaults.standard.string(forKey: "selectedVoice") ??
+            AVSpeechSynthesisVoice(language: "en-US")?.identifier ?? ""
     }
 
     var body: some View {
@@ -84,12 +115,13 @@ struct AppInstructionsView: View {
 
                     // Play / Stop toggle
                     Button(action: {
-                        if speaker.isSpeaking {
-                            speaker.stop()
-                        } else {
-                            speaker.play(script: audioScript(liDARAvailable: supportsLiDAR))
-                        }
-                    }) {
+                                            if speaker.isSpeaking {
+                                                speaker.stop()
+                                            } else {
+                                                print("About to play with voice ID: \(selectedVoiceIdentifier)")
+                                                speaker.play(script: audioScript(liDARAvailable: supportsLiDAR), voiceId: selectedVoiceIdentifier.isEmpty ? nil : selectedVoiceIdentifier)
+                                            }
+                                        }) {
                         HStack(spacing: 8) {
                             Image(systemName: speaker.isSpeaking ? "stop.fill" : "speaker.wave.2.fill")
                             Text(speaker.isSpeaking ? "⏹ Stop Audio" : "🎧 Play Full Audio Tutorial")

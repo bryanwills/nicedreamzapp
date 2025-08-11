@@ -413,19 +413,19 @@ struct HomeScreenView: View {
             
             infoButton
         }
-        .sheet(isPresented: $showInstructions) {
-            AppInstructionsView()
-                // Immediately stop all processing when instructions overlay appears
-                .onAppear {
-                    viewModel.pauseCameraAndProcessing()
+                .sheet(isPresented: $showInstructions) {
+                    AppInstructionsView(selectedVoiceIdentifier: viewModel.selectedVoiceIdentifier)                        // Immediately stop all processing when instructions overlay appears
+                        .onAppear {
+                            viewModel.pauseCameraAndProcessing()
+                            print("Instructions opened with voice: \(viewModel.selectedVoiceIdentifier)")
+                        }
+                        // Resume processing only if in object detection mode
+                        .onDisappear {
+                            if mode == .objectDetection {
+                                viewModel.resumeCameraAndProcessing()
+                            }
+                        }
                 }
-                // Resume processing only if in object detection mode
-                .onDisappear {
-                    if mode == .objectDetection {
-                        viewModel.resumeCameraAndProcessing()
-                    }
-                }
-        }
         .onAppear {
             if !animationState.hasAnimatedOnce {
                 animateInSequence()
@@ -752,6 +752,7 @@ struct ObjectDetectionView: View {
     @State private var showTorchPresets = false
     @State private var showConfidenceSlider = false
     @StateObject private var lidar = LiDARManager.shared
+    @State private var lidarNotificationMessage: String? = nil
     let orientation: UIDeviceOrientation
     let isPortrait: Bool
     let rotationAngle: Angle
@@ -765,11 +766,21 @@ struct ObjectDetectionView: View {
                     .gesture(
                         MagnificationGesture()
                             .onChanged { value in
-                                // Set initial zoom on first change
-                                if value == 1.0 {
+                                viewModel.handlePinchGesture(value)
+                            }
+                            .onEnded { _ in
+                                // When gesture ends, update the initial zoom to current zoom
+                                // This prevents snap-back on the next gesture
+                                viewModel.setPinchGestureStartZoom()
+                            }
+                    )
+                    .simultaneousGesture(
+                        MagnificationGesture()
+                            .onChanged { value in
+                                // Set initial zoom when gesture begins (value will be ~1.0)
+                                if value > 0.98 && value < 1.02 {
                                     viewModel.setPinchGestureStartZoom()
                                 }
-                                viewModel.handlePinchGesture(value)
                             }
                     )
 
@@ -781,7 +792,7 @@ struct ObjectDetectionView: View {
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
 
-                if viewModel.currentZoomLevel > 1.05 {
+                if viewModel.currentZoomLevel > 1.05 || viewModel.currentZoomLevel < 0.95 {
                     VStack {
                         Text(String(format: "%.1fx", viewModel.currentZoomLevel))
                             .font(.system(size: 18, weight: .medium, design: .rounded))
@@ -799,6 +810,47 @@ struct ObjectDetectionView: View {
                     .animation(.easeInOut(duration: 0.2), value: viewModel.currentZoomLevel)
                 }
                 
+                // Beautiful glass notification overlay
+                if let message = lidarNotificationMessage {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Image(systemName: "ruler")
+                                .font(.system(size: 16, weight: .medium))
+                            Text(message)
+                                .font(.system(size: 15, weight: .medium))
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(.ultraThinMaterial)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [
+                                                    Color.white.opacity(0.25),
+                                                    Color.white.opacity(0.05)
+                                                ]),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                        )
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                )
+                                .shadow(color: .black.opacity(0.2), radius: 10, y: 5)
+                        )
+                        .transition(.scale(scale: 0.9).combined(with: .opacity))
+                        .animation(.spring(response: 0.3), value: lidarNotificationMessage)
+                        Spacer()
+                    }
+                }
+                
                 if isPortrait {
                     portraitOverlays(geometry: geometry)
                 } else {
@@ -812,6 +864,23 @@ struct ObjectDetectionView: View {
                     // Removed print statement here
                 }
             }
+        }
+        .onChange(of: lidar.isAvailable) { newValue in
+            if !newValue && lidar.isEnabled {
+                showLiDARNotification("LiDAR not available in \(viewModel.isUltraWide ? "ultra-wide" : "this") mode")
+            }
+        }
+        .onChange(of: viewModel.isUltraWide) { _ in
+            if lidar.isEnabled && !lidar.isAvailable {
+                showLiDARNotification("LiDAR only works with 1x camera")
+            }
+        }
+    }
+    
+    private func showLiDARNotification(_ message: String) {
+        lidarNotificationMessage = message
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            lidarNotificationMessage = nil
         }
     }
     
@@ -907,23 +976,38 @@ struct ObjectDetectionView: View {
                 }
                 
                 // Only show LiDAR button for back camera
-                if lidar.isSupported && viewModel.cameraPosition == .back {
-                    controlButton(
-                        systemName: "ruler",
-                        foregroundColor: lidar.isActive ? .green : .primary,
-                        action: {
-                            lidar.toggle()
-                            // Force immediate depth capture setup
-                            if !lidar.isActive {  // Just turned ON
-                                viewModel.toggleDepthCapture(enabled: true)
-                            } else {  // Just turned OFF
-                                viewModel.toggleDepthCapture(enabled: false)
-                            }
-                        }
-                    )
-                    .accessibilityLabel(lidar.isActive ? "Turn off LiDAR ruler (distance measurement)" : "Turn on LiDAR ruler (distance measurement)")
-                    .accessibilityHint("This button uses the ruler icon and toggles LiDAR distance measurement to objects in view.")
-                }
+                                if lidar.isSupported && viewModel.cameraPosition == .back {
+                                    controlButton(
+                                        systemName: "ruler",
+                                        foregroundColor: lidar.isEnabled && lidar.isAvailable ? .green :
+                                                       lidar.isAvailable ? .blue :
+                                                       Color.gray.opacity(0.6),
+                                        action: {
+                                            if lidar.isAvailable {
+                                                lidar.toggle()
+                                                // Force immediate depth capture setup
+                                                if !lidar.isActive {  // Just turned ON
+                                                    viewModel.toggleDepthCapture(enabled: true)
+                                                } else {  // Just turned OFF
+                                                    viewModel.toggleDepthCapture(enabled: false)
+                                                }
+                                            } else {
+                                                showLiDARNotification("Switch to 1x camera for LiDAR")
+                                            }
+                                        }
+                                    )
+                                    .disabled(!lidar.isAvailable)
+                                    .opacity(lidar.isAvailable ? 1.0 : 0.6)
+                                    .accessibilityLabel(
+                                        !lidar.isAvailable ? "LiDAR unavailable in this mode" :
+                                        lidar.isEnabled ? "Turn off LiDAR distance measurement" :
+                                        "Turn on LiDAR distance measurement"
+                                    )
+                                    .accessibilityHint(
+                                        !lidar.isAvailable ? "Switch to 1x camera to use LiDAR" :
+                                        "Measures distance to detected objects"
+                                    )
+                                }
                 
                 Button(action: {
                     viewModel.isSpeechEnabled.toggle()
@@ -1066,25 +1150,40 @@ struct ObjectDetectionView: View {
             }
             
             // Only show LiDAR button for back camera
-            if lidar.isSupported && viewModel.cameraPosition == .back {
-                controlButton(
-                    systemName: "ruler",
-                    foregroundColor: lidar.isActive ? .green : .primary,
-                    size: 24,
-                    frameSize: 50,
-                    action: {
-                        lidar.toggle()
-                        // Force immediate depth capture setup (same as portrait)
-                        if !lidar.isActive {  // Just turned ON
-                            viewModel.toggleDepthCapture(enabled: true)
-                        } else {  // Just turned OFF
-                            viewModel.toggleDepthCapture(enabled: false)
+                        if lidar.isSupported && viewModel.cameraPosition == .back {
+                            controlButton(
+                                systemName: "ruler",
+                                foregroundColor: lidar.isEnabled && lidar.isAvailable ? .green :
+                                               lidar.isAvailable ? .blue :
+                                               Color.gray.opacity(0.6),
+                                size: 24,
+                                frameSize: 50,
+                                action: {
+                                    if lidar.isAvailable {
+                                        lidar.toggle()
+                                        // Force immediate depth capture setup (same as portrait)
+                                        if !lidar.isActive {  // Just turned ON
+                                            viewModel.toggleDepthCapture(enabled: true)
+                                        } else {  // Just turned OFF
+                                            viewModel.toggleDepthCapture(enabled: false)
+                                        }
+                                    } else {
+                                        showLiDARNotification("Switch to 1x camera for LiDAR")
+                                    }
+                                }
+                            )
+                            .disabled(!lidar.isAvailable)
+                            .opacity(lidar.isAvailable ? 1.0 : 0.6)
+                            .accessibilityLabel(
+                                !lidar.isAvailable ? "LiDAR unavailable in this mode" :
+                                lidar.isEnabled ? "Turn off LiDAR distance measurement" :
+                                "Turn on LiDAR distance measurement"
+                            )
+                            .accessibilityHint(
+                                !lidar.isAvailable ? "Switch to 1x camera to use LiDAR" :
+                                "Measures distance to detected objects"
+                            )
                         }
-                    }
-                )
-                .accessibilityLabel(lidar.isActive ? "Turn off LiDAR ruler (distance measurement)" : "Turn on LiDAR ruler (distance measurement)")
-                .accessibilityHint("This button uses the ruler icon and toggles LiDAR distance measurement to objects in view.")
-            }
             
             // REPLACED speech toggle button body:
             Button(action: {
