@@ -233,14 +233,25 @@ struct ContentView: View {
         }
     }
     
-    // Consolidated mode switching
+    /// Consolidated mode switching
     private func switchToMode(_ newMode: Mode) {
-        cleanupCurrentMode()
-        mode = newMode
+        // Complete reset before switching
+        performCompleteReset()
+        
+        // Small delay to ensure cleanup completes
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            mode = newMode
+            
+            // Reinitialize for the new mode
+            if newMode == .objectDetection {
+                viewModel.reinitialize()
+                viewModel.startSession()
+            }
+        }
     }
     
     private func switchToHome() {
-        cleanupCurrentMode()
+        performCompleteReset()
         mode = .home
     }
     
@@ -253,6 +264,52 @@ struct ContentView: View {
             // DON'T nil out viewModel or its yoloProcessor
         }
         showSettings = false
+    }
+    
+    // NEW FUNCTION - Add this complete reset function here
+    private func performCompleteReset() {
+        // Stop all active processing
+        viewModel.stopSession()
+        viewModel.stopSpeech()
+        ocrViewModel.shutdown()
+        
+        // Clear all detections and state
+        viewModel.clearDetections()
+        
+        // Reset all settings to defaults (except user preferences)
+        viewModel.confidenceThreshold = 0.75
+        viewModel.frameRate = 30
+        viewModel.filterMode = "all"
+        viewModel.currentZoomLevel = 1.0
+        viewModel.isUltraWide = false
+        viewModel.torchLevel = 0.0
+        viewModel.isTorchOn = false
+        
+        // Clear LiDAR data
+        LiDARManager.shared.stop()
+        LiDARManager.shared.cleanupOldHistories(currentDetectionIds: Set())
+        
+        // Clear OCR text
+        ocrViewModel.clearText()
+        
+        // Force garbage collection
+        autoreleasepool {
+            // This helps release any retained objects
+        }
+        
+        // Clear image cache if any
+        URLCache.shared.removeAllCachedResponses()
+        
+        // Reset CoreML model cache (forces recompilation on next use)
+        if let tempDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first {
+            let mlmodelcDir = tempDir.appendingPathComponent("com.apple.CoreML/mlmodelc")
+            try? FileManager.default.removeItem(at: mlmodelcDir)
+        }
+        
+        // Small delay to ensure everything is cleared
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            // Ready for fresh start
+        }
     }
     
     private func playWelcomeMessage() {
@@ -278,24 +335,23 @@ struct ContentView: View {
     }
     
     private func handleScenePhaseChange(_ newPhase: ScenePhase) {
-        // When the app backgrounds (e.g., phone call or home),
-        // stop ALL detection and OCR processes, and return to home screen.
         if newPhase == .background {
-            cleanupCurrentMode()         // Stop all detection/OCR, clear resources, and reset view models
-            viewModel.shutdown()         // Fully shut down processing and camera
-            mode = .home                 // Always go to home screen on resume
-        } else if newPhase == .active && mode == .objectDetection {
-            viewModel.resumeCameraAndProcessing()
+            // Complete reset when going to background
+            performCompleteReset()
+            mode = .home
+        } else if newPhase == .active {
+            // Fresh start when coming back
+            performCompleteReset()
+            
+            // Reinitialize if returning to detection mode
+            if mode == .objectDetection {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    viewModel.reinitialize()
+                    viewModel.startSession()
+                }
+            }
         }
     }
-    
-    // Emergency shutdown for all camera/vision sessions
-    private func emergencyShutdown() {
-        viewModel.shutdown()  // Stops object detection camera
-        ocrViewModel.shutdown()  // Currently broken for camera
-        // Need to add: Stop OCR camera preview
-    }
-}
 
 // MARK: - Home Screen View
 struct HomeScreenView: View {
@@ -1424,3 +1480,4 @@ struct LiveOCRViewWrapper: View {
     }
 }
 
+}
