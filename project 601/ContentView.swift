@@ -29,7 +29,41 @@ struct ShadedEmoji: View {
     }
 }
 
-//
+// Helper view for outlined text
+struct OutlinedText: View {
+    let text: String
+    let fontSize: CGFloat
+    let strokeWidth: CGFloat = 1.0
+    let strokeColor: Color = .black
+    let fillColor: Color = .white
+    
+    var body: some View {
+        ZStack {
+            // Black stroke/outline
+            Text(text)
+                .font(.system(size: fontSize, weight: .bold, design: .serif))
+                .foregroundColor(strokeColor)
+                .offset(x: -strokeWidth, y: -strokeWidth)
+            Text(text)
+                .font(.system(size: fontSize, weight: .bold, design: .serif))
+                .foregroundColor(strokeColor)
+                .offset(x: strokeWidth, y: -strokeWidth)
+            Text(text)
+                .font(.system(size: fontSize, weight: .bold, design: .serif))
+                .foregroundColor(strokeColor)
+                .offset(x: -strokeWidth, y: strokeWidth)
+            Text(text)
+                .font(.system(size: fontSize, weight: .bold, design: .serif))
+                .foregroundColor(strokeColor)
+                .offset(x: strokeWidth, y: strokeWidth)
+            
+            // White fill
+            Text(text)
+                .font(.system(size: fontSize, weight: .bold, design: .serif))
+                .foregroundColor(fillColor)
+        }
+    }
+}
 
 @MainActor
 struct ContentView: View {
@@ -63,6 +97,9 @@ struct ContentView: View {
     @State private var memoryUsageMB: Float = MemoryMonitor.currentMemoryUsage()
     
     @Environment(\.scenePhase) private var scenePhase
+    
+    // Add debounce for mode switching
+    @State private var lastModeSwitch = Date.distantPast
     
     private var isPortrait: Bool {
         normalizedOrientation == .portrait || !normalizedOrientation.isValidInterfaceOrientation
@@ -147,6 +184,11 @@ struct ContentView: View {
             Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
                 Task { @MainActor in
                     memoryUsageMB = MemoryMonitor.currentMemoryUsage()
+                    if memoryUsageMB > 400 {  // If over 400MB
+                        print("⚠️ HIGH MEMORY: \(memoryUsageMB)MB - Force cleaning")
+                        performCompleteReset()
+                        mode = .home
+                    }
                 }
             }
         }
@@ -233,8 +275,12 @@ struct ContentView: View {
         }
     }
     
-    /// Consolidated mode switching
+    /// Consolidated mode switching with debounce
     private func switchToMode(_ newMode: Mode) {
+        let now = Date()
+        guard now.timeIntervalSince(lastModeSwitch) > 1.0 else { return }  // Prevent rapid switching
+        lastModeSwitch = now
+        
         // Complete reset before switching
         performCompleteReset()
         
@@ -251,6 +297,10 @@ struct ContentView: View {
     }
     
     private func switchToHome() {
+        let now = Date()
+        guard now.timeIntervalSince(lastModeSwitch) > 1.0 else { return }  // Prevent rapid switching
+        lastModeSwitch = now
+        
         performCompleteReset()
         mode = .home
     }
@@ -266,7 +316,7 @@ struct ContentView: View {
         showSettings = false
     }
     
-    // NEW FUNCTION - Add this complete reset function here
+    // Complete reset function
     private func performCompleteReset() {
         // Stop all active processing
         viewModel.stopSession()
@@ -275,7 +325,8 @@ struct ContentView: View {
         
         // Clear all detections and state
         viewModel.clearDetections()
-        
+        // Force YOLO to reset
+        viewModel.yoloProcessor?.reset()
         // Reset all settings to defaults (except user preferences)
         viewModel.confidenceThreshold = 0.75
         viewModel.frameRate = 30
@@ -339,6 +390,10 @@ struct ContentView: View {
             // Complete reset when going to background
             performCompleteReset()
             mode = .home
+        } else if newPhase == .inactive {
+            // Stop camera when app is inactive (control center, notifications)
+            viewModel.stopSession()
+            ocrViewModel.stopSession()
         } else if newPhase == .active {
             // Fresh start when coming back
             performCompleteReset()
@@ -377,13 +432,11 @@ struct HomeScreenView: View {
                     Spacer(minLength: 80)
                     GeometryReader { geometry in
                         VStack(spacing: 20) {
-                            // English Text2Speech button with shaded emojis on both sides
+                            // English Text2Speech button with outlined text
                             Button(action: onEnglishOCR) {
                                 HStack(spacing: 6) {
                                     Text("📖").font(.system(size: 31))
-                                    Text("Eng Text2Speech")
-                                        .font(.system(size: 21, weight: .bold, design: .rounded))
-                                        .tracking(0.3)
+                                    OutlinedText(text: "Eng Text2Speech", fontSize: 21)
                                     ShadedEmoji(emoji: "🗣️", size: 26)
                                 }
                                 .padding(.vertical, 18)
@@ -396,7 +449,6 @@ struct HomeScreenView: View {
                             .clipShape(Capsule())
                             .overlay(Capsule().stroke(Color.blue, lineWidth: 2))
                             .opacity(animationState.button1 ? 1 : 0)
-                            .foregroundStyle(.white)
                             .shadow(color: Color.blue.opacity(0.50), radius: 12)
                             .scaleEffect(animationState.button1 ? 1 : 0.7)
                             .animation(.easeOut(duration: 0.3), value: animationState.button1)
@@ -404,15 +456,15 @@ struct HomeScreenView: View {
                             .accessibilityHint("Point camera at English text to read it aloud")
                             .accessibilityAddTraits(.isButton)
                             
-                            // Spanish to English Translate button (no shaded emoji, plain text with emoji inline)
+                            // Spanish to English Translate button with outlined text
                             Button(action: onSpanishOCR) {
                                 HStack(spacing: 2) {
                                     Text("🇲🇽").font(.system(size: 28))
-                                    Text("Span").font(.system(size: 21, weight: .bold, design: .rounded))
+                                    OutlinedText(text: "Span", fontSize: 21)
                                     Text("🇺🇸").font(.system(size: 28))
-                                    Text("Eng").font(.system(size: 21, weight: .bold, design: .rounded))
+                                    OutlinedText(text: "Eng", fontSize: 21)
                                     Text("🌎").font(.system(size: 28))
-                                    Text("Translate").font(.system(size: 21, weight: .bold, design: .rounded))
+                                    OutlinedText(text: "Translate", fontSize: 21)
                                 }
                                 .padding(.vertical, 18)
                             }
@@ -424,7 +476,6 @@ struct HomeScreenView: View {
                             .clipShape(Capsule())
                             .overlay(Capsule().stroke(Color.green, lineWidth: 2))
                             .opacity(animationState.button2 ? 1 : 0)
-                            .foregroundStyle(.white)
                             .shadow(color: Color.green.opacity(0.50), radius: 12)
                             .scaleEffect(animationState.button2 ? 1 : 0.7)
                             .animation(.easeOut(duration: 0.3), value: animationState.button2)
@@ -432,12 +483,11 @@ struct HomeScreenView: View {
                             .accessibilityHint("Point camera at Spanish text to translate and speak in English")
                             .accessibilityAddTraits(.isButton)
                             
-                            // Object Detection button (no shaded emoji, plain text with emoji inline)
+                            // Object Detection button with outlined text
                             Button(action: onObjectDetection) {
                                 HStack(spacing: 6) {
                                     Text("🐶").font(.system(size: 32))
-                                    Text("Object Detection")
-                                        .font(.system(size: 21, weight: .bold, design: .rounded))
+                                    OutlinedText(text: "Object Detection", fontSize: 21)
                                 }
                                 .padding(.vertical, 18)
                             }
@@ -449,7 +499,6 @@ struct HomeScreenView: View {
                             .clipShape(Capsule())
                             .overlay(Capsule().stroke(Color.orange, lineWidth: 2))
                             .opacity(animationState.button3 ? 1 : 0)
-                            .foregroundStyle(.white)
                             .shadow(color: Color.orange.opacity(0.50), radius: 12)
                             .scaleEffect(animationState.button3 ? 1 : 0.7)
                             .animation(.easeOut(duration: 0.3), value: animationState.button3)
@@ -469,19 +518,20 @@ struct HomeScreenView: View {
             
             infoButton
         }
-                .sheet(isPresented: $showInstructions) {
-                    AppInstructionsView(selectedVoiceIdentifier: viewModel.selectedVoiceIdentifier)                        // Immediately stop all processing when instructions overlay appears
-                        .onAppear {
-                            viewModel.pauseCameraAndProcessing()
-                            print("Instructions opened with voice: \(viewModel.selectedVoiceIdentifier)")
-                        }
-                        // Resume processing only if in object detection mode
-                        .onDisappear {
-                            if mode == .objectDetection {
-                                viewModel.resumeCameraAndProcessing()
-                            }
-                        }
+        .sheet(isPresented: $showInstructions) {
+            AppInstructionsView(selectedVoiceIdentifier: viewModel.selectedVoiceIdentifier)
+            // Immediately stop all processing when instructions overlay appears
+            .onAppear {
+                viewModel.pauseCameraAndProcessing()
+                print("Instructions opened with voice: \(viewModel.selectedVoiceIdentifier)")
+            }
+            // Resume processing only if in object detection mode
+            .onDisappear {
+                if mode == .objectDetection {
+                    viewModel.resumeCameraAndProcessing()
                 }
+            }
+        }
         .onAppear {
             if !animationState.hasAnimatedOnce {
                 animateInSequence()
@@ -726,7 +776,7 @@ struct AnimatedVoicePicker: View {
     }
     
     var body: some View {
-        // Picker showing only premium English voices
+        // Picker showing only premium English voices with outlined text
         Picker(selection: Binding(
             get: { viewModel.selectedVoiceIdentifier },
             set: { newValue in
@@ -744,19 +794,13 @@ struct AnimatedVoicePicker: View {
                         Text(genderEmoji(for: voice))
                             .font(.system(size: 31))
                             .foregroundColor(.white)
-                        Text(voice.name)
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white)
+                        OutlinedText(text: voice.name, fontSize: 20)
                         let tag = qualityTag(for: voice)
                         if !tag.isEmpty {
-                            Text(tag)
-                                .font(.system(size: 18, weight: .regular, design: .rounded))
-                                .foregroundColor(.white.opacity(0.85))
+                            OutlinedText(text: tag, fontSize: 18)
                         }
                     } else {
-                        Text("Select Voice")
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white)
+                        OutlinedText(text: "Select Voice", fontSize: 20)
                     }
                 }
                 .padding(.horizontal, 12)
@@ -783,20 +827,6 @@ struct AnimatedVoicePicker: View {
         .opacity(animateIn ? 1 : 0)
         .scaleEffect(animateIn ? 1 : 0.7)
         .animation(.easeOut(duration: 0.3), value: animateIn)
-    }
-    
-    private func playVoiceDemo(identifier: String) {
-        let utterance = AVSpeechUtterance(string: "Welcome to the real-time AI. iOS Detection app. Thank you for choosing this voice!")
-        if let voice = AVSpeechSynthesisVoice(identifier: identifier) {
-            utterance.voice = voice
-        }
-        utterance.rate = 0.5
-        utterance.volume = 0.9
-        
-        if speechSynthesizer.isSpeaking {
-            speechSynthesizer.stopSpeaking(at: .immediate)
-        }
-        speechSynthesizer.speak(utterance)
     }
 }
 
@@ -867,43 +897,48 @@ struct ObjectDetectionView: View {
                 }
                 
                 // Beautiful glass notification overlay
-                if let message = lidarNotificationMessage {
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Image(systemName: "ruler")
-                                .font(.system(size: 16, weight: .medium))
-                            Text(message)
-                                .font(.system(size: 15, weight: .medium))
-                        }
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(.ultraThinMaterial)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .fill(
-                                            LinearGradient(
-                                                gradient: Gradient(colors: [
-                                                    Color.white.opacity(0.25),
-                                                    Color.white.opacity(0.05)
-                                                ]),
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
+                Group {
+                    if let message = lidarNotificationMessage {
+                        VStack {
+                            Spacer()
+                            HStack {
+                                Image(systemName: "ruler")
+                                    .font(.system(size: 16, weight: .medium))
+                                Text(message)
+                                    .font(.system(size: 15, weight: .medium))
+                            }
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(.ultraThinMaterial)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .fill(
+                                                LinearGradient(
+                                                    gradient: Gradient(colors: [
+                                                        Color.white.opacity(0.25),
+                                                        Color.white.opacity(0.05)
+                                                    ]),
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                )
                                             )
-                                        )
-                                )
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
-                                )
-                                .shadow(color: .black.opacity(0.2), radius: 10, y: 5)
-                        )
-                        .transition(.scale(scale: 0.9).combined(with: .opacity))
-                        .animation(.spring(response: 0.3), value: lidarNotificationMessage)
-                        Spacer()
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                    )
+                                    .shadow(color: .black.opacity(0.2), radius: 10, y: 5)
+                            )
+                            .transition(.scale(scale: 0.9).combined(with: .opacity))
+                            .animation(.spring(response: 0.3), value: lidarNotificationMessage)
+                            Spacer()
+                        }
+                        .rotationEffect(isPortrait ? .zero : rotationAngle)
+                        .padding(.bottom, isPortrait ? 10 : 0)
+                        .padding(.leading, isPortrait ? 0 : 12)
                     }
                 }
                 
@@ -929,6 +964,15 @@ struct ObjectDetectionView: View {
         .onChange(of: viewModel.isUltraWide) { _ in
             if lidar.isEnabled && !lidar.isAvailable {
                 showLiDARNotification("LiDAR only works with 1x camera")
+            }
+        }
+        .onChange(of: viewModel.currentZoomLevel) { newValue in
+            // Check if LiDAR is enabled and zoom changed significantly
+            if lidar.isEnabled && lidar.isAvailable {
+                if newValue < 0.95 || newValue > 1.05 {
+                    // Not at 1x - LiDAR might not work well
+                    showLiDARNotification("LiDAR works best at 1x zoom")
+                }
             }
         }
     }
@@ -979,10 +1023,14 @@ struct ObjectDetectionView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 10)
             
-            HStack(spacing: 10) {
+            HStack(spacing: 12) {
+                Spacer()
+                
                 controlButton(
                     systemName: "camera.rotate",
                     foregroundColor: .primary,
+                    size: 26,
+                    frameSize: 48,
                     action: {
                         viewModel.flipCamera()
                         // Turn off torch AND LiDAR if switching to front camera
@@ -1005,6 +1053,8 @@ struct ObjectDetectionView: View {
                     controlButton(
                         systemName: "rectangle.3.offgrid",
                         foregroundColor: viewModel.isUltraWide ? .cyan : .primary,
+                        size: 26,
+                        frameSize: 48,
                         action: {
                             viewModel.toggleCameraZoom()
                         }
@@ -1017,6 +1067,8 @@ struct ObjectDetectionView: View {
                     controlButton(
                         systemName: viewModel.torchLevel > 0 ? "flashlight.on.fill" : "flashlight.off.fill",
                         foregroundColor: viewModel.torchLevel > 0 ? .yellow : .primary,
+                        size: 26,
+                        frameSize: 48,
                         action: {
                             if viewModel.torchLevel > 0 {
                                 viewModel.setTorchLevel(0.0)
@@ -1029,42 +1081,50 @@ struct ObjectDetectionView: View {
                     .overlay(
                         torchPresetsOverlay(isPortrait: true)
                     )
+                    .background(
+                        Circle()
+                            .fill(.ultraThinMaterial)
+                            .opacity(0.15)
+                    )
                 }
                 
                 // Only show LiDAR button for back camera
-                                if lidar.isSupported && viewModel.cameraPosition == .back {
-                                    controlButton(
-                                        systemName: "ruler",
-                                        foregroundColor: lidar.isEnabled && lidar.isAvailable ? .green :
-                                                       lidar.isAvailable ? .blue :
-                                                       Color.gray.opacity(0.6),
-                                        action: {
-                                            if lidar.isAvailable {
-                                                lidar.toggle()
-                                                // Force immediate depth capture setup
-                                                if !lidar.isActive {  // Just turned ON
-                                                    viewModel.toggleDepthCapture(enabled: true)
-                                                } else {  // Just turned OFF
-                                                    viewModel.toggleDepthCapture(enabled: false)
-                                                }
-                                            } else {
-                                                showLiDARNotification("Switch to 1x camera for LiDAR")
-                                            }
-                                        }
-                                    )
-                                    .disabled(!lidar.isAvailable)
-                                    .opacity(lidar.isAvailable ? 1.0 : 0.6)
-                                    .accessibilityLabel(
-                                        !lidar.isAvailable ? "LiDAR unavailable in this mode" :
-                                        lidar.isEnabled ? "Turn off LiDAR distance measurement" :
-                                        "Turn on LiDAR distance measurement"
-                                    )
-                                    .accessibilityHint(
-                                        !lidar.isAvailable ? "Switch to 1x camera to use LiDAR" :
-                                        "Measures distance to detected objects"
-                                    )
+                if lidar.isSupported && viewModel.cameraPosition == .back {
+                    controlButton(
+                        systemName: "ruler",
+                        foregroundColor: lidar.isEnabled && lidar.isAvailable ? .green :
+                                       lidar.isAvailable ? .blue :
+                                       Color.gray.opacity(0.6),
+                        size: 26,
+                        frameSize: 48,
+                        action: {
+                            if lidar.isAvailable {
+                                lidar.toggle()
+                                // Force immediate depth capture setup
+                                if !lidar.isActive {  // Just turned ON
+                                    viewModel.toggleDepthCapture(enabled: true)
+                                } else {  // Just turned OFF
+                                    viewModel.toggleDepthCapture(enabled: false)
                                 }
+                            } else {
+                                showLiDARNotification("Switch to 1x camera for LiDAR")
+                            }
+                        }
+                    )
+                    .disabled(!lidar.isAvailable)
+                    .opacity(lidar.isAvailable ? 1.0 : 0.6)
+                    .accessibilityLabel(
+                        !lidar.isAvailable ? "LiDAR unavailable in this mode" :
+                        lidar.isEnabled ? "Turn off LiDAR distance measurement" :
+                        "Turn on LiDAR distance measurement"
+                    )
+                    .accessibilityHint(
+                        !lidar.isAvailable ? "Switch to 1x camera to use LiDAR" :
+                        "Measures distance to detected objects"
+                    )
+                }
                 
+                // Updated speech toggle button with unified style
                 Button(action: {
                     viewModel.isSpeechEnabled.toggle()
                     if viewModel.isSpeechEnabled {
@@ -1075,13 +1135,23 @@ struct ObjectDetectionView: View {
                 }) {
                     Text("🗣️")
                         .font(.system(size: 22, weight: .medium))
-                        .frame(width: 36, height: 36)
+                        .frame(width: 48, height: 48)
                         .background(
-                            viewModel.isSpeechEnabled
-                                ? Circle().fill(Color.green.opacity(0.85))
-                                : Circle().fill(Color.white.opacity(0.65))
+                            Circle()
+                                .fill(.ultraThinMaterial)
+                                .opacity(0.15)
                         )
-                        .foregroundColor(.black)
+                        .overlay(
+                            Circle()
+                                .stroke(
+                                    viewModel.isSpeechEnabled
+                                        ? Color.green.opacity(0.5)
+                                        : Color.white.opacity(0.25),
+                                    lineWidth: viewModel.isSpeechEnabled ? 2 : 1
+                                )
+                        )
+                        .shadow(color: Color.black.opacity(0.18), radius: 4, y: 2)
+                        .foregroundColor(viewModel.isSpeechEnabled ? .black : .primary)
                 }
                 .accessibilityLabel(viewModel.isSpeechEnabled ? "Turn off speech announcements" : "Turn on speech announcements")
                 .accessibilityHint("Controls automatic object detection announcements")
@@ -1092,23 +1162,25 @@ struct ObjectDetectionView: View {
                         showConfidenceSlider.toggle()
                     }
                 }) {
-                    HStack(spacing: 5) {
+                    VStack(spacing: 2) {
                         Image(systemName: "eye")
                             .font(.system(size: 22, weight: .medium))
                         Text("\(Int(viewModel.confidenceThreshold * 100))%")
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .font(.system(size: 14, weight: .bold, design: .rounded))
                     }
                     .foregroundColor(.primary)
-                    .frame(width: 90, height: 44)
+                    .frame(width: 48, height: 48)
                     .background(.ultraThinMaterial.opacity(0.20))
-                    .clipShape(Capsule())
+                    .clipShape(Circle())
                 }
                 .overlay(
                     confidenceSliderOverlay(isPortrait: true)
                 )
+                
+                Spacer()
             }
-            .padding(.bottom, geometry.safeAreaInsets.bottom + 40)
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 32)
+            .padding(.bottom, 36) // Added bottom padding to move controls higher from bottom
         }
         
         // Back button
@@ -1146,12 +1218,14 @@ struct ObjectDetectionView: View {
             y: max(120, geometry.size.height * 0.17)
         )
 
-        HStack(spacing: 10) {
+        HStack(spacing: 12) {
+            Spacer()
+            
             controlButton(
                 systemName: "camera.rotate",
                 foregroundColor: .primary,
                 size: 24,
-                frameSize: 50,
+                frameSize: 48,
                 action: {
                     viewModel.flipCamera()
                     // Turn off torch AND LiDAR if switching to front camera
@@ -1175,7 +1249,7 @@ struct ObjectDetectionView: View {
                     systemName: "rectangle.3.offgrid",
                     foregroundColor: viewModel.isUltraWide ? .cyan : .primary,
                     size: 24,
-                    frameSize: 50,
+                    frameSize: 48,
                     action: {
                         viewModel.toggleCameraZoom()
                     }
@@ -1183,14 +1257,14 @@ struct ObjectDetectionView: View {
                 .accessibilityLabel(viewModel.isUltraWide ? "Switch to normal camera" : "Switch to wide angle camera")
                 .accessibilityHint("Changes camera field of view for wider or normal view")
             } else {
-                Color.clear.frame(width: 50, height: 50)
+                Color.clear.frame(width: 48, height: 48)
             }
             if viewModel.cameraPosition == .back {
                 controlButton(
                     systemName: viewModel.torchLevel > 0 ? "flashlight.on.fill" : "flashlight.off.fill",
                     foregroundColor: viewModel.torchLevel > 0 ? .yellow : .primary,
                     size: 24,
-                    frameSize: 50,
+                    frameSize: 48,
                     action: {
                         if viewModel.torchLevel > 0 {
                             viewModel.setTorchLevel(0.0)
@@ -1203,45 +1277,50 @@ struct ObjectDetectionView: View {
                 .overlay(
                     torchPresetsOverlay(isPortrait: false)
                 )
+                .background(
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .opacity(0.15)
+                )
             }
             
             // Only show LiDAR button for back camera
-                        if lidar.isSupported && viewModel.cameraPosition == .back {
-                            controlButton(
-                                systemName: "ruler",
-                                foregroundColor: lidar.isEnabled && lidar.isAvailable ? .green :
-                                               lidar.isAvailable ? .blue :
-                                               Color.gray.opacity(0.6),
-                                size: 24,
-                                frameSize: 50,
-                                action: {
-                                    if lidar.isAvailable {
-                                        lidar.toggle()
-                                        // Force immediate depth capture setup (same as portrait)
-                                        if !lidar.isActive {  // Just turned ON
-                                            viewModel.toggleDepthCapture(enabled: true)
-                                        } else {  // Just turned OFF
-                                            viewModel.toggleDepthCapture(enabled: false)
-                                        }
-                                    } else {
-                                        showLiDARNotification("Switch to 1x camera for LiDAR")
-                                    }
-                                }
-                            )
-                            .disabled(!lidar.isAvailable)
-                            .opacity(lidar.isAvailable ? 1.0 : 0.6)
-                            .accessibilityLabel(
-                                !lidar.isAvailable ? "LiDAR unavailable in this mode" :
-                                lidar.isEnabled ? "Turn off LiDAR distance measurement" :
-                                "Turn on LiDAR distance measurement"
-                            )
-                            .accessibilityHint(
-                                !lidar.isAvailable ? "Switch to 1x camera to use LiDAR" :
-                                "Measures distance to detected objects"
-                            )
+            if lidar.isSupported && viewModel.cameraPosition == .back {
+                controlButton(
+                    systemName: "ruler",
+                    foregroundColor: lidar.isEnabled && lidar.isAvailable ? .green :
+                                   lidar.isAvailable ? .blue :
+                                   Color.gray.opacity(0.6),
+                    size: 24,
+                    frameSize: 48,
+                    action: {
+                        if lidar.isAvailable {
+                            lidar.toggle()
+                            // Force immediate depth capture setup (same as portrait)
+                            if !lidar.isActive {  // Just turned ON
+                                viewModel.toggleDepthCapture(enabled: true)
+                            } else {  // Just turned OFF
+                                viewModel.toggleDepthCapture(enabled: false)
+                            }
+                        } else {
+                            showLiDARNotification("Switch to 1x camera for LiDAR")
                         }
+                    }
+                )
+                .disabled(!lidar.isAvailable)
+                .opacity(lidar.isAvailable ? 1.0 : 0.6)
+                .accessibilityLabel(
+                    !lidar.isAvailable ? "LiDAR unavailable in this mode" :
+                    lidar.isEnabled ? "Turn off LiDAR distance measurement" :
+                    "Turn on LiDAR distance measurement"
+                )
+                .accessibilityHint(
+                    !lidar.isAvailable ? "Switch to 1x camera to use LiDAR" :
+                    "Measures distance to detected objects"
+                )
+            }
             
-            // REPLACED speech toggle button body:
+            // Updated speech toggle button with unified style
             Button(action: {
                 viewModel.isSpeechEnabled.toggle()
                 if viewModel.isSpeechEnabled {
@@ -1252,32 +1331,23 @@ struct ObjectDetectionView: View {
             }) {
                 Text("🗣️")
                     .font(.system(size: 22, weight: .medium))
-                    .frame(width: 50, height: 50)
+                    .frame(width: 48, height: 48)
                     .background(
                         Circle()
-                            .fill(
-                                viewModel.isSpeechEnabled
-                                    ? Color.green.opacity(0.45)
-                                    : Color.clear
-                            )
-                            .frame(width: 32, height: 32)
-                            .overlay(
-                                Circle()
-                                    .fill(.ultraThinMaterial.opacity(0.15))
-                                    .frame(width: 32, height: 32)
-                                    .opacity(viewModel.isSpeechEnabled ? 0 : 1)
-                            )
+                            .fill(.ultraThinMaterial)
+                            .opacity(0.15)
                     )
                     .overlay(
                         Circle()
                             .stroke(
                                 viewModel.isSpeechEnabled
                                     ? Color.green.opacity(0.5)
-                                    : Color.white.opacity(0.2),
-                                lineWidth: 1
+                                    : Color.white.opacity(0.25),
+                                lineWidth: viewModel.isSpeechEnabled ? 2 : 1
                             )
                     )
-                    .foregroundColor(viewModel.isSpeechEnabled ? .black : .white)
+                    .shadow(color: Color.black.opacity(0.18), radius: 4, y: 2)
+                    .foregroundColor(viewModel.isSpeechEnabled ? .black : .primary)
             }
             .accessibilityLabel(viewModel.isSpeechEnabled ? "Turn off speech announcements" : "Turn on speech announcements")
             .accessibilityHint("Controls automatic object detection announcements")
@@ -1288,16 +1358,16 @@ struct ObjectDetectionView: View {
                     showConfidenceSlider.toggle()
                 }
             }) {
-                HStack(spacing: 5) {
+                VStack(spacing: 2) {
                     Image(systemName: "eye")
                         .font(.system(size: 22, weight: .medium))
                     Text("\(Int(viewModel.confidenceThreshold * 100))%")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
                 }
                 .foregroundColor(.primary)
-                .frame(width: 90, height: 44)
+                .frame(width: 48, height: 48)
                 .background(.ultraThinMaterial.opacity(0.20))
-                .clipShape(Capsule())
+                .clipShape(Circle())
             }
             .overlay(
                 confidenceSliderOverlay(isPortrait: false)
@@ -1309,14 +1379,15 @@ struct ObjectDetectionView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .frame(width: 200)
+            
+            Spacer()
         }
-        .padding(.trailing, 50)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 32)
         .rotationEffect(rotationAngle)
         .fixedSize()
         .position(
             x: max(40, geometry.size.width * 0.05),
-            y: geometry.size.height - max(235, geometry.size.height * 0.3)
+            y: geometry.size.height - max(235, geometry.size.height * 0.45)
         )
         
         backButton()
@@ -1450,7 +1521,6 @@ struct ObjectDetectionView: View {
                 }
             }
             .padding(10)
-            // Removed .background here as per instructions
             .shadow(radius: 8)
             .offset(y: isPortrait ? -90 : -60)
             .transition(.scale.combined(with: .opacity))
@@ -1480,4 +1550,8 @@ struct LiveOCRViewWrapper: View {
     }
 }
 
+}
+
+#Preview {
+    ContentView()
 }

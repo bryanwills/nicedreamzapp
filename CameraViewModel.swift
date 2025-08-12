@@ -78,6 +78,12 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         static let defaultVoiceKey = "selectedVoice"
     }
     
+    // MARK: - Thermal Management
+    private var thermalState: ProcessInfo.ThermalState = .nominal
+    private var thermalObserver: NSObjectProtocol?
+    private var lastMemoryWarning = Date.distantPast
+    private var degradedPerformanceCounter = 0
+    
     // MARK: - Published Properties
     @Published var currentOrientation: UIDeviceOrientation = .portrait
     @Published var isTorchOn = false
@@ -234,11 +240,30 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             currentOrientation = .portrait
         }
         
+        // Add thermal state monitoring
+        thermalObserver = NotificationCenter.default.addObserver(
+            forName: ProcessInfo.thermalStateDidChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleThermalStateChange()
+        }
+        // Add memory warning observer
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleMemoryWarning),
+            name: UIApplication.didReceiveMemoryWarningNotification,
+            object: nil
+        )
+        
         updateFrameProcessingRate()
     }
     
     deinit {
         cleanup()
+        if let thermal = thermalObserver {
+            NotificationCenter.default.removeObserver(thermal)
+        }
     }
     
     private func cleanup() {
@@ -269,6 +294,30 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         updateVideoRotation()
     }
     
+    private func handleThermalStateChange() {
+        thermalState = ProcessInfo.processInfo.thermalState
+        switch thermalState {
+        case .nominal:
+            frameRate = 30
+            processEveryNFrames = 1
+        case .fair:
+            frameRate = 15
+            processEveryNFrames = 2
+        case .serious:
+            frameRate = 10
+            processEveryNFrames = 3
+        case .critical:
+            // Pause for 2 seconds
+            pauseCameraAndProcessing()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                self?.resumeCameraAndProcessing()
+            }
+        @unknown default:
+            break
+        }
+        print("📱 Thermal state: \(thermalState), FPS: \(frameRate)")
+    }
+    
     private func updateFrameProcessingRate() {
         processEveryNFrames = 1
     }
@@ -286,12 +335,14 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         // Only update if the zoom actually changed (prevents unnecessary updates)
         if abs(device.videoZoomFactor - clampedZoom) > 0.01 {
             configureDevice(device) { dev in
-                dev.videoZoomFactor = clampedZoom
+                // Check if the zoom factor is supported by the device
+                let finalZoom = min(dev.activeFormat.videoMaxZoomFactor, max(1.0, clampedZoom))
+                dev.videoZoomFactor = finalZoom
                 DispatchQueue.main.async {
-                    self.currentZoomLevel = clampedZoom
+                    self.currentZoomLevel = finalZoom
                     // Update initial zoom if we're at the limits to prevent snap-back
-                    if clampedZoom == self.minimumZoomFactor || clampedZoom == self.maximumZoomFactor {
-                        self.initialZoomFactor = clampedZoom
+                    if finalZoom <= self.minimumZoomFactor || finalZoom >= self.maximumZoomFactor {
+                        self.initialZoomFactor = finalZoom
                     }
                 }
             }
@@ -382,16 +433,33 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     
     private func configureCamera(_ camera: AVCaptureDevice) {
         configureDevice(camera) { device in
-            // Track zoom limits for this camera - be conservative to avoid hitting hardware limits
-            self.minimumZoomFactor = device.minAvailableVideoZoomFactor
-            // Use a slightly lower max to avoid hardware reset issues
+            // Track zoom limits for this camera
+            if device.deviceType == .builtInUltraWideCamera {
+                // Ultra-wide camera: use device's actual minimum (usually ~0.5)
+                self.minimumZoomFactor = device.minAvailableVideoZoomFactor
+            } else if device.deviceType == .builtInLiDARDepthCamera {
+                // LiDAR camera: Force allow zoom out to 0.5x and in to 10x
+                // The LiDAR camera sometimes reports 1.0 as minimum but actually supports digital zoom
+                self.minimumZoomFactor = 0.5
+            } else {
+                // Regular wide camera: allow digital zoom out to 0.5x
+                self.minimumZoomFactor = max(0.5, device.minAvailableVideoZoomFactor)
+            }
+            
+            // Set maximum zoom
             let deviceMax = device.maxAvailableVideoZoomFactor
-            self.maximumZoomFactor = min(deviceMax * 0.95, 5.0)  // Use 95% of max or 5.0, whichever is less
+            if device.deviceType == .builtInLiDARDepthCamera {
+                // LiDAR camera: ensure we get good zoom range
+                self.maximumZoomFactor = min(deviceMax, 10.0)
+            } else {
+                // Other cameras
+                self.maximumZoomFactor = min(deviceMax * 0.95, 10.0)
+            }
             
             let needsDepth = LiDARManager.shared.isSupported && self.cameraPosition == .back
             let targetFPS: Double = 60.0
             var selectedFormat: AVCaptureDevice.Format?
-            var selectedMaxFrameRate: Double = 0
+            var selectedMaxFrameRate: Double = 0  // DECLARE IT HERE, OUTSIDE THE LOOP
             
             for format in device.formats {
                 let desc = format.formatDescription
@@ -411,10 +479,21 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                     let maxFPS = range.maxFrameRate
                     if maxFPS >= targetFPS && maxFPS > selectedMaxFrameRate {
                         selectedFormat = format
-                        selectedMaxFrameRate = maxFPS
+                        selectedMaxFrameRate = maxFPS  // NOW THIS IS JUST AN ASSIGNMENT, NOT A DECLARATION
                     } else if selectedFormat == nil && maxFPS > selectedMaxFrameRate {
                         selectedFormat = format
-                        selectedMaxFrameRate = maxFPS
+                        selectedMaxFrameRate = maxFPS  // SAME HERE
+                    }
+                }
+            }
+            
+            // Rest of your method continues...
+            // If no format with depth was found but depth is needed, find any format with depth
+            if selectedFormat == nil && needsDepth {
+                for format in device.formats {
+                    if !format.supportedDepthDataFormats.isEmpty {
+                        selectedFormat = format
+                        break
                     }
                 }
             }
@@ -459,12 +538,14 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                 device.videoZoomFactor = self.minimumZoomFactor
                 DispatchQueue.main.async {
                     self.currentZoomLevel = self.minimumZoomFactor
+                    self.initialZoomFactor = self.minimumZoomFactor
                 }
             } else {
-                // For regular camera, start at 1.0
+                // For regular and LiDAR cameras, start at 1.0
                 device.videoZoomFactor = 1.0
                 DispatchQueue.main.async {
                     self.currentZoomLevel = 1.0
+                    self.initialZoomFactor = 1.0
                 }
             }
         }
@@ -881,11 +962,43 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     
     // MARK: - Frame Processing
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        print("📹 STILL RECEIVING FRAMES")
         autoreleasepool {
             frameCounter += 1
+            
+            // Add periodic memory cleanup every 600 frames (~30 seconds at 20fps)
+            if frameCounter % 600 == 0 {
+                autoreleasepool {
+                    // Force YOLO reset
+                    yoloProcessor?.reset()
+                    // Clear detection history
+                    lastSpokenTime.removeAll()
+                    detections = []
+                    // Clear LiDAR histories
+                    LiDARManager.shared.cleanupOldHistories(currentDetectionIds: Set())
+                }
+                print("🧹 Periodic memory cleanup at frame \(frameCounter)")
+            }
+            
+            // Adaptive frame skipping based on thermal state
+            let skipFrames = thermalState == .serious ? 4 :
+                             thermalState == .fair ? 2 :
+                             processEveryNFrames
+            guard frameCounter % skipFrames == 0 else { return }
+            
             updateFPS()
-            guard frameCounter % 2 == 0 else { return }
+            
+            // Detect performance degradation
+            if framesPerSecond < 10 && frameCounter > 100 {
+                degradedPerformanceCounter += 1
+                if degradedPerformanceCounter > 30 {
+                    print("⚠️ Performance degraded, forcing reset")
+                    reinitialize()
+                    degradedPerformanceCounter = 0
+                }
+            } else {
+                degradedPerformanceCounter = max(0, degradedPerformanceCounter - 1)
+            }
+            
             guard !isProcessing else { return }
             guard session.isRunning else {
                 DispatchQueue.main.async { self.detections = [] }
@@ -1234,5 +1347,27 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             // This helps release any retained objects
         }
     }
+    
+    // MARK: - Memory Management
+    @objc private func handleMemoryWarning() {
+        let now = Date()
+        guard now.timeIntervalSince(lastMemoryWarning) > 5 else { return }
+        lastMemoryWarning = now
+        print("⚠️ Memory warning received")
+        // Clear caches
+        autoreleasepool {
+            detections = []
+            lastSpokenTime.removeAll()
+            yoloProcessor?.reset()
+            LiDARManager.shared.cleanupOldHistories(currentDetectionIds: Set())
+        }
+        // Reduce frame rate temporarily
+        frameRate = 15
+        processEveryNFrames = 3
+        // Restore after 10 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak self] in
+            self?.frameRate = 30
+            self?.processEveryNFrames = 1
+        }
+    }
 }
-
