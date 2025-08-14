@@ -4,4 +4,10 @@
    <FileRef
       location = "self:">
    </FileRef>
+   <FileRef
+      location = "group:MemoryManager.swift">
+   </FileRef>
+   <FileRef
+      location = "group:LiveOCRViewModel.swift">
+   </FileRef>
 </Workspace>

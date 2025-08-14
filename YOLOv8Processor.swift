@@ -98,108 +98,132 @@ final class YOLOv8Processor {
     }
     
     func predict(image: CVPixelBuffer, isPortrait: Bool, filterMode: String = "all", confidenceThreshold: Float = 0.5, completion: @escaping ([YOLODetection]) -> Void) {
-        
-        // Simple single-check for ongoing processing
-        processingLock.lock()
-        if isProcessing {
+        autoreleasepool {
+            print("🔍 Starting prediction - retainCount for image: \(CFGetRetainCount(image))")
+            if CFGetRetainCount(image) > 2 {
+                print("⚠️ Warning: image retainCount > 2 at prediction start")
+            }
+            
+            // Unlock lock for base address of pixel buffer when done
+            defer {
+                CVPixelBufferUnlockBaseAddress(image, .readOnly)
+                print("✅ CVPixelBufferUnlockBaseAddress called on image")
+            }
+            
+            // Simple single-check for ongoing processing
+            processingLock.lock()
+            if isProcessing {
+                processingLock.unlock()
+                completion([])
+                return
+            }
+            isProcessing = true
             processingLock.unlock()
-            completion([])
-            return
-        }
-        isProcessing = true
-        processingLock.unlock()
-        
-        // Increment frame counter for periodic resets
-        frameCount += 1
-        
-        // HIDDEN FLOOR: Never let confidence go below 0.04 (4%) even if slider shows 0%
-        let adjustedConfidence = max(0.04, confidenceThreshold)
-        
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            autoreleasepool {
-                defer {
-                    self?.processingLock.lock()
-                    self?.isProcessing = false
-                    self?.processingLock.unlock()
-                }
-                
-                guard let self = self else {
-                    DispatchQueue.main.async { completion([]) }
-                    return
-                }
-                
-                // Periodic reset every 500 frames (about 30 seconds at 15fps)
-                if self.frameCount % 500 == 0 {
-                    self.performPeriodicReset()
-                }
-                
-                // Clear any cached state
-                UserDefaults.standard.removeObject(forKey: "letterbox_scale")
-                UserDefaults.standard.removeObject(forKey: "letterbox_padX")
-                UserDefaults.standard.removeObject(forKey: "letterbox_padY")
-                UserDefaults.standard.removeObject(forKey: "original_width")
-                UserDefaults.standard.removeObject(forKey: "original_height")
-                UserDefaults.standard.removeObject(forKey: "was_rotated")
-                
-                let imageWidth = CVPixelBufferGetWidth(image)
-                let imageHeight = CVPixelBufferGetHeight(image)
-                
-                guard imageWidth > 100 && imageHeight > 100 else {
-                    DispatchQueue.main.async { completion([]) }
-                    return
-                }
-                
-                // Resize image using Metal
-                guard let finalBuffer = self.metalResizer?.resize(image, isPortrait: isPortrait) else {
-                    DispatchQueue.main.async { completion([]) }
-                    return
-                }
-                
-                // Get letterbox parameters
-                let scale = UserDefaults.standard.float(forKey: "letterbox_scale")
-                let padX = UserDefaults.standard.integer(forKey: "letterbox_padX")
-                let padY = UserDefaults.standard.integer(forKey: "letterbox_padY")
-                let originalWidth = UserDefaults.standard.integer(forKey: "original_width")
-                let originalHeight = UserDefaults.standard.integer(forKey: "original_height")
-                
-                let letterboxInfo: (scale: Float, padX: Int, padY: Int)
-                if scale > 0 && originalWidth > 0 && originalHeight > 0 {
-                    letterboxInfo = (scale: scale, padX: padX, padY: padY)
-                } else {
-                    // Fallback calculation
-                    let targetSize: Float = 640.0
-                    let calcScale = min(targetSize / Float(imageWidth), targetSize / Float(imageHeight))
-                    let scaledWidth = Int(Float(imageWidth) * calcScale)
-                    let scaledHeight = Int(Float(imageHeight) * calcScale)
-                    let calcPadX = (640 - scaledWidth) / 2
-                    let calcPadY = (640 - scaledHeight) / 2
-                    letterboxInfo = (scale: calcScale, padX: calcPadX, padY: calcPadY)
-                }
-                
-                // Run model prediction
-                guard let output = try? self.model.prediction(image: finalBuffer) else {
-                    DispatchQueue.main.async { completion([]) }
-                    return
-                }
-                
-                guard let feature = output.featureValue(for: "var_914"),
-                      let rawOutput = feature.multiArrayValue else {
-                    DispatchQueue.main.async { completion([]) }
-                    return
-                }
-                
-                // Decode and filter detections
-                let detections = self.decodeOutput(
-                    rawOutput,
-                    originalWidth: originalWidth > 0 ? originalWidth : imageWidth,
-                    originalHeight: originalHeight > 0 ? originalHeight : imageHeight,
-                    letterboxInfo: letterboxInfo,
-                    filterMode: filterMode,
-                    confidenceThreshold: adjustedConfidence  // Use adjusted confidence with floor
-                )
-                
-                DispatchQueue.main.async {
-                    completion(detections)
+            
+            // Increment frame counter for periodic resets
+            frameCount += 1
+            
+            // HIDDEN FLOOR: Never let confidence go below 0.04 (4%) even if slider shows 0%
+            let adjustedConfidence = max(0.04, confidenceThreshold)
+            
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                autoreleasepool {
+                    defer {
+                        self?.processingLock.lock()
+                        self?.isProcessing = false
+                        self?.processingLock.unlock()
+                    }
+                    
+                    guard let self = self else {
+                        DispatchQueue.main.async { completion([]) }
+                        return
+                    }
+                    
+                    // Periodic reset every 500 frames (about 30 seconds at 15fps)
+                    if self.frameCount % 500 == 0 {
+                        self.performPeriodicReset()
+                    }
+                    
+                    // Clear any cached state
+                    UserDefaults.standard.removeObject(forKey: "letterbox_scale")
+                    UserDefaults.standard.removeObject(forKey: "letterbox_padX")
+                    UserDefaults.standard.removeObject(forKey: "letterbox_padY")
+                    UserDefaults.standard.removeObject(forKey: "original_width")
+                    UserDefaults.standard.removeObject(forKey: "original_height")
+                    UserDefaults.standard.removeObject(forKey: "was_rotated")
+                    
+                    let imageWidth = CVPixelBufferGetWidth(image)
+                    let imageHeight = CVPixelBufferGetHeight(image)
+                    
+                    guard imageWidth > 100 && imageHeight > 100 else {
+                        DispatchQueue.main.async { completion([]) }
+                        return
+                    }
+                    
+                    // Resize image using Metal
+                    guard let finalBuffer = self.metalResizer?.resize(image, isPortrait: isPortrait) else {
+                        DispatchQueue.main.async { completion([]) }
+                        return
+                    }
+                    
+                    // Print retain count for finalBuffer
+                    print("🔍 finalBuffer retainCount at creation: \(CFGetRetainCount(finalBuffer))")
+                    if CFGetRetainCount(finalBuffer) > 2 {
+                        print("⚠️ Warning: finalBuffer retainCount > 2 at creation")
+                    }
+                    
+                    // Unlock finalBuffer base address when done
+                    defer {
+                        CVPixelBufferUnlockBaseAddress(finalBuffer, .readOnly)
+                        print("✅ CVPixelBufferUnlockBaseAddress called on finalBuffer")
+                    }
+                    
+                    // Get letterbox parameters
+                    let scale = UserDefaults.standard.float(forKey: "letterbox_scale")
+                    let padX = UserDefaults.standard.integer(forKey: "letterbox_padX")
+                    let padY = UserDefaults.standard.integer(forKey: "letterbox_padY")
+                    let originalWidth = UserDefaults.standard.integer(forKey: "original_width")
+                    let originalHeight = UserDefaults.standard.integer(forKey: "original_height")
+                    
+                    let letterboxInfo: (scale: Float, padX: Int, padY: Int)
+                    if scale > 0 && originalWidth > 0 && originalHeight > 0 {
+                        letterboxInfo = (scale: scale, padX: padX, padY: padY)
+                    } else {
+                        // Fallback calculation
+                        let targetSize: Float = 640.0
+                        let calcScale = min(targetSize / Float(imageWidth), targetSize / Float(imageHeight))
+                        let scaledWidth = Int(Float(imageWidth) * calcScale)
+                        let scaledHeight = Int(Float(imageHeight) * calcScale)
+                        let calcPadX = (640 - scaledWidth) / 2
+                        let calcPadY = (640 - scaledHeight) / 2
+                        letterboxInfo = (scale: calcScale, padX: calcPadX, padY: calcPadY)
+                    }
+                    
+                    // Run model prediction
+                    guard let output = try? self.model.prediction(image: finalBuffer) else {
+                        DispatchQueue.main.async { completion([]) }
+                        return
+                    }
+                    
+                    guard let feature = output.featureValue(for: "var_914"),
+                          let rawOutput = feature.multiArrayValue else {
+                        DispatchQueue.main.async { completion([]) }
+                        return
+                    }
+                    
+                    // Decode and filter detections
+                    let detections = self.decodeOutput(
+                        rawOutput,
+                        originalWidth: originalWidth > 0 ? originalWidth : imageWidth,
+                        originalHeight: originalHeight > 0 ? originalHeight : imageHeight,
+                        letterboxInfo: letterboxInfo,
+                        filterMode: filterMode,
+                        confidenceThreshold: adjustedConfidence  // Use adjusted confidence with floor
+                    )
+                    
+                    DispatchQueue.main.async {
+                        completion(detections)
+                    }
                 }
             }
         }

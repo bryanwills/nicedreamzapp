@@ -203,13 +203,18 @@ struct LiveOCRView: View {
     @State private var cameraPreviewRef: CameraPreviewView?
     @State private var showTranslationPopup = false
     @State private var isTranslating = false
+    @State private var isWideScreen = false
     
-    // Computed property for display text based on mode and translation state
+    @State private var showTorchPresets = false
+    @State private var torchLevel: Float = 0.0
+    
+    @StateObject private var buttonDebouncer = ButtonPressDebouncer() // Debouncer to avoid rapid multiple presses
+    
+    // Computed property for display text
     private var displayText: String {
         if ocrMode == .english {
             return viewModel.recognizedText
         } else {
-            // For Spanish mode: show Spanish until translated, then show English
             return viewModel.isTranslated ? viewModel.translatedText : viewModel.recognizedText
         }
     }
@@ -219,16 +224,7 @@ struct LiveOCRView: View {
         if ocrMode == .english {
             return "Detected"
         } else {
-            return viewModel.isTranslated ? "English Translation" : "Spanish Detected"
-        }
-    }
-    
-    // Header icon that changes based on state
-    private var headerIcon: String {
-        if ocrMode == .english {
-            return "text.viewfinder"
-        } else {
-            return viewModel.isTranslated ? "checkmark.circle.fill" : "text.viewfinder"
+            return viewModel.isTranslated ? "Translation" : "Spanish Text"
         }
     }
     
@@ -251,38 +247,42 @@ struct LiveOCRView: View {
                     onPinchEnded: { viewModel.isPinching = false }
                 )
                 .ignoresSafeArea()
+                
                 // Gradient overlays
                 VStack {
                     LinearGradient(
-                        gradient: Gradient(colors: [Color.black.opacity(0.7), Color.clear]),
+                        gradient: Gradient(colors: [Color.black.opacity(0.6), Color.clear]),
                         startPoint: .top,
                         endPoint: .bottom
                     )
-                    .frame(height: 150)
-                    .edgesIgnoringSafeArea(.top)
+                    .frame(height: 120)
+                    .ignoresSafeArea()
                     
                     Spacer()
                     
                     LinearGradient(
-                        gradient: Gradient(colors: [Color.clear, Color.black.opacity(0.8)]),
+                        gradient: Gradient(colors: [Color.clear, Color.black.opacity(0.7)]),
                         startPoint: .top,
                         endPoint: .bottom
                     )
-                    .frame(height: 300)
-                    .edgesIgnoringSafeArea(.bottom)
+                    .frame(height: 250)
+                    .ignoresSafeArea()
                 }
-                .ignoresSafeArea()
                 
-                // Top bar with back button and mode indicator
+                // Top bar
                 VStack {
                     HStack {
+                        // Back button with debouncer usage
                         Button(action: {
-                            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-                            impactFeedback.impactOccurred()
-                            viewModel.stopSpeaking()
-                            viewModel.stopSession()
-                            viewModel.clearText()
-                            mode = .home
+                            if buttonDebouncer.canPress() {
+                                let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+                                impactFeedback.impactOccurred()
+                                
+                                viewModel.stopSpeaking()
+                                viewModel.stopSession()
+                                viewModel.clearText()
+                                mode = .home
+                            }
                         }) {
                             HStack(spacing: 6) {
                                 Image(systemName: "chevron.left")
@@ -290,35 +290,32 @@ struct LiveOCRView: View {
                                 Text("Back")
                                     .font(.system(size: 17, weight: .medium))
                             }
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(.white)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
                             .background(
-                                RoundedRectangle(cornerRadius: 30)
-                                    .fill(.ultraThinMaterial.opacity(0.15))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 30)
-                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
-                                    )
+                                Capsule()
+                                    .fill(.ultraThinMaterial.opacity(0.9))
                             )
                         }
                         .padding(.leading, 20)
-                        .padding(.top, geometry.safeAreaInsets.top + 10)
                         
                         Spacer()
                         
-                        Text(ocrMode == .english ? "English OCR" : "Span → Eng")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundStyle(.primary)
-                            .padding(.horizontal, 16)
+                        // Mode indicator
+                        Text(ocrMode == .english ? "English" : "Span → Eng")
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 14)
                             .padding(.vertical, 8)
                             .background(
                                 Capsule()
-                                    .fill(.ultraThinMaterial.opacity(0.15))
+                                    .fill(.ultraThinMaterial.opacity(0.9))
                             )
                             .padding(.trailing, 20)
-                            .padding(.top, geometry.safeAreaInsets.top + 10)
                     }
+                    .padding(.top, geometry.safeAreaInsets.top + 10)
+                    
                     Spacer()
                 }
                 
@@ -326,16 +323,16 @@ struct LiveOCRView: View {
                 VStack {
                     Spacer()
                     
-                    // Text overlay - now clickable for Spanish mode when translated
+                    // Text overlay - clickable when translated
                     if showTextOverlay && !displayText.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: 10) {
                             HStack {
-                                Image(systemName: headerIcon)
-                                    .font(.system(size: 14))
-                                    .foregroundColor(viewModel.isTranslated ? .green : .white.opacity(0.7))
+                                Circle()
+                                    .fill(viewModel.isTranslated ? Color.green : Color.blue)
+                                    .frame(width: 8, height: 8)
                                 Text(headerText)
                                     .font(.system(size: 14, weight: .medium))
-                                    .foregroundColor(.white.opacity(0.7))
+                                    .foregroundColor(.white.opacity(0.9))
                                 Spacer()
                                 if isTranslating {
                                     ProgressView()
@@ -347,25 +344,17 @@ struct LiveOCRView: View {
                             ScrollView {
                                 Text(displayText)
                                     .font(.system(size: 16))
-                                    .foregroundStyle(.primary)
+                                    .foregroundStyle(.white)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .frame(maxHeight: 120)
+                            .frame(maxHeight: 100)
                         }
                         .padding(16)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(.ultraThinMaterial.opacity(0.15))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(
-                                            viewModel.isTranslated ? Color.green.opacity(0.3) : Color.white.opacity(0.1),
-                                            lineWidth: 1
-                                        )
-                                )
+                                .fill(.ultraThinMaterial.opacity(0.95))
                         )
                         .onTapGesture {
-                            // Only show popup if Spanish mode and translated
                             if ocrMode == .spanishToEnglish && viewModel.isTranslated {
                                 let impactFeedback = UIImpactFeedbackGenerator(style: .light)
                                 impactFeedback.impactOccurred()
@@ -374,80 +363,175 @@ struct LiveOCRView: View {
                         }
                         .padding(.horizontal, 20)
                         .transition(.move(edge: .bottom).combined(with: .opacity))
-                        .animation(.spring(), value: showTextOverlay)
                     }
                     
-                    // Bottom action buttons
-                    HStack(spacing: 16) {
-                        // Settings button
+                    // Bottom action buttons - fixed layout as per instructions
+                    HStack {
+                        // Settings button with debouncer
                         Button(action: {
-                            withAnimation(.spring(response: 0.3)) {
-                                showSettings = true
+                            if buttonDebouncer.canPress() {
+                                withAnimation(.spring(response: 0.3)) {
+                                    showSettings = true
+                                }
                             }
                         }) {
                             Image(systemName: "gearshape.fill")
                                 .font(.system(size: 22))
-                                .frame(width: 50, height: 50)
-                                .background(Circle().fill(.ultraThinMaterial))
-                                .foregroundStyle(.primary)
+                                .frame(width: 56, height: 56)
+                                .background(
+                                    Circle()
+                                        .fill(.ultraThinMaterial.opacity(0.95))
+                                )
+                                .foregroundStyle(.white)
                         }
+                        Spacer(minLength: 0)
                         
-                        // Torch button
-                        TorchButton(
-                            torchLevel: 0.0,
-                            onLevelChanged: { level in
-                                cameraPreviewRef?.setTorchLevel(level)
+                        // Torch button with overlay for presets and debouncer
+                        ZStack {
+                            Button(action: {
+                                if buttonDebouncer.canPress() {
+                                    if torchLevel > 0 {
+                                        torchLevel = 0.0
+                                        cameraPreviewRef?.setTorchLevel(0.0)
+                                        showTorchPresets = false
+                                    } else {
+                                        showTorchPresets = true
+                                    }
+                                }
+                            }) {
+                                Image(systemName: torchLevel > 0 ? "flashlight.on.fill" : "flashlight.off.fill")
+                                    .font(.system(size: 22))
+                                    .frame(width: 56, height: 56)
+                                    .background(
+                                        Circle()
+                                            .fill(.ultraThinMaterial.opacity(0.95))
+                                    )
+                                    .foregroundStyle(torchLevel > 0 ? Color.yellow : Color.white)
                             }
-                        )
+                            .overlay(
+                                Group {
+                                    if showTorchPresets {
+                                        VStack(spacing: 8) {
+                                            ForEach([100, 75, 50, 25], id: \.self) { percentage in
+                                                Button(action: {
+                                                    let level = Float(percentage) / 100.0
+                                                    torchLevel = level
+                                                    cameraPreviewRef?.setTorchLevel(level)
+                                                    showTorchPresets = false
+                                                }) {
+                                                    Text("\(percentage)%")
+                                                        .font(.system(size: 14, weight: .medium))
+                                                        .foregroundColor(.white)
+                                                        .frame(width: 60, height: 36)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(Int(torchLevel * 100) == percentage ? Color.yellow.opacity(0.4) : Color.white.opacity(0.2))
+                                                        )
+                                                        .overlay(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .stroke(Int(torchLevel * 100) == percentage ? Color.yellow : Color.white.opacity(0.3), lineWidth: 1)
+                                                        )
+                                                }
+                                            }
+                                        }
+                                        .padding(.vertical, 8)
+                                        .padding(.horizontal, 4)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .fill(.ultraThinMaterial.opacity(0.8))
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 12)
+                                                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                                )
+                                        )
+                                        .offset(y: -90)
+                                        .transition(.scale(scale: 0.95).combined(with: .opacity))
+                                    }
+                                }
+                            , alignment: .top)
+                        }
+                        Spacer(minLength: 0)
                         
-                        Spacer()
+                        // Wide Screen Toggle button with debouncer
+                        Button(action: {
+                            if buttonDebouncer.canPress() {
+                                isWideScreen.toggle()
+                                // Update any relevant state or viewModel here if needed
+                                viewModel.isUltraWide = isWideScreen
+                            }
+                        }) {
+                            Image(systemName: "rectangle.3.offgrid")
+                                .font(.system(size: 22))
+                                .frame(width: 56, height: 56)
+                                .background(
+                                    Circle()
+                                        .fill(.ultraThinMaterial.opacity(0.95))
+                                )
+                                .foregroundStyle(isWideScreen ? Color.cyan : Color.white)
+                        }
+                        Spacer(minLength: 0)
                         
-                        // Only show action buttons when there's text
-                        if !viewModel.recognizedText.isEmpty {
-                            // For Spanish mode: Translate button
+                        // Translate or Copy button (always present) with debouncer
+                        Group {
                             if ocrMode == .spanishToEnglish && !viewModel.isTranslated {
                                 Button(action: {
-                                    isTranslating = true
-                                    viewModel.translateSpanishText { success in
-                                        isTranslating = false
+                                    if buttonDebouncer.canPress() {
+                                        isTranslating = true
+                                        viewModel.translateSpanishText { success in
+                                            isTranslating = false
+                                            if success {
+                                                let feedback = UINotificationFeedbackGenerator()
+                                                feedback.notificationOccurred(.success)
+                                            }
+                                        }
                                     }
                                 }) {
-                                    Text("Translate")
-                                        .font(.system(size: 16, weight: .medium))
-                                        .padding(.horizontal, 20)
-                                        .padding(.vertical, 12)
-                                        .background(Capsule().fill(Color.blue))
-                                        .foregroundColor(.white)
+                                    Image(systemName: "character.book.closed.fill")
+                                        .font(.system(size: 22))
+                                        .frame(width: 56, height: 56)
+                                        .background(
+                                            Circle()
+                                                .fill(.ultraThinMaterial.opacity(0.95))
+                                        )
+                                        .foregroundStyle(.white)
                                 }
                                 .disabled(isTranslating)
-                            }
-                            
-                            // Copy button (shows after translation in Spanish mode, always in English mode)
-                            if ocrMode == .english || viewModel.isTranslated {
+                                .opacity(isTranslating ? 0.6 : 1)
+                            } else {
                                 Button(action: {
-                                    let textToCopy = ocrMode == .english ? viewModel.recognizedText : viewModel.translatedText
-                                    viewModel.copyText(textToCopy)
+                                    if buttonDebouncer.canPress() {
+                                        let textToCopy = ocrMode == .english ? viewModel.recognizedText : viewModel.translatedText
+                                        viewModel.copyText(textToCopy)
+                                        
+                                        let feedback = UINotificationFeedbackGenerator()
+                                        feedback.notificationOccurred(.success)
+                                    }
                                 }) {
                                     Image(systemName: "doc.on.doc.fill")
                                         .font(.system(size: 22))
-                                        .frame(width: 50, height: 50)
-                                        .background(Circle().fill(.ultraThinMaterial))
-                                        .foregroundStyle(.primary)
+                                        .frame(width: 56, height: 56)
+                                        .background(
+                                            Circle()
+                                                .fill(.ultraThinMaterial.opacity(0.95))
+                                        )
+                                        .foregroundStyle(.white)
                                 }
                             }
-                            
-                            // Speak button - single toggle
-                            Button(action: {
+                        }
+                        Spacer(minLength: 0)
+                        
+                        // Speak button with debouncer
+                        Button(action: {
+                            if buttonDebouncer.canPress() {
                                 if isSpeaking {
                                     viewModel.stopSpeaking()
                                     isSpeaking = false
                                 } else {
-                                    let textToSpeak = ocrMode == .english ? viewModel.recognizedText : 
-                                                     (viewModel.isTranslated ? viewModel.translatedText : viewModel.recognizedText)
-                                    
-                                    // Translate first if needed
+                                    // For Spanish mode, translate first if needed
                                     if ocrMode == .spanishToEnglish && !viewModel.isTranslated {
+                                        isTranslating = true
                                         viewModel.translateSpanishText { success in
+                                            isTranslating = false
                                             if success {
                                                 viewModel.speak(text: viewModel.translatedText, voiceIdentifier: selectedVoiceIdentifier) {
                                                     isSpeaking = false
@@ -456,29 +540,55 @@ struct LiveOCRView: View {
                                             }
                                         }
                                     } else {
+                                        let textToSpeak = ocrMode == .english ? viewModel.recognizedText : viewModel.translatedText
                                         viewModel.speak(text: textToSpeak, voiceIdentifier: selectedVoiceIdentifier) {
                                             isSpeaking = false
                                         }
                                         isSpeaking = true
                                     }
                                 }
-                            }) {
-                                Text("🗣️")
-                                    .font(.system(size: 26))
-                                    .frame(width: 50, height: 50)
-                                    .background(
-                                        Circle().fill(isSpeaking ? Color.green : Color.gray.opacity(0.3))
-                                    )
-                                    .scaleEffect(isSpeaking ? 1.1 : 1.0)
-                                    .animation(.easeInOut(duration: 0.2), value: isSpeaking)
                             }
+                        }) {
+                            Image(systemName: "person.wave.2.fill")
+                                .font(.system(size: 22))
+                                .frame(width: 56, height: 56)
+                                .background(
+                                    Circle()
+                                        .fill(isSpeaking ? Color.green : Color.gray.opacity(0.5))
+                                )
+                                .foregroundStyle(.white)
+                        }
+                        .scaleEffect(isSpeaking ? 1.1 : 1.0)
+                        .animation(.easeInOut(duration: 0.2), value: isSpeaking)
+                        Spacer(minLength: 0)
+                        
+                        // Reset (Clear) button with debouncer
+                        Button(action: {
+                            if buttonDebouncer.canPress() {
+                                withAnimation(.spring(response: 0.3)) {
+                                    viewModel.stopSpeaking()
+                                    viewModel.clearText()
+                                    viewModel.resetTranslation()
+                                    isSpeaking = false
+                                }
+                            }
+                        }) {
+                            Image(systemName: "arrow.clockwise")
+                                .font(.system(size: 22))
+                                .frame(width: 56, height: 56)
+                                .background(
+                                    Circle()
+                                        .fill(.ultraThinMaterial.opacity(0.95))
+                                )
+                                .foregroundStyle(.white)
                         }
                     }
-                    .padding(.horizontal, 20)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 24)
                     .padding(.bottom, 30)
                 }
                 
-                // Translation actions popup (Spanish mode only)
+                // Translation popup (Spanish mode only)
                 if showTranslationPopup && ocrMode == .spanishToEnglish {
                     TranslationActionsPopup(
                         isPresented: $showTranslationPopup,
@@ -512,6 +622,8 @@ struct LiveOCRView: View {
         }
         .onAppear {
             viewModel.startSession()
+            // Sync torchLevel to 0 initially
+            torchLevel = 0.0
         }
         .onDisappear {
             viewModel.stopSession()
@@ -523,3 +635,4 @@ struct LiveOCRView: View {
         .preferredColorScheme(.dark)
     }
 }
+

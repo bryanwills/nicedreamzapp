@@ -8,6 +8,8 @@ struct SettingsOverlayView: View {
     let onDisappear: (() -> Void)? = nil
     let onDismiss: (() -> Void)? = nil // Use this to immediately pause/stop any processing before dismissing the overlay
     
+    @StateObject private var buttonDebouncer = ButtonPressDebouncer() // Prevent rapid multiple presses
+    
     // Copy history for OCR modes - use State instead of loading in onAppear
     @State private var copyHistory: [String] = UserDefaults.standard.stringArray(forKey: "ocrCopyHistory") ?? []
     
@@ -17,9 +19,11 @@ struct SettingsOverlayView: View {
             Color.black.opacity(0.4)
                 .ignoresSafeArea()
                 .onTapGesture {
-                    onDismiss?()
-                    withAnimation(.spring(response: 0.3)) {
-                        isPresented = false
+                    if buttonDebouncer.canPress() { // Debounce background tap to dismiss
+                        onDismiss?()
+                        withAnimation(.spring(response: 0.3)) {
+                            isPresented = false
+                        }
                     }
                 }
             
@@ -34,9 +38,11 @@ struct SettingsOverlayView: View {
                     Spacer()
                     
                     Button(action: {
-                        onDismiss?()
-                        withAnimation(.spring(response: 0.3)) {
-                            isPresented = false
+                        if buttonDebouncer.canPress() { // Debounce close button
+                            onDismiss?()
+                            withAnimation(.spring(response: 0.3)) {
+                                isPresented = false
+                            }
                         }
                     }) {
                         Image(systemName: "xmark.circle.fill")
@@ -132,8 +138,10 @@ struct SettingsOverlayView: View {
                                     
                                     if !copyHistory.isEmpty {
                                         Button("Clear") {
-                                            copyHistory.removeAll()
-                                            UserDefaults.standard.removeObject(forKey: "ocrCopyHistory")
+                                            if buttonDebouncer.canPress() { // Debounce clear button
+                                                copyHistory.removeAll()
+                                                UserDefaults.standard.removeObject(forKey: "ocrCopyHistory")
+                                            }
                                         }
                                         .font(.caption)
                                         .foregroundStyle(.red)
@@ -156,11 +164,13 @@ struct SettingsOverlayView: View {
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                                 
                                                 Button(action: {
-                                                    UIPasteboard.general.string = text
-                                                    
-                                                    // Haptic feedback
-                                                    let generator = UINotificationFeedbackGenerator()
-                                                    generator.notificationOccurred(.success)
+                                                    if buttonDebouncer.canPress() { // Debounce copy button
+                                                        UIPasteboard.general.string = text
+                                                        
+                                                        // Haptic feedback
+                                                        let generator = UINotificationFeedbackGenerator()
+                                                        generator.notificationOccurred(.success)
+                                                    }
                                                 }) {
                                                     Image(systemName: "doc.on.doc")
                                                         .font(.body)
@@ -184,28 +194,28 @@ struct SettingsOverlayView: View {
                         }
                         
                         // Current Zoom Level Indicator (all modes)
-                                                if viewModel.currentZoomLevel > 1.05 || viewModel.currentZoomLevel < 0.95 {
-                                                    HStack {
-                                                        Image(systemName: "camera.viewfinder")
-                                                            .font(.system(size: 20))
-                                                            .foregroundStyle(.purple)
-                                                        
-                                                        Text("Camera Zoom")
-                                                            .font(.headline)
-                                                        
-                                                        Spacer()
-                                                        
-                                                        Text(String(format: "%.1fx", viewModel.currentZoomLevel))
-                                                            .font(.system(.title3, design: .rounded))
-                                                            .fontWeight(.medium)
-                                                            .foregroundStyle(.purple)
-                                                    }
-                                                    .padding()
-                                                    .background(
-                                                        RoundedRectangle(cornerRadius: 12)
-                                                            .fill(.ultraThinMaterial.opacity(0.3))
-                                                    )
-                                                }
+                        if viewModel.currentZoomLevel > 1.05 || viewModel.currentZoomLevel < 0.95 {
+                            HStack {
+                                Image(systemName: "camera.viewfinder")
+                                    .font(.system(size: 20))
+                                    .foregroundStyle(.purple)
+                                
+                                Text("Camera Zoom")
+                                    .font(.headline)
+                                
+                                Spacer()
+                                
+                                Text(String(format: "%.1fx", viewModel.currentZoomLevel))
+                                    .font(.system(.title3, design: .rounded))
+                                    .fontWeight(.medium)
+                                    .foregroundStyle(.purple)
+                            }
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(.ultraThinMaterial.opacity(0.3))
+                            )
+                        }
                         
                         // Instructions
                         VStack(alignment: .leading, spacing: 8) {
@@ -264,9 +274,11 @@ struct SettingsOverlayView: View {
         .gesture(
             DragGesture().onEnded { value in
                 if value.translation.height > 80 && abs(value.translation.width) < 50 {
-                    onDismiss?()
-                    withAnimation(.spring(response: 0.3)) {
-                        isPresented = false
+                    if buttonDebouncer.canPress() { // Debounce swipe-down dismiss
+                        onDismiss?()
+                        withAnimation(.spring(response: 0.3)) {
+                            isPresented = false
+                        }
                     }
                 }
             }

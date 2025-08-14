@@ -36,6 +36,25 @@ final class LiDARManager: NSObject, ObservableObject {
     private override init() {
         super.init()
         checkSupport()
+        
+        // Observe memory reduction notifications
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReduceQualityForMemory), name: .reduceQualityForMemory, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReduceFrameRate), name: .reduceFrameRate, object: nil)
+    }
+    
+    @objc private func handleReduceQualityForMemory() {
+        // Release cached depth data and clear depth histories to reduce memory footprint
+        DispatchQueue.main.async { [weak self] in
+            self?.latestDepthData = nil
+            self?.depthHistory.removeAll()
+            print("LiDARManager: Reduced quality for memory - cleared depth data and histories")
+        }
+    }
+    
+    @objc private func handleReduceFrameRate() {
+        // Optional: Pause non-essential processing or reduce background work if applicable.
+        // Currently no extra processing to reduce; this is a no-op.
+        print("LiDARManager: Received reduceFrameRate notification - no action taken")
     }
     
     private func checkSupport() {
@@ -315,3 +334,4 @@ final class LiDARManager: NSObject, ObservableObject {
         return "C"
     }
 }
+

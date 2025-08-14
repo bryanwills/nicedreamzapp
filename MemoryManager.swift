@@ -3,9 +3,13 @@
 
 import Foundation
 import UIKit
+import SwiftUI
+import Combine
 
 /// Singleton for global memory management. Performs cleanup and notifies observers on system memory warnings.
 final class MemoryManager: ObservableObject {
+    var objectWillChange = ObservableObjectPublisher()
+    
     static let shared = MemoryManager()
 
     private init() {

@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		990EECF12E489EBD00B7CD8C /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 990EECF02E489EBD00B7CD8C /* LICENSE */; };
+		993E64252E4DC654000B362C /* MemoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993E64242E4DC654000B362C /* MemoryManager.swift */; };
 		99489BB42E4724F600FFB06A /* DevicePerf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99489BB32E4724EF00FFB06A /* DevicePerf.swift */; };
 		996522532E3D8D680025D82D /* SettingsOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996522522E3D8D640025D82D /* SettingsOverlayView.swift */; };
+		996AFA342E4D7D6C009D4FAE /* ButtonPressDebouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996AFA332E4D7D6C009D4FAE /* ButtonPressDebouncer.swift */; };
 		996B92FF2E3894BF00AE22AA /* class_names.txt in Resources */ = {isa = PBXBuildFile; fileRef = 996B92FE2E3894BF00AE22AA /* class_names.txt */; };
 		996B93022E38A15B00AE22AA /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 996B93012E38A15B00AE22AA /* Metal.framework */; };
 		996B93042E38A16400AE22AA /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 996B93032E38A16400AE22AA /* MetalKit.framework */; };
@@ -57,8 +59,10 @@
 
 /* Begin PBXFileReference section */
 		990EECF02E489EBD00B7CD8C /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		993E64242E4DC654000B362C /* MemoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryManager.swift; sourceTree = "<group>"; };
 		99489BB32E4724EF00FFB06A /* DevicePerf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicePerf.swift; sourceTree = "<group>"; };
 		996522522E3D8D640025D82D /* SettingsOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsOverlayView.swift; sourceTree = "<group>"; };
+		996AFA332E4D7D6C009D4FAE /* ButtonPressDebouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonPressDebouncer.swift; sourceTree = "<group>"; };
 		996B92FE2E3894BF00AE22AA /* class_names.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = class_names.txt; sourceTree = "<group>"; };
 		996B93012E38A15B00AE22AA /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		996B93032E38A16400AE22AA /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
@@ -192,6 +196,8 @@
 				99BA10312E34CF71001E5140 /* Products */,
 				99A922C92E39BA0E0070BDB5 /* yolov8n_oiv7.mlpackage */,
 				99D77E882E4359E8005583DC /* AppInstructionsView.swift */,
+				996AFA332E4D7D6C009D4FAE /* ButtonPressDebouncer.swift */,
+				993E64242E4DC654000B362C /* MemoryManager.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -361,9 +367,11 @@
 				99D3023C2E3CF34A00CAF01A /* SpeechManager.swift in Sources */,
 				998D7F862E47856C002A9A09 /* LiDARManager.swift in Sources */,
 				9998FD942E3B5AA6006F41F7 /* CameraPreview.swift in Sources */,
+				993E64252E4DC654000B362C /* MemoryManager.swift in Sources */,
 				99BA10632E34D13E001E5140 /* DetectionOverlayView.swift in Sources */,
 				99489BB42E4724F600FFB06A /* DevicePerf.swift in Sources */,
 				9998FD8C2E3B4E85006F41F7 /* LiveOCRView.swift in Sources */,
+				996AFA342E4D7D6C009D4FAE /* ButtonPressDebouncer.swift in Sources */,
 				99A922CA2E39BA0E0070BDB5 /* yolov8n_oiv7.mlpackage in Sources */,
 				99BA105F2E34D10B001E5140 /* CameraViewModel.swift in Sources */,
 				99BA10652E34D251001E5140 /* CameraView.swift in Sources */,

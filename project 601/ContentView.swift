@@ -1,18 +1,6 @@
 import SwiftUI
 import AVFoundation
-
-struct MemoryMonitor {
-    static func currentMemoryUsage() -> Float {
-        var info = mach_task_basic_info()
-        var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size) / 4
-        _ = withUnsafeMutablePointer(to: &info) {
-            $0.withMemoryRebound(to: integer_t.self, capacity: 1) {
-                task_info(mach_task_self_, task_flavor_t(MACH_TASK_BASIC_INFO), $0, &count)
-            }
-        }
-        return Float(info.resident_size) / 1024.0 / 1024.0
-    }
-}
+import CoreVideo
 
 struct ShadedEmoji: View {
     let emoji: String
@@ -33,33 +21,47 @@ struct ShadedEmoji: View {
 struct OutlinedText: View {
     let text: String
     let fontSize: CGFloat
-    let strokeWidth: CGFloat = 1.0
-    let strokeColor: Color = .black
-    let fillColor: Color = .white
+    let strokeWidth: CGFloat
+    let strokeColor: Color
+    let fillColor: Color
+    
+    init(
+        text: String,
+        fontSize: CGFloat,
+        strokeWidth: CGFloat = 1.1,
+        strokeColor: Color = .black,
+        fillColor: Color = .white
+    ) {
+        self.text = text
+        self.fontSize = fontSize
+        self.strokeWidth = strokeWidth
+        self.strokeColor = strokeColor
+        self.fillColor = fillColor
+    }
     
     var body: some View {
         ZStack {
             // Black stroke/outline
             Text(text)
-                .font(.system(size: fontSize, weight: .bold, design: .serif))
+                .font(.system(size: fontSize, weight: .bold, design: .default))
                 .foregroundColor(strokeColor)
                 .offset(x: -strokeWidth, y: -strokeWidth)
             Text(text)
-                .font(.system(size: fontSize, weight: .bold, design: .serif))
+                .font(.system(size: fontSize, weight: .bold, design: .default))
                 .foregroundColor(strokeColor)
                 .offset(x: strokeWidth, y: -strokeWidth)
             Text(text)
-                .font(.system(size: fontSize, weight: .bold, design: .serif))
+                .font(.system(size: fontSize, weight: .bold, design: .default))
                 .foregroundColor(strokeColor)
                 .offset(x: -strokeWidth, y: strokeWidth)
             Text(text)
-                .font(.system(size: fontSize, weight: .bold, design: .serif))
+                .font(.system(size: fontSize, weight: .bold, design: .default))
                 .foregroundColor(strokeColor)
                 .offset(x: strokeWidth, y: strokeWidth)
             
             // White fill
             Text(text)
-                .font(.system(size: fontSize, weight: .bold, design: .serif))
+                .font(.system(size: fontSize, weight: .bold, design: .default))
                 .foregroundColor(fillColor)
         }
     }
@@ -78,6 +80,9 @@ struct ContentView: View {
     @State private var mode: Mode = .home
     @StateObject private var viewModel = CameraViewModel()
     @State private var orientation = UIDevice.current.orientation
+    @StateObject private var ocrViewModel = LiveOCRViewModel()
+    // Added debouncer for mode switching buttons in ContentView
+    @StateObject private var buttonDebouncer = ButtonPressDebouncer()
     
     private var normalizedOrientation: UIDeviceOrientation {
         switch orientation {
@@ -89,12 +94,9 @@ struct ContentView: View {
     
     @State private var showSettings = false
     @State private var speechSynthesizer = AVSpeechSynthesizer()
-    @StateObject private var ocrViewModel = LiveOCRViewModel()
     
     // Consolidated animation state
     @State private var animationState = AnimationState()
-    
-    @State private var memoryUsageMB: Float = MemoryMonitor.currentMemoryUsage()
     
     @Environment(\.scenePhase) private var scenePhase
     
@@ -143,15 +145,6 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             VStack {
-                HStack {
-                    Text(String(format: "Memory: %.0f MB", memoryUsageMB))
-                        .font(.caption.bold())
-                        .padding(6)
-                        .background(Color.black.opacity(0.16))
-                        .cornerRadius(8)
-                        .foregroundColor(.white)
-                    Spacer()
-                }
                 Spacer()
             }
             .padding([.top, .leading], 12)
@@ -181,16 +174,9 @@ struct ContentView: View {
                 mode = .home  // Always start at home
             }
             setupOrientationObserver()
-            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-                Task { @MainActor in
-                    memoryUsageMB = MemoryMonitor.currentMemoryUsage()
-                    if memoryUsageMB > 400 {  // If over 400MB
-                        print("⚠️ HIGH MEMORY: \(memoryUsageMB)MB - Force cleaning")
-                        performCompleteReset()
-                        mode = .home
-                    }
-                }
-            }
+        }
+        .onDisappear {
+            // No memory timers to invalidate anymore
         }
         .onChange(of: scenePhase) { newValue in  // iOS 15 compatible version
             handleScenePhaseChange(newValue)
@@ -219,7 +205,8 @@ struct ContentView: View {
                 orientation: normalizedOrientation,
                 isPortrait: isPortrait,
                 rotationAngle: rotationAngle,
-                onBack: switchToHome
+                onBack: switchToHome,
+                buttonDebouncer: buttonDebouncer  // Pass debouncer to ObjectDetectionView
             )
             .ignoresSafeArea()
             .onAppear {
@@ -237,12 +224,15 @@ struct ContentView: View {
             viewModel: viewModel,
             animationState: $animationState,
             mode: $mode,
-            onEnglishOCR: { switchToMode(.englishOCR) },
-            onSpanishOCR: { switchToMode(.spanishToEnglishOCR) },
+            buttonDebouncer: buttonDebouncer,
+            onEnglishOCR: {
+                mode = .englishOCR
+            },
+            onSpanishOCR: {
+                mode = .spanishToEnglishOCR
+            },
             onObjectDetection: {
-                cleanupCurrentMode()
                 mode = .objectDetection
-                viewModel.startSession()
             },
             onVoiceChange: playWelcomeMessage,
             speechSynthesizer: speechSynthesizer
@@ -257,6 +247,7 @@ struct ContentView: View {
         )
         .ignoresSafeArea()
         .onDisappear {
+            // Defensive cleanup for OCR shutdown
             ocrViewModel.shutdown()
         }
         // Immediately stop all processing when any overlay or modal appears over OCR view
@@ -278,20 +269,26 @@ struct ContentView: View {
     /// Consolidated mode switching with debounce
     private func switchToMode(_ newMode: Mode) {
         let now = Date()
+        print("[DEBUG] switchToMode called with newMode: \(newMode), current mode: \(mode)")
         guard now.timeIntervalSince(lastModeSwitch) > 1.0 else { return }  // Prevent rapid switching
         lastModeSwitch = now
-        
-        // Complete reset before switching
-        performCompleteReset()
-        
+
+        // Only reset if not already at home
+        if mode != .home {
+            performReset()
+        }
+
         // Small delay to ensure cleanup completes
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             mode = newMode
-            
+            print("[DEBUG] mode switched to: \(mode)")
+
             // Reinitialize for the new mode
             if newMode == .objectDetection {
                 viewModel.reinitialize()
                 viewModel.startSession()
+            } else if newMode == .englishOCR || newMode == .spanishToEnglishOCR {
+                ocrViewModel.startSession()
             }
         }
     }
@@ -301,8 +298,12 @@ struct ContentView: View {
         guard now.timeIntervalSince(lastModeSwitch) > 1.0 else { return }  // Prevent rapid switching
         lastModeSwitch = now
         
-        performCompleteReset()
+        performReset()
         mode = .home
+        
+        // Reinitialize viewModel for home start
+        viewModel.reinitialize()
+        ocrViewModel.shutdown()
     }
     
     private func cleanupCurrentMode() {
@@ -316,51 +317,53 @@ struct ContentView: View {
         showSettings = false
     }
     
-    // Complete reset function
-    private func performCompleteReset() {
-        // Stop all active processing
-        viewModel.stopSession()
-        viewModel.stopSpeech()
-        ocrViewModel.shutdown()
+    // MARK: - Perform basic reset on mode switch or panic; no memory cache clearing here anymore
+    private func performReset() {
+        print("performReset() called - performing basic reset")
         
-        // Clear all detections and state
-        viewModel.clearDetections()
-        // Force YOLO to reset
-        viewModel.yoloProcessor?.reset()
-        // Reset all settings to defaults (except user preferences)
-        viewModel.confidenceThreshold = 0.75
-        viewModel.frameRate = 30
-        viewModel.filterMode = "all"
-        viewModel.currentZoomLevel = 1.0
-        viewModel.isUltraWide = false
-        viewModel.torchLevel = 0.0
-        viewModel.isTorchOn = false
-        
-        // Clear LiDAR data
-        LiDARManager.shared.stop()
-        LiDARManager.shared.cleanupOldHistories(currentDetectionIds: Set())
-        
-        // Clear OCR text
-        ocrViewModel.clearText()
-        
-        // Force garbage collection
+        // Defensive autoreleasepool
         autoreleasepool {
-            // This helps release any retained objects
+            // Stop all active processing
+            viewModel.stopSession()
+            viewModel.stopSpeech()
+            ocrViewModel.shutdown()
+            
+            // Clear all detections and state
+            viewModel.clearDetections()
+            
+            // Defensive check: attempt to reset YOLO processor
+            if let yoloProc = viewModel.yoloProcessor {
+                print("YOLO Processor retain count: \(CFGetRetainCount(yoloProc))")
+                yoloProc.reset()
+            } else {
+                print("YOLO Processor is nil")
+            }
+            
+            // Reset various settings to defaults (except user preferences)
+            viewModel.confidenceThreshold = 0.75
+            viewModel.frameRate = 30
+            viewModel.filterMode = "all"
+            viewModel.currentZoomLevel = 1.0
+            viewModel.isUltraWide = false
+            viewModel.torchLevel = 0.0
+            viewModel.isTorchOn = false
+            
+            // Stop and cleanup LiDAR data
+            LiDARManager.shared.stop()
+            LiDARManager.shared.cleanupOldHistories(currentDetectionIds: Set())
+            
+            // Clear OCR text
+            ocrViewModel.clearText()
+            
+            // Attempt to print retain count of view models for debugging
+            print("CameraViewModel retain count: \(CFGetRetainCount(viewModel))")
+            print("LiveOCRViewModel retain count: \(CFGetRetainCount(ocrViewModel))")
         }
         
-        // Clear image cache if any
-        URLCache.shared.removeAllCachedResponses()
-        
-        // Reset CoreML model cache (forces recompilation on next use)
-        if let tempDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first {
-            let mlmodelcDir = tempDir.appendingPathComponent("com.apple.CoreML/mlmodelc")
-            try? FileManager.default.removeItem(at: mlmodelcDir)
-        }
-        
-        // Small delay to ensure everything is cleared
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            // Ready for fresh start
-        }
+        // Reinitialize viewModel and OCR view model after cleanup
+        viewModel.reinitialize()
+        ocrViewModel.shutdown()
+        print("Basic reset completed, view models reinitialized")
     }
     
     private func playWelcomeMessage() {
@@ -387,8 +390,8 @@ struct ContentView: View {
     
     private func handleScenePhaseChange(_ newPhase: ScenePhase) {
         if newPhase == .background {
-            // Complete reset when going to background
-            performCompleteReset()
+            // Basic reset when going to background
+            performReset()
             mode = .home
         } else if newPhase == .inactive {
             // Stop camera when app is inactive (control center, notifications)
@@ -396,7 +399,7 @@ struct ContentView: View {
             ocrViewModel.stopSession()
         } else if newPhase == .active {
             // Fresh start when coming back
-            performCompleteReset()
+            performReset()
             
             // Reinitialize if returning to detection mode
             if mode == .objectDetection {
@@ -407,6 +410,7 @@ struct ContentView: View {
             }
         }
     }
+}
 
 // MARK: - Home Screen View
 struct HomeScreenView: View {
@@ -414,6 +418,9 @@ struct HomeScreenView: View {
     @Binding var animationState: ContentView.AnimationState
     @Binding var mode: ContentView.Mode
     @State private var showInstructions = false
+    
+    // Added debouncer object for per-button press debounce
+    @StateObject var buttonDebouncer: ButtonPressDebouncer
     
     let onEnglishOCR: () -> Void
     let onSpanishOCR: () -> Void
@@ -426,28 +433,32 @@ struct HomeScreenView: View {
             splashBackground
             
             VStack {
-                Spacer(minLength: 60)
-                VStack(spacing: 24) {
+                Spacer(minLength: 80) // Increased from 24 to lower the heading
+                VStack(spacing: 12) {
                     HeadingView(animateIn: animationState.heading)
-                    Spacer(minLength: 80)
+                    Spacer(minLength: 30) // Increased from 16
                     GeometryReader { geometry in
-                        VStack(spacing: 20) {
+                        VStack(spacing: 18) { // Reduced from 20 for tighter spacing
                             // English Text2Speech button with outlined text
-                            Button(action: onEnglishOCR) {
-                                HStack(spacing: 6) {
-                                    Text("📖").font(.system(size: 31))
-                                    OutlinedText(text: "Eng Text2Speech", fontSize: 21)
-                                    ShadedEmoji(emoji: "🗣️", size: 26)
+                            Button(action: {
+                                // Per-button debounce: ignore press if too soon
+                                guard buttonDebouncer.canPress() else { return }
+                                onEnglishOCR()
+                            }) {
+                                HStack(spacing: 4) { // Reduced spacing
+                                    Text("📖").font(.system(size: 34))
+                                    OutlinedText(text: "Eng Text2Speech", fontSize: 20) // Reduced from 26
+                                    ShadedEmoji(emoji: "🗣️", size: 29)
                                 }
-                                .padding(.vertical, 18)
+                                .padding(.vertical, 16) // Reduced from 18
                             }
                             .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.horizontal, 24)
+                            .padding(.horizontal, 20) // Reduced from 24
                             .background(
                                 Capsule().fill(Color.blue.opacity(0.20))
+                                    .overlay(Capsule().stroke(Color.black, lineWidth: 1.1))
                             )
                             .clipShape(Capsule())
-                            .overlay(Capsule().stroke(Color.blue, lineWidth: 2))
                             .opacity(animationState.button1 ? 1 : 0)
                             .shadow(color: Color.blue.opacity(0.50), radius: 12)
                             .scaleEffect(animationState.button1 ? 1 : 0.7)
@@ -457,24 +468,28 @@ struct HomeScreenView: View {
                             .accessibilityAddTraits(.isButton)
                             
                             // Spanish to English Translate button with outlined text
-                            Button(action: onSpanishOCR) {
+                            Button(action: {
+                                // Per-button debounce: ignore press if too soon
+                                guard buttonDebouncer.canPress() else { return }
+                                onSpanishOCR()
+                            }) {
                                 HStack(spacing: 2) {
-                                    Text("🇲🇽").font(.system(size: 28))
-                                    OutlinedText(text: "Span", fontSize: 21)
-                                    Text("🇺🇸").font(.system(size: 28))
-                                    OutlinedText(text: "Eng", fontSize: 21)
-                                    Text("🌎").font(.system(size: 28))
-                                    OutlinedText(text: "Translate", fontSize: 21)
+                                    Text("🇲🇽").font(.system(size: 31))
+                                    OutlinedText(text: "Span", fontSize: 18) // Reduced from 26
+                                    Text("🇺🇸").font(.system(size: 31))
+                                    OutlinedText(text: "Eng", fontSize: 18) // Reduced from 26
+                                    Text("🌎").font(.system(size: 31))
+                                    OutlinedText(text: "Translate", fontSize: 18) // Reduced from 26
                                 }
-                                .padding(.vertical, 18)
+                                .padding(.vertical, 16) // Reduced from 18
                             }
                             .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.horizontal, 24)
+                            .padding(.horizontal, 20) // Reduced from 24
                             .background(
                                 Capsule().fill(Color.green.opacity(0.20))
+                                    .overlay(Capsule().stroke(Color.black, lineWidth: 1.1))
                             )
                             .clipShape(Capsule())
-                            .overlay(Capsule().stroke(Color.green, lineWidth: 2))
                             .opacity(animationState.button2 ? 1 : 0)
                             .shadow(color: Color.green.opacity(0.50), radius: 12)
                             .scaleEffect(animationState.button2 ? 1 : 0.7)
@@ -484,20 +499,24 @@ struct HomeScreenView: View {
                             .accessibilityAddTraits(.isButton)
                             
                             // Object Detection button with outlined text
-                            Button(action: onObjectDetection) {
-                                HStack(spacing: 6) {
-                                    Text("🐶").font(.system(size: 32))
-                                    OutlinedText(text: "Object Detection", fontSize: 21)
+                            Button(action: {
+                                // Per-button debounce: ignore press if too soon
+                                guard buttonDebouncer.canPress() else { return }
+                                onObjectDetection()
+                            }) {
+                                HStack(spacing: 4) { // Reduced spacing
+                                    Text("🐶").font(.system(size: 35))
+                                    OutlinedText(text: "Object Detection", fontSize: 20) // Reduced from 26
                                 }
-                                .padding(.vertical, 18)
+                                .padding(.vertical, 16) // Reduced from 18
                             }
                             .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.horizontal, 24)
+                            .padding(.horizontal, 20) // Reduced from 24
                             .background(
                                 Capsule().fill(Color.orange.opacity(0.20))
+                                    .overlay(Capsule().stroke(Color.black, lineWidth: 1.1))
                             )
                             .clipShape(Capsule())
-                            .overlay(Capsule().stroke(Color.orange, lineWidth: 2))
                             .opacity(animationState.button3 ? 1 : 0)
                             .shadow(color: Color.orange.opacity(0.50), radius: 12)
                             .scaleEffect(animationState.button3 ? 1 : 0.7)
@@ -508,27 +527,33 @@ struct HomeScreenView: View {
                         }
                     }
                     .frame(height: 220)
-                    Spacer(minLength: 32)
+                    Spacer(minLength: 25) // Reduced from 32
                     voicePicker
-                    Spacer(minLength: 50)
+                    Spacer(minLength: 40) // Reduced from 50
                 }
                 .padding(.horizontal)
-                Spacer(minLength: 60)
+                Spacer(minLength: 50) // Reduced from 60
             }
             
+            // Info button with debouncer protection
             infoButton
         }
         .sheet(isPresented: $showInstructions) {
             AppInstructionsView(selectedVoiceIdentifier: viewModel.selectedVoiceIdentifier)
             // Immediately stop all processing when instructions overlay appears
             .onAppear {
-                viewModel.pauseCameraAndProcessing()
-                print("Instructions opened with voice: \(viewModel.selectedVoiceIdentifier)")
+                // Debounce sheet appearance action
+                if buttonDebouncer.canPress() {
+                    viewModel.pauseCameraAndProcessing()
+                    print("Instructions opened with voice: \(viewModel.selectedVoiceIdentifier)")
+                }
             }
             // Resume processing only if in object detection mode
             .onDisappear {
-                if mode == .objectDetection {
-                    viewModel.resumeCameraAndProcessing()
+                if buttonDebouncer.canPress() {
+                    if mode == .objectDetection {
+                        viewModel.resumeCameraAndProcessing()
+                    }
                 }
             }
         }
@@ -563,21 +588,31 @@ struct HomeScreenView: View {
             onVoiceChange: onVoiceChange,
             speechSynthesizer: speechSynthesizer
         )
+        // Remove the background and overlay - let the picker handle its own styling
+        .onTapGesture {
+            _ = buttonDebouncer.canPress()
+        }
     }
     
     private var infoButton: some View {
-        Button(action: { showInstructions = true }) {
-            Text("INFO 💡 GUIDE")
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(.white)  // Explicit white color for better readability
-                .padding(.vertical, 6)
-                .padding(.horizontal, 18)
+        Button(action: {
+            // Debounced info button action
+            guard buttonDebouncer.canPress() else { return }
+            showInstructions = true
+        }) {
+            HStack(spacing: 6) {
+                OutlinedText(text: "INFO", fontSize: 14)
+                Text("💡").font(.system(size: 14))
+                OutlinedText(text: "GUIDE", fontSize: 14)
+            }
+            .foregroundColor(.white)
+            .padding(.vertical, 6)
+            .padding(.horizontal, 18)
         }
         .background(ButtonStyles.glassBackground()
             .opacity(0.20))
         .clipShape(Capsule())
-        .overlay(Capsule().stroke(Color.white.opacity(0.35), lineWidth: 1.5))
-        .overlay(Capsule().stroke(Color.black.opacity(0.32), lineWidth: 1))
+        .overlay(Capsule().stroke(Color.black, lineWidth: 1.1))
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
         .padding()
     }
@@ -648,55 +683,97 @@ struct HeadingView: View {
     var body: some View {
         GeometryReader { geometry in
             let scaleFactor = min(geometry.size.width / 390, 1.0)
-            let titleSize: CGFloat = 72 * scaleFactor
-            let subtitleSize: CGFloat = 60 * scaleFactor
-            
-            VStack(spacing: -10 * scaleFactor) {
-                StrokedText(text: "RealTime", size: titleSize)
-                StrokedText(text: "Ai Camera", size: subtitleSize)
+            let titleSize: CGFloat = 52 * scaleFactor // Reduced from 72
+            let subtitleSize: CGFloat = 44 * scaleFactor // Reduced from 60
+            ZStack {
+                Capsule()
+                    .fill(Color.white.opacity(0.20)) // Match button opacity of 0.20
+                    .overlay(Capsule().stroke(Color.black, lineWidth: 1.1))
+                    .shadow(color: Color.blue.opacity(0.10), radius: 10 * scaleFactor)
+                VStack(spacing: -8 * scaleFactor) { // Reduced spacing
+                    OutlinedText(
+                        text: "RealTime",
+                        fontSize: titleSize,
+                        strokeWidth: 2.1,
+                        strokeColor: .black,
+                        fillColor: Color(red: 0.64, green: 0.85, blue: 1.0)
+                    )
+                    OutlinedText(
+                        text: "Ai Camera",
+                        fontSize: subtitleSize,
+                        strokeWidth: 2.1,
+                        strokeColor: .black,
+                        fillColor: Color(red: 0.81, green: 0.93, blue: 1.0)
+                    )
+                }
+                .padding(.horizontal, 25 * scaleFactor) // Reduced from 30
+                .padding(.vertical, 14 * scaleFactor) // Reduced from 18
             }
-            .multilineTextAlignment(.center)
-            .frame(width: geometry.size.width, height: geometry.size.height)
-            .offset(y: 20 * scaleFactor)
-            .opacity(animateIn ? 0.95 : 0)
-            .scaleEffect(animateIn ? 1 : 0.85)
+            .frame(width: geometry.size.width * 0.92, height: 120) // Reduced height from 150
+            .position(x: geometry.size.width / 2, y: 60) // Center horizontally
+            .opacity(animateIn ? 1 : 0) // Full opacity for the whole view
+            .scaleEffect(animateIn ? 1 : 0.88)
             .animation(.interpolatingSpring(stiffness: 200, damping: 14).delay(animateIn ? 0.05 : 0), value: animateIn)
         }
-        .frame(height: 150)
+        .frame(height: 120) // Reduced from 150
     }
 }
 
-// Helper view for stroked text
-struct StrokedText: View {
+struct EmbossedGradientText: View {
     let text: String
     let size: CGFloat
     
     var body: some View {
         ZStack {
-            ForEach(Array(strokeOffsets.enumerated()), id: \.offset) { idx, offset in
-                Text(text)
-                    .font(.system(size: size, weight: .black, design: .rounded))
-                    .foregroundColor(.black)
-                    .offset(x: offset.0, y: offset.1)
-            }
-            
+            // Main white & blue halo, tight
+            Text(text)
+                .font(.system(size: size, weight: .black, design: .rounded))
+                .foregroundColor(.white.opacity(0.92))
+                .shadow(color: Color.blue.opacity(0.38), radius: 6, x: 0, y: 0)
+                .shadow(color: Color.white.opacity(0.44), radius: 4, x: 0, y: 0)
+            // Embossed top highlight
+            Text(text)
+                .font(.system(size: size, weight: .black, design: .rounded))
+                .foregroundColor(.white.opacity(0.68))
+                .offset(x: -1, y: -2)
+                .blur(radius: 0.7)
+            // Embossed shadow (bottom right)
+            Text(text)
+                .font(.system(size: size, weight: .black, design: .rounded))
+                .foregroundColor(.black.opacity(0.13))
+                .offset(x: 1, y: 2)
+                .blur(radius: 0.7)
+            // Water blue gradient fill
             Text(text)
                 .font(.system(size: size, weight: .black, design: .rounded))
                 .foregroundStyle(
                     LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color(red: 0.78, green: 0.93, blue: 1.0),
-                            Color(red: 0.54, green: 0.80, blue: 0.97)
-                        ]),
+                        colors: [
+                            Color.white,
+                            Color(red: 0.70, green: 0.90, blue: 1.0),
+                            Color(red: 0.45, green: 0.75, blue: 1.0),
+                            Color(red: 0.60, green: 0.92, blue: 1.0)
+                        ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
+                .overlay(
+                    // Inner shine highlight
+                    Text(text)
+                        .font(.system(size: size, weight: .black, design: .rounded))
+                        .foregroundColor(.white.opacity(0.22))
+                        .blur(radius: 1.1)
+                        .offset(y: -size * 0.14)
+                        .mask(
+                            LinearGradient(
+                                colors: [Color.white, Color.clear],
+                                startPoint: .top,
+                                endPoint: .center
+                            )
+                        )
+                )
         }
-    }
-    
-    private var strokeOffsets: [(CGFloat, CGFloat)] {
-        [(2, 2), (-2, -2), (2, -2), (-2, 2), (0, 2), (0, -2), (2, 0), (-2, 0)]
     }
 }
 
@@ -706,14 +783,15 @@ struct AnimatedVoicePicker: View {
     let animateIn: Bool
     let onVoiceChange: () -> Void
     let speechSynthesizer: AVSpeechSynthesizer
+    @State private var showVoiceGrid = false
     
-    // Helper for detecting premium+ voice by name (e.g. "Ava", "Premium", "Plus", etc.).
+    // Helper for detecting premium+ voice by name
     private func isPremiumPlus(_ voice: AVSpeechSynthesisVoice) -> Bool {
         let name = voice.name.lowercased()
         return name.contains("premium") || name.contains("plus") || name.contains("ava")
     }
     
-    // Updated premiumEnglishVoices to include premium+, then enhanced, then regular, sorted by favorite names, max 10, always include "Ava"
+    // Updated premiumEnglishVoices
     private var premiumEnglishVoices: [AVSpeechSynthesisVoice] {
         let allVoices = AVSpeechSynthesisVoice.speechVoices().filter { v in
             v.language.hasPrefix("en") && !v.name.lowercased().contains("robot") && !v.name.lowercased().contains("whisper") && !v.name.lowercased().contains("grandma")
@@ -741,7 +819,6 @@ struct AnimatedVoicePicker: View {
         result.append(contentsOf: sortedPremiumPlus)
         if result.count < 10 { result.append(contentsOf: sortedEnhanced.prefix(10 - result.count)) }
         if result.count < 10 { result.append(contentsOf: sortedRegular.prefix(10 - result.count)) }
-        // Always include Ava (US English) if present and not already included
         if let ava = allVoices.first(where: { $0.name == "Ava" && $0.language.hasPrefix("en") }), !result.contains(where: { $0.identifier == ava.identifier }) {
             result.insert(ava, at: 0)
         }
@@ -756,12 +833,7 @@ struct AnimatedVoicePicker: View {
         }
     }
     
-    // Updated qualityTag to prevent duplicate tags if name already contains them
     private func qualityTag(for voice: AVSpeechSynthesisVoice) -> String {
-        let name = voice.name
-        if name.contains("(Premium)") || name.contains("(Enhanced)") {
-            return ""
-        }
         if isPremiumPlus(voice) {
             return "(Premium)"
         }
@@ -776,60 +848,170 @@ struct AnimatedVoicePicker: View {
     }
     
     var body: some View {
-        // Picker showing only premium English voices with outlined text
-        Picker(selection: Binding(
-            get: { viewModel.selectedVoiceIdentifier },
-            set: { newValue in
-                viewModel.selectedVoiceIdentifier = newValue
-                // Removed playVoiceDemo call here as per instructions
-                onVoiceChange()
+        // Main button
+        Button(action: {
+            withAnimation(.spring(response: 0.3)) {
+                showVoiceGrid.toggle()
             }
-        ), label:
-            ZStack {
-                Capsule()
-                    .fill(Color.purple.opacity(0.24))
-                    .frame(height: 36)
-                HStack(spacing: 6) {
-                    if let voice = selectedVoice {
-                        Text(genderEmoji(for: voice))
-                            .font(.system(size: 31))
-                            .foregroundColor(.white)
-                        OutlinedText(text: voice.name, fontSize: 20)
-                        let tag = qualityTag(for: voice)
-                        if !tag.isEmpty {
-                            OutlinedText(text: tag, fontSize: 18)
-                        }
-                    } else {
-                        OutlinedText(text: "Select Voice", fontSize: 20)
+        }) {
+            let voice = selectedVoice
+            let defaultVoice = premiumEnglishVoices.first ?? AVSpeechSynthesisVoice(language: "en-US")!
+            HStack(spacing: 6) {
+                Text(genderEmoji(for: voice ?? defaultVoice))
+                    .font(.system(size: 28))
+                Text(voice?.name ?? "Select Voice")
+                    .font(.system(size: 20, weight: .bold, design: .default))
+                    .foregroundColor(.white)
+                if let v = voice {
+                    let tag = qualityTag(for: v)
+                    if !tag.isEmpty {
+                        Text(tag)
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.white.opacity(0.8))
                     }
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 4)
+                Image(systemName: showVoiceGrid ? "chevron.down" : "chevron.up")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white)
             }
-        ) {
-            ForEach(premiumEnglishVoices, id: \.identifier) { voice in
-                let tag = qualityTag(for: voice)
-                Text("\(genderEmoji(for: voice)) \(voice.name)\(tag.isEmpty ? "" : " \(tag)")")
-                    .foregroundColor(.primary)  // Ensure menu items are readable
-                    .tag(voice.identifier)
-            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Capsule().fill(Color.purple.opacity(0.24)))
+            .overlay(Capsule().stroke(Color.black, lineWidth: 1.1))
         }
-        .accessibilityLabel("Voice Selection")
-        .accessibilityHint("Choose your preferred voice for speech feedback")
-        .pickerStyle(MenuPickerStyle())
-        .accentColor(.white)  // Set accent color to white for better visibility
-        .padding(.vertical, 14)
-        .padding(.horizontal, 32)
-        .background(
-            Capsule().fill(Color.purple.opacity(0.24))
-        )
-        .overlay(Capsule().stroke(Color.purple, lineWidth: 2))
         .opacity(animateIn ? 1 : 0)
         .scaleEffect(animateIn ? 1 : 0.7)
         .animation(.easeOut(duration: 0.3), value: animateIn)
+        .overlay(
+            // Compact grid overlay - positioned ABOVE the button
+            Group {
+                if showVoiceGrid {
+                    // Tap outside to close
+                    Color.clear
+                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            withAnimation(.spring(response: 0.25)) {
+                                showVoiceGrid = false
+                            }
+                        }
+                        .offset(y: -400)
+                    
+                    // Voice grid
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                        ForEach(premiumEnglishVoices, id: \.identifier) { voice in
+                            Button(action: {
+                                viewModel.selectedVoiceIdentifier = voice.identifier
+                                onVoiceChange()
+                                withAnimation(.spring(response: 0.25)) {
+                                    showVoiceGrid = false
+                                }
+                            }) {
+                                VStack(spacing: 4) {
+                                    Text(genderEmoji(for: voice))
+                                        .font(.system(size: 20))
+                                    Text(voice.name)
+                                        .font(.system(size: 11, weight: .medium))
+                                        .foregroundColor(.white)
+                                    Text(qualityTag(for: voice))
+                                        .font(.system(size: 9))
+                                        .foregroundColor(.white.opacity(0.7))
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 6)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(voice.identifier == viewModel.selectedVoiceIdentifier ?
+                                              Color.purple.opacity(0.5) :
+                                              Color.black.opacity(0.6))
+                                )
+                            }
+                        }
+                    }
+                    .padding(8)
+                    .frame(width: 280)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.black.opacity(0.85))  // Darker background
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.purple.opacity(0.4), lineWidth: 1)
+                            )
+                    )
+                    .shadow(color: .black.opacity(0.5), radius: 10)
+                    .offset(y: -200)  // Lowered position
+                    .transition(.scale(scale: 0.9).combined(with: .opacity))
+                }
+            }
+        )
+        .accessibilityLabel("Voice Selection")
+        .accessibilityHint("Choose your preferred voice for speech feedback")
+    }
+}// MARK: - Voice Selection Grid
+struct VoiceSelectionGrid: View {
+    let voices: [AVSpeechSynthesisVoice]
+    let selectedVoiceId: String
+    let onSelect: (String) -> Void
+    let genderEmoji: (AVSpeechSynthesisVoice) -> String
+    let qualityTag: (AVSpeechSynthesisVoice) -> String
+    
+    let columns = [
+        GridItem(.flexible()),
+        GridItem(.flexible())
+    ]
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 16) {
+                    ForEach(voices, id: \.identifier) { voice in
+                        Button(action: {
+                            onSelect(voice.identifier)
+                        }) {
+                            VStack(spacing: 8) {
+                                Text(genderEmoji(voice))
+                                    .font(.system(size: 36))
+                                Text(voice.name)
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(.primary)
+                                let tag = qualityTag(voice)
+                                if !tag.isEmpty {
+                                    Text(tag)
+                                        .font(.system(size: 20))
+                                        .foregroundColor(.yellow)
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(voice.identifier == selectedVoiceId ?
+                                          Color.purple.opacity(0.3) :
+                                          Color.gray.opacity(0.1))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(voice.identifier == selectedVoiceId ?
+                                           Color.purple :
+                                           Color.clear, lineWidth: 2)
+                            )
+                        }
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("Select Voice")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        onSelect(selectedVoiceId)
+                    }
+                }
+            }
+        }
     }
 }
-
 // MARK: - Object Detection View (WITH LIDAR AND PORTRAIT MODE FIXES)
 struct ObjectDetectionView: View {
     @ObservedObject var viewModel: CameraViewModel
@@ -843,6 +1025,9 @@ struct ObjectDetectionView: View {
     let isPortrait: Bool
     let rotationAngle: Angle
     let onBack: () -> Void
+    
+    // Added debouncer for all control buttons in ObjectDetectionView
+    @ObservedObject var buttonDebouncer: ButtonPressDebouncer
     
     var body: some View {
         GeometryReader { geometry in
@@ -1004,8 +1189,8 @@ struct ObjectDetectionView: View {
                     .cornerRadius(8)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-            .padding(.top, geometry.safeAreaInsets.top + 12)
-            .padding(.trailing, 18)
+            .padding(.top, geometry.safeAreaInsets.top + 18)
+            .padding(.trailing, 35)
             .rotationEffect(.zero)
         }
 
@@ -1020,11 +1205,13 @@ struct ObjectDetectionView: View {
                 Text("Outdoor").tag("outdoor")
             }
             .pickerStyle(SegmentedPickerStyle())
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 40)
             .padding(.bottom, 10)
             
             HStack(spacing: 12) {
                 Spacer()
+                
+                // All control buttons wrapped with debouncer guard
                 
                 controlButton(
                     systemName: "camera.rotate",
@@ -1032,6 +1219,7 @@ struct ObjectDetectionView: View {
                     size: 26,
                     frameSize: 48,
                     action: {
+                        guard buttonDebouncer.canPress() else { return }
                         viewModel.flipCamera()
                         // Turn off torch AND LiDAR if switching to front camera
                         if viewModel.cameraPosition == .front {
@@ -1056,6 +1244,7 @@ struct ObjectDetectionView: View {
                         size: 26,
                         frameSize: 48,
                         action: {
+                            guard buttonDebouncer.canPress() else { return }
                             viewModel.toggleCameraZoom()
                         }
                     )
@@ -1070,6 +1259,7 @@ struct ObjectDetectionView: View {
                         size: 26,
                         frameSize: 48,
                         action: {
+                            guard buttonDebouncer.canPress() else { return }
                             if viewModel.torchLevel > 0 {
                                 viewModel.setTorchLevel(0.0)
                                 showTorchPresets = false
@@ -1098,6 +1288,7 @@ struct ObjectDetectionView: View {
                         size: 26,
                         frameSize: 48,
                         action: {
+                            guard buttonDebouncer.canPress() else { return }
                             if lidar.isAvailable {
                                 lidar.toggle()
                                 // Force immediate depth capture setup
@@ -1124,8 +1315,9 @@ struct ObjectDetectionView: View {
                     )
                 }
                 
-                // Updated speech toggle button with unified style
+                // Updated speech toggle button with unified style and debounce
                 Button(action: {
+                    guard buttonDebouncer.canPress() else { return }
                     viewModel.isSpeechEnabled.toggle()
                     if viewModel.isSpeechEnabled {
                         viewModel.announceSpeechEnabled()
@@ -1158,6 +1350,7 @@ struct ObjectDetectionView: View {
                 .accessibilityValue(viewModel.isSpeechEnabled ? "Speech enabled" : "Speech disabled")
                 
                 Button(action: {
+                    guard buttonDebouncer.canPress() else { return }
                     withAnimation(.spring(response: 0.3)) {
                         showConfidenceSlider.toggle()
                     }
@@ -1183,7 +1376,7 @@ struct ObjectDetectionView: View {
             .padding(.bottom, 36) // Added bottom padding to move controls higher from bottom
         }
         
-        // Back button
+        // Back button wrapped with debouncer
         backButton()
             .padding(.leading, 20)
             .padding(.top, geometry.safeAreaInsets.top + 10)
@@ -1214,12 +1407,14 @@ struct ObjectDetectionView: View {
         }
         .rotationEffect(rotationAngle)
         .position(
-            x: geometry.size.width - max(30, geometry.size.width * 0.15),
-            y: max(120, geometry.size.height * 0.17)
+            x: geometry.size.width - max(30, geometry.size.width * 0.05),
+            y: max(120, geometry.size.height * 0.07)
         )
 
         HStack(spacing: 12) {
             Spacer()
+            
+            // All control buttons wrapped with debouncer guard
             
             controlButton(
                 systemName: "camera.rotate",
@@ -1227,6 +1422,7 @@ struct ObjectDetectionView: View {
                 size: 24,
                 frameSize: 48,
                 action: {
+                    guard buttonDebouncer.canPress() else { return }
                     viewModel.flipCamera()
                     // Turn off torch AND LiDAR if switching to front camera
                     if viewModel.cameraPosition == .front {
@@ -1251,6 +1447,7 @@ struct ObjectDetectionView: View {
                     size: 24,
                     frameSize: 48,
                     action: {
+                        guard buttonDebouncer.canPress() else { return }
                         viewModel.toggleCameraZoom()
                     }
                 )
@@ -1266,6 +1463,7 @@ struct ObjectDetectionView: View {
                     size: 24,
                     frameSize: 48,
                     action: {
+                        guard buttonDebouncer.canPress() else { return }
                         if viewModel.torchLevel > 0 {
                             viewModel.setTorchLevel(0.0)
                             showTorchPresets = false
@@ -1294,6 +1492,7 @@ struct ObjectDetectionView: View {
                     size: 24,
                     frameSize: 48,
                     action: {
+                        guard buttonDebouncer.canPress() else { return }
                         if lidar.isAvailable {
                             lidar.toggle()
                             // Force immediate depth capture setup (same as portrait)
@@ -1320,8 +1519,9 @@ struct ObjectDetectionView: View {
                 )
             }
             
-            // Updated speech toggle button with unified style
+            // Updated speech toggle button with unified style and debounce
             Button(action: {
+                guard buttonDebouncer.canPress() else { return }
                 viewModel.isSpeechEnabled.toggle()
                 if viewModel.isSpeechEnabled {
                     viewModel.announceSpeechEnabled()
@@ -1354,6 +1554,7 @@ struct ObjectDetectionView: View {
             .accessibilityValue(viewModel.isSpeechEnabled ? "Speech enabled" : "Speech disabled")
             
             Button(action: {
+                guard buttonDebouncer.canPress() else { return }
                 withAnimation(.spring(response: 0.3)) {
                     showConfidenceSlider.toggle()
                 }
@@ -1390,6 +1591,7 @@ struct ObjectDetectionView: View {
             y: geometry.size.height - max(235, geometry.size.height * 0.45)
         )
         
+        // Back button wrapped with debouncer
         backButton()
             .rotationEffect(rotationAngle)
             .fixedSize()
@@ -1422,6 +1624,7 @@ struct ObjectDetectionView: View {
     
     private func backButton() -> some View {
         Button(action: {
+            guard buttonDebouncer.canPress() else { return }
             let impactFeedback = UIImpactFeedbackGenerator(style: .light)
             impactFeedback.impactOccurred()
             onBack()
@@ -1459,6 +1662,7 @@ struct ObjectDetectionView: View {
 
     private func torchPresetButton(percentage: Int, rotateText: Bool = false) -> some View {
         Button(action: {
+            guard buttonDebouncer.canPress() else { return }
             let level = Float(percentage) / 100.0
             viewModel.setTorchLevel(level)
             showTorchPresets = false
@@ -1548,8 +1752,6 @@ struct LiveOCRViewWrapper: View {
             }
         }
     }
-}
-
 }
 
 #Preview {

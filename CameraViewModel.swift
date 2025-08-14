@@ -216,6 +216,27 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             self.frameRate = 60
             self.setSessionPresetIfAvailable(.hd1920x1080)
         }
+        
+        // Add MemoryManager observers for memory and frame rate reduction
+        NotificationCenter.default.addObserver(forName: Notification.Name.reduceQualityForMemory, object: nil, queue: .main) { [weak self] _ in
+            guard let self = self else { return }
+            print("CameraViewModel: Received reduceQualityForMemory notification")
+            self.clearDetections()
+            self.yoloProcessor?.reset()
+            self.lastSpokenTime.removeAll()
+            LiDARManager.shared.cleanupOldHistories(currentDetectionIds: Set())
+        }
+        
+        NotificationCenter.default.addObserver(forName: Notification.Name.reduceFrameRate, object: nil, queue: .main) { [weak self] _ in
+            guard let self = self else { return }
+            print("CameraViewModel: Received reduceFrameRate notification")
+            self.frameRate = 15
+            self.processEveryNFrames = 3
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                self.frameRate = 30
+                self.processEveryNFrames = 1
+            }
+        }
     }
     
     func setSessionPresetIfAvailable(_ preset: AVCaptureSession.Preset) {
@@ -248,13 +269,13 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         ) { [weak self] _ in
             self?.handleThermalStateChange()
         }
-        // Add memory warning observer
+        // Add memory warning observer, forward to MemoryManager instead of duplicating cleanup
         NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleMemoryWarning),
-            name: UIApplication.didReceiveMemoryWarningNotification,
-            object: nil
-        )
+            forName: UIApplication.didReceiveMemoryWarningNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+        }
         
         updateFrameProcessingRate()
     }
@@ -296,26 +317,39 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     
     private func handleThermalStateChange() {
         thermalState = ProcessInfo.processInfo.thermalState
-        switch thermalState {
+        
+        // MARK: - Progressive Thermal State Handling
+        adjustForThermalState(thermalState)
+        
+        print("📱 Thermal state: \(thermalState), FPS: \(frameRate)")
+    }
+    
+    // MARK: - Progressive Thermal State Handling
+    private func adjustForThermalState(_ state: ProcessInfo.ThermalState) {
+        switch state {
         case .nominal:
             frameRate = 30
-            processEveryNFrames = 1
+            // Use high quality defaults
+            setSessionPresetIfAvailable(.hd1920x1080)
         case .fair:
             frameRate = 15
-            processEveryNFrames = 2
+            setSessionPresetIfAvailable(.hd1280x720)
         case .serious:
             frameRate = 10
-            processEveryNFrames = 3
+            setSessionPresetIfAvailable(.vga640x480)
+            useLiDAR = false // Disable non-essential features
         case .critical:
-            // Pause for 2 seconds
-            pauseCameraAndProcessing()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-                self?.resumeCameraAndProcessing()
-            }
+            enterIdleMode()
+            // Optionally, show warning to user
         @unknown default:
-            break
+            frameRate = 15
+            setSessionPresetIfAvailable(.hd1280x720)
         }
-        print("📱 Thermal state: \(thermalState), FPS: \(frameRate)")
+    }
+    
+    private func enterIdleMode() {
+        pauseCameraAndProcessing()
+        // Additional idle mode handling can be added here
     }
     
     private func updateFrameProcessingRate() {
@@ -488,16 +522,6 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             }
             
             // Rest of your method continues...
-            // If no format with depth was found but depth is needed, find any format with depth
-            if selectedFormat == nil && needsDepth {
-                for format in device.formats {
-                    if !format.supportedDepthDataFormats.isEmpty {
-                        selectedFormat = format
-                        break
-                    }
-                }
-            }
-            
             // If no format with depth was found but depth is needed, find any format with depth
             if selectedFormat == nil && needsDepth {
                 for format in device.formats {
@@ -965,19 +989,7 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         autoreleasepool {
             frameCounter += 1
             
-            // Add periodic memory cleanup every 600 frames (~30 seconds at 20fps)
-            if frameCounter % 600 == 0 {
-                autoreleasepool {
-                    // Force YOLO reset
-                    yoloProcessor?.reset()
-                    // Clear detection history
-                    lastSpokenTime.removeAll()
-                    detections = []
-                    // Clear LiDAR histories
-                    LiDARManager.shared.cleanupOldHistories(currentDetectionIds: Set())
-                }
-                print("🧹 Periodic memory cleanup at frame \(frameCounter)")
-            }
+            // Remove periodic memory cleanup here to avoid duplication (MemoryManager handles it)
             
             // Adaptive frame skipping based on thermal state
             let skipFrames = thermalState == .serious ? 4 :
@@ -1224,7 +1236,7 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         stopSpeech()
         clearDetections()
         
-        // Clear YOLO processor
+        // Release YOLO processor for memory drop
         yoloProcessor = nil
         
         // Remove all observers
@@ -1237,11 +1249,15 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             if let coordinator = rotationCoordinator as? AVCaptureDevice.RotationCoordinator {
                 coordinator.removeObserver(self, forKeyPath: "videoRotationAngleForHorizonLevelCapture")
             }
-            rotationCoordinator = nil
         }
         
-        // Clear depth delegate
+        // Release depth delegate
         depthDelegate = nil
+        
+        // Release rotation coordinator
+        rotationCoordinator = nil
+        
+        // Clear depth data output
         depthDataOutput = nil
         
         // Clear camera device
@@ -1349,25 +1365,5 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     }
     
     // MARK: - Memory Management
-    @objc private func handleMemoryWarning() {
-        let now = Date()
-        guard now.timeIntervalSince(lastMemoryWarning) > 5 else { return }
-        lastMemoryWarning = now
-        print("⚠️ Memory warning received")
-        // Clear caches
-        autoreleasepool {
-            detections = []
-            lastSpokenTime.removeAll()
-            yoloProcessor?.reset()
-            LiDARManager.shared.cleanupOldHistories(currentDetectionIds: Set())
-        }
-        // Reduce frame rate temporarily
-        frameRate = 15
-        processEveryNFrames = 3
-        // Restore after 10 seconds
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak self] in
-            self?.frameRate = 30
-            self?.processEveryNFrames = 1
-        }
-    }
+    // Remove duplicated handleMemoryWarning implementation; MemoryManager handles now.
 }

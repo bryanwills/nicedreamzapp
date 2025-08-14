@@ -100,127 +100,150 @@ class MetalImageResizer {
     }
     
     func resize(_ pixelBuffer: CVPixelBuffer, isPortrait: Bool) -> CVPixelBuffer? {
-        let width = CVPixelBufferGetWidth(pixelBuffer)
-        let height = CVPixelBufferGetHeight(pixelBuffer)
-        
-        // Enable rotation for portrait mode
-        var shouldRotate = isPortrait && width > height
-        
-        // Additional check for mismatch
-        if (isPortrait && width > height) || (!isPortrait && height > width) {
-            shouldRotate = true  // Force rotation if dimensions don't match expected orientation
-        }
-        
-        // Calculate letterbox parameters
-        let targetSize: Float = 640.0
-        let scale: Float
-        let padX: Int
-        let padY: Int
-        
-        if shouldRotate {
-            // After rotation, dimensions swap
-            scale = min(targetSize / Float(height), targetSize / Float(width))
-            let scaledWidth = Int(Float(height) * scale)
-            let scaledHeight = Int(Float(width) * scale)
-            padX = (640 - scaledWidth) / 2
-            padY = (640 - scaledHeight) / 2
-        } else {
-            scale = min(targetSize / Float(width), targetSize / Float(height))
-            let scaledWidth = Int(Float(width) * scale)
-            let scaledHeight = Int(Float(height) * scale)
-            padX = (640 - scaledWidth) / 2
-            padY = (640 - scaledHeight) / 2
-        }
-        
-        // Store info
-        UserDefaults.standard.set(scale, forKey: "letterbox_scale")
-        UserDefaults.standard.set(padX, forKey: "letterbox_padX")
-        UserDefaults.standard.set(padY, forKey: "letterbox_padY")
-        UserDefaults.standard.set(shouldRotate ? height : width, forKey: "original_width")
-        UserDefaults.standard.set(shouldRotate ? width : height, forKey: "original_height")
-        UserDefaults.standard.set(shouldRotate, forKey: "was_rotated")
-        
-        // Create textures
-        guard let inputTexture = createTexture(from: pixelBuffer) else {
-            return nil
-        }
-        
-        guard let outputPixelBuffer = createPixelBuffer(width: 640, height: 640),
-              let outputTexture = createTexture(from: outputPixelBuffer) else {
-            return nil
-        }
-        
-        guard let commandBuffer = commandQueue.makeCommandBuffer() else {
-            return nil
-        }
-        
-        // Process texture (rotate if needed)
-        let processedTexture: MTLTexture
-        
-        if shouldRotate {
-            // Create intermediate texture for rotation
-            let rotatedDesc = MTLTextureDescriptor.texture2DDescriptor(
-                pixelFormat: .bgra8Unorm,
-                width: height,  // Swapped dimensions
-                height: width,
-                mipmapped: false
-            )
-            rotatedDesc.usage = [.shaderRead, .shaderWrite]
+        return autoreleasepool {
+            let width = CVPixelBufferGetWidth(pixelBuffer)
+            let height = CVPixelBufferGetHeight(pixelBuffer)
             
-            guard let rotatedTexture = device.makeTexture(descriptor: rotatedDesc),
-                  let rotateEncoder = commandBuffer.makeComputeCommandEncoder() else {
+            defer {
+                CVPixelBufferUnlockBaseAddress(pixelBuffer, .readOnly)
+                // pixelBuffer is a function parameter; cannot be set to nil, but document this
+            }
+            
+            print("Resize start - pixelBuffer retain count may not be accessible directly in Swift, printing description instead: \(pixelBuffer)")
+            
+            // Enable rotation for portrait mode
+            var shouldRotate = isPortrait && width > height
+            
+            // Additional check for mismatch
+            if (isPortrait && width > height) || (!isPortrait && height > width) {
+                shouldRotate = true  // Force rotation if dimensions don't match expected orientation
+            }
+            
+            // Calculate letterbox parameters
+            let targetSize: Float = 640.0
+            let scale: Float
+            let padX: Int
+            let padY: Int
+            
+            if shouldRotate {
+                // After rotation, dimensions swap
+                scale = min(targetSize / Float(height), targetSize / Float(width))
+                let scaledWidth = Int(Float(height) * scale)
+                let scaledHeight = Int(Float(width) * scale)
+                padX = (640 - scaledWidth) / 2
+                padY = (640 - scaledHeight) / 2
+            } else {
+                scale = min(targetSize / Float(width), targetSize / Float(height))
+                let scaledWidth = Int(Float(width) * scale)
+                let scaledHeight = Int(Float(height) * scale)
+                padX = (640 - scaledWidth) / 2
+                padY = (640 - scaledHeight) / 2
+            }
+            
+            // Store info
+            UserDefaults.standard.set(scale, forKey: "letterbox_scale")
+            UserDefaults.standard.set(padX, forKey: "letterbox_padX")
+            UserDefaults.standard.set(padY, forKey: "letterbox_padY")
+            UserDefaults.standard.set(shouldRotate ? height : width, forKey: "original_width")
+            UserDefaults.standard.set(shouldRotate ? width : height, forKey: "original_height")
+            UserDefaults.standard.set(shouldRotate, forKey: "was_rotated")
+            
+            // Create textures
+            guard let inputTexture = createTexture(from: pixelBuffer) else {
                 return nil
             }
             
-            // Rotate the input
-            rotateEncoder.setComputePipelineState(rotatePipelineState)
-            rotateEncoder.setTexture(inputTexture, index: 0)
-            rotateEncoder.setTexture(rotatedTexture, index: 1)
+            guard let outputPixelBuffer = createPixelBuffer(width: 640, height: 640),
+                  let outputTexture = createTexture(from: outputPixelBuffer) else {
+                return nil
+            }
             
-            let rotateThreadgroupSize = MTLSize(width: 16, height: 16, depth: 1)
-            let rotateThreadgroups = MTLSize(
-                width: (height + 15) / 16,
-                height: (width + 15) / 16,
+            defer {
+                // No explicit unlock needed for outputPixelBuffer here,
+                // but flush cache explicitly to ensure resources are freed
+                CVMetalTextureCacheFlush(textureCache, 0)
+                // outputPixelBuffer will be released by ARC after function returns
+            }
+            
+            print("Resize start - outputPixelBuffer description: \(outputPixelBuffer)")
+            
+            guard let commandBuffer = commandQueue.makeCommandBuffer() else {
+                return nil
+            }
+            
+            // Process texture (rotate if needed)
+            let processedTexture: MTLTexture
+            
+            if shouldRotate {
+                // Create intermediate texture for rotation
+                let rotatedDesc = MTLTextureDescriptor.texture2DDescriptor(
+                    pixelFormat: .bgra8Unorm,
+                    width: height,  // Swapped dimensions
+                    height: width,
+                    mipmapped: false
+                )
+                rotatedDesc.usage = [.shaderRead, .shaderWrite]
+                
+                guard let rotatedTexture = device.makeTexture(descriptor: rotatedDesc),
+                      let rotateEncoder = commandBuffer.makeComputeCommandEncoder() else {
+                    return nil
+                }
+                
+                // Rotate the input
+                rotateEncoder.setComputePipelineState(rotatePipelineState)
+                rotateEncoder.setTexture(inputTexture, index: 0)
+                rotateEncoder.setTexture(rotatedTexture, index: 1)
+                
+                let rotateThreadgroupSize = MTLSize(width: 16, height: 16, depth: 1)
+                let rotateThreadgroups = MTLSize(
+                    width: (height + 15) / 16,
+                    height: (width + 15) / 16,
+                    depth: 1
+                )
+                
+                rotateEncoder.dispatchThreadgroups(rotateThreadgroups, threadsPerThreadgroup: rotateThreadgroupSize)
+                rotateEncoder.endEncoding()
+                
+                processedTexture = rotatedTexture
+            } else {
+                processedTexture = inputTexture
+            }
+            
+            // Now letterbox resize
+            guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
+                return nil
+            }
+            
+            encoder.setComputePipelineState(letterboxPipelineState)
+            encoder.setTexture(processedTexture, index: 0)
+            encoder.setTexture(outputTexture, index: 1)
+            
+            var scaleBuffer = SIMD2<Float>(scale, scale)
+            var offsetBuffer = SIMD2<Float>(Float(padX), Float(padY))
+            encoder.setBytes(&scaleBuffer, length: MemoryLayout<SIMD2<Float>>.size, index: 0)
+            encoder.setBytes(&offsetBuffer, length: MemoryLayout<SIMD2<Float>>.size, index: 1)
+            
+            let threadgroupSize = MTLSize(width: 16, height: 16, depth: 1)
+            let threadgroups = MTLSize(
+                width: (640 + 15) / 16,
+                height: (640 + 15) / 16,
                 depth: 1
             )
             
-            rotateEncoder.dispatchThreadgroups(rotateThreadgroups, threadsPerThreadgroup: rotateThreadgroupSize)
-            rotateEncoder.endEncoding()
+            encoder.dispatchThreadgroups(threadgroups, threadsPerThreadgroup: threadgroupSize)
+            encoder.endEncoding()
             
-            processedTexture = rotatedTexture
-        } else {
-            processedTexture = inputTexture
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
+            
+            CVMetalTextureCacheFlush(textureCache, 0)
+            // All buffers will be released at this point
+            
+            print("Resize end - pixelBuffer description: \(pixelBuffer)")
+            print("Resize end - outputPixelBuffer description: \(outputPixelBuffer)")
+            
+            return outputPixelBuffer
         }
-        
-        // Now letterbox resize
-        guard let encoder = commandBuffer.makeComputeCommandEncoder() else {
-            return nil
-        }
-        
-        encoder.setComputePipelineState(letterboxPipelineState)
-        encoder.setTexture(processedTexture, index: 0)
-        encoder.setTexture(outputTexture, index: 1)
-        
-        var scaleBuffer = SIMD2<Float>(scale, scale)
-        var offsetBuffer = SIMD2<Float>(Float(padX), Float(padY))
-        encoder.setBytes(&scaleBuffer, length: MemoryLayout<SIMD2<Float>>.size, index: 0)
-        encoder.setBytes(&offsetBuffer, length: MemoryLayout<SIMD2<Float>>.size, index: 1)
-        
-        let threadgroupSize = MTLSize(width: 16, height: 16, depth: 1)
-        let threadgroups = MTLSize(
-            width: (640 + 15) / 16,
-            height: (640 + 15) / 16,
-            depth: 1
-        )
-        
-        encoder.dispatchThreadgroups(threadgroups, threadsPerThreadgroup: threadgroupSize)
-        encoder.endEncoding()
-        
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
-        
-        CVMetalTextureCacheFlush(textureCache, 0)
-        return outputPixelBuffer
     }
     
     private func createTexture(from pixelBuffer: CVPixelBuffer) -> MTLTexture? {
@@ -266,5 +289,10 @@ class MetalImageResizer {
         )
         
         return status == kCVReturnSuccess ? pixelBuffer : nil
+    }
+    
+    func cleanup() {
+        CVMetalTextureCacheFlush(textureCache, 0)
+        // Force flush all cached textures
     }
 }

@@ -3,7 +3,7 @@
 // Works in SwiftUI, UIKit, and async/await contexts (2025 style)
 
 import Foundation
-import SwiftUI
+import Combine // Only Combine is required for ObservableObject conformance
 
 final class ButtonPressDebouncer: ObservableObject {
     @Published private var dummy = false

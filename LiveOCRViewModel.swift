@@ -164,35 +164,25 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
         _ = StaticSpanishProcessor.shared
     }
     
-    deinit {
-        stopSession()
-        stopSpeaking()
-    }
-    
-    // MARK: - Setup
     private func setupTextRecognition() {
         textRecognitionRequest = VNRecognizeTextRequest { [weak self] request, error in
             guard let self = self else { return }
-            
             if let error = error {
                 print("Text recognition error: \(error)")
+                request.cancel()
                 return
             }
-            
             guard let observations = request.results as? [VNRecognizedTextObservation] else {
+                request.cancel()
                 return
             }
-            
             let recognizedStrings = observations.compactMap { observation in
                 observation.topCandidates(1).first?.string
             }
-            
             let fullText = recognizedStrings.joined(separator: " ")
-            
             DispatchQueue.main.async {
                 self.recognizedText = fullText
                 self.isProcessing = false
-                
                 // Reset translation state when new text is detected
                 if self.isTranslated && fullText != self.recognizedText {
                     self.isTranslated = false
@@ -200,7 +190,6 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
                 }
             }
         }
-        
         // Configure recognition level based on device
         let tier = DevicePerf.shared.tier
         switch tier {
@@ -221,43 +210,62 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
     
     // MARK: - Frame Processing (OCR Only, No Translation)
     func processFrame(_ pixelBuffer: CVPixelBuffer, mode: OCRMode) {
-        guard !isPinching else { return }
-        
-        let now = Date()
-        guard now.timeIntervalSince(lastProcessedTime) >= processInterval else { return }
-        lastProcessedTime = now
-        
-        guard !isProcessing else { return }
-        
-        // Only set language if it changed
-        let targetLanguage = (mode == .spanishToEnglish) ? "es-ES" : "en-US"
-        if currentLanguage != targetLanguage {
-            currentLanguage = targetLanguage
-            
-            if mode == .spanishToEnglish {
-                textRecognitionRequest?.recognitionLanguages = ["es-ES", "es"]
-            } else {
-                textRecognitionRequest?.recognitionLanguages = ["en-US", "en"]
+        autoreleasepool {
+            print("processFrame start - pixelBuffer retain count: \(CFGetRetainCount(pixelBuffer))")
+            if CFGetRetainCount(pixelBuffer) > 2 {
+                print("⚠️ Warning: pixelBuffer retain count > 2 at start")
             }
-        }
-        
-        DispatchQueue.main.async {
-            self.isProcessing = true
-        }
-        
-        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
-        
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self = self, let request = self.textRecognitionRequest else { return }
             
-            autoreleasepool {
-                do {
-                    try handler.perform([request])
-                } catch {
-                    print("Failed to perform text recognition: \(error)")
-                    DispatchQueue.main.async {
-                        self.isProcessing = false
+            defer {
+                // Buffer release point - unlock base address
+                CVPixelBufferUnlockBaseAddress(pixelBuffer, .readOnly)
+                // pixelBuffer is a function parameter; cannot be set to nil
+                print("processFrame end - pixelBuffer retain count: \(CFGetRetainCount(pixelBuffer))")
+                if CFGetRetainCount(pixelBuffer) > 2 {
+                    print("⚠️ Warning: pixelBuffer retain count > 2 at end")
+                }
+            }
+            
+            guard !isPinching else { return }
+            
+            let now = Date()
+            guard now.timeIntervalSince(lastProcessedTime) >= processInterval else { return }
+            lastProcessedTime = now
+            
+            guard !isProcessing else { return }
+            
+            // Only set language if it changed
+            let targetLanguage = (mode == .spanishToEnglish) ? "es-ES" : "en-US"
+            if currentLanguage != targetLanguage {
+                currentLanguage = targetLanguage
+                
+                if mode == .spanishToEnglish {
+                    textRecognitionRequest?.recognitionLanguages = ["es-ES", "es"]
+                } else {
+                    textRecognitionRequest?.recognitionLanguages = ["en-US", "en"]
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.isProcessing = true
+            }
+            
+            let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
+            
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self = self, let request = self.textRecognitionRequest else { return }
+                
+                autoreleasepool {
+                    do {
+                        try handler.perform([request])
+                    } catch {
+                        print("Failed to perform text recognition: \(error)")
+                        DispatchQueue.main.async {
+                            self.isProcessing = false
+                        }
                     }
+                    // Cleanup after request
+                    request.cancel()
                 }
             }
         }

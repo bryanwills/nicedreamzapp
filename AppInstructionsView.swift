@@ -86,6 +86,7 @@ final class InstructionsSpeaker: NSObject, ObservableObject, AVSpeechSynthesizer
 struct AppInstructionsView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var speaker = InstructionsSpeaker()
+    @StateObject private var buttonDebouncer = ButtonPressDebouncer()  // Debouncer for button presses
     let selectedVoiceIdentifier: String  // Make it non-optional with default
 
     // Only used to slightly tailor the audio line
@@ -115,13 +116,16 @@ struct AppInstructionsView: View {
 
                     // Play / Stop toggle
                     Button(action: {
-                                            if speaker.isSpeaking {
-                                                speaker.stop()
-                                            } else {
-                                                print("About to play with voice ID: \(selectedVoiceIdentifier)")
-                                                speaker.play(script: audioScript(liDARAvailable: supportsLiDAR), voiceId: selectedVoiceIdentifier.isEmpty ? nil : selectedVoiceIdentifier)
-                                            }
-                                        }) {
+                        // Use debouncer to prevent quick repeated taps
+                        if buttonDebouncer.canPress() {
+                            if speaker.isSpeaking {
+                                speaker.stop()
+                            } else {
+                                print("About to play with voice ID: \(selectedVoiceIdentifier)")
+                                speaker.play(script: audioScript(liDARAvailable: supportsLiDAR), voiceId: selectedVoiceIdentifier.isEmpty ? nil : selectedVoiceIdentifier)
+                            }
+                        }
+                    }) {
                         HStack(spacing: 8) {
                             Image(systemName: speaker.isSpeaking ? "stop.fill" : "speaker.wave.2.fill")
                             Text(speaker.isSpeaking ? "⏹ Stop Audio" : "🎧 Play Full Audio Tutorial")
@@ -203,8 +207,11 @@ struct AppInstructionsView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") {
-                        speaker.stop()       // stop narration on close
-                        dismiss()
+                        // Debounce the Done button to avoid multiple dismissals
+                        if buttonDebouncer.canPress() {
+                            speaker.stop()       // stop narration on close
+                            dismiss()
+                        }
                     }
                 }
             }
