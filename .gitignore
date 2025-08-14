@@ -1,0 +1,11 @@
+# Xcode / Derived
+DerivedData/
+build/
+*.xcuserstate
+*.xccheckout
+*.xcbkptlist
+*.perspectivev3
+**/*.xcuserdatad/
+
+# macOS noise
+.DS_Store
