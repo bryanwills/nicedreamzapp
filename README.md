@@ -129,7 +129,7 @@ Tailored for iOS ecosystem
 <td width="50%" valign="top">
 
 ### 🎯 **Performance Optimization**
-- **Frame-rate cap**: Fixed at **30 FPS** for device stability
+- **Frame-rate cap**: Fixed at ** 1-3 FPS** for device stability
 - **Dynamic resolution scaling**: Auto-adjusts for heavy workloads  
 - **Smart processing**: Neural Engine/GPU balancing
 - **Memory management**: Efficient resource utilization
