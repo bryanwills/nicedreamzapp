@@ -2,7 +2,7 @@
 
 # ✨ RealTime AI Camera ✨
 
-### 🚀 **YOLOv8 with all 601 object classes on iPhone — capped at 30 FPS for stability and battery safety**
+### 🚀 **YOLOv8 with all 601 object classes on iPhone — capped at 1-3 FPS for stability and battery safety**
 
 <img src="./EA08B469-F8A2-435D-A3B3-44AEF833E38E.png" alt="RealTime AI Camera Banner" width="80%" style="border-radius: 15px; margin: 25px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
 
