@@ -272,7 +272,7 @@ struct LiveOCRView: View {
                 // Top bar
                 VStack {
                     HStack {
-                        // Back button with debouncer usage
+                        // Back button with debouncer usage and updated style
                         Button(action: {
                             if buttonDebouncer.canPress() {
                                 let impactFeedback = UIImpactFeedbackGenerator(style: .light)
@@ -286,16 +286,18 @@ struct LiveOCRView: View {
                         }) {
                             HStack(spacing: 6) {
                                 Image(systemName: "chevron.left")
-                                    .font(.system(size: 20, weight: .semibold))
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundColor(.white)
                                 Text("Back")
-                                    .font(.system(size: 17, weight: .medium))
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundColor(.white)
                             }
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 16)
                             .padding(.vertical, 10)
+                            .padding(.horizontal, 16)
                             .background(
-                                Capsule()
-                                    .fill(.ultraThinMaterial.opacity(0.9))
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(.ultraThinMaterial)
+                                    .opacity(0.85)
                             )
                         }
                         .padding(.leading, 20)
@@ -455,9 +457,21 @@ struct LiveOCRView: View {
                         // Wide Screen Toggle button with debouncer
                         Button(action: {
                             if buttonDebouncer.canPress() {
+                                let currentTorch = torchLevel
                                 isWideScreen.toggle()
-                                // Update any relevant state or viewModel here if needed
                                 viewModel.isUltraWide = isWideScreen
+                                
+                                if currentTorch > 0 {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        cameraPreviewRef?.setTorchLevel(currentTorch)
+                                        torchLevel = currentTorch
+                                    }
+                                }
+                                
+                                if viewModel.cameraPosition == .front {
+                                    torchLevel = 0.0
+                                    cameraPreviewRef?.setTorchLevel(0.0)
+                                }
                             }
                         }) {
                             Image(systemName: "rectangle.3.offgrid")
@@ -595,9 +609,11 @@ struct LiveOCRView: View {
                         translatedText: viewModel.translatedText,
                         onCopy: {
                             viewModel.copyText(viewModel.translatedText)
+                            viewModel.continueReading()
                         },
                         onContinue: {
                             showTranslationPopup = false
+                            viewModel.continueReading()
                         },
                         onNewScan: {
                             showTranslationPopup = false
@@ -630,6 +646,7 @@ struct LiveOCRView: View {
             viewModel.clearText()
             viewModel.resetTranslation()
             isSpeaking = false
+            // Turn off torch when leaving the view (matches user intent)
             cameraPreviewRef?.setTorchLevel(0)
         }
         .preferredColorScheme(.dark)

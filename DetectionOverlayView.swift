@@ -110,8 +110,8 @@ struct DetectionOverlayView: View {
                 isPortrait: isPortrait
             )
             
-            // Build simple label - add LiDAR distance only if available
-            let label = buildSimpleLabel(for: object)
+            // Build enhanced label with LiDAR position info
+            let label = buildEnhancedLabel(for: object)
             
             let labelWidth: CGFloat = CGFloat(label.count * 9 + 24)
             let labelHeight: CGFloat = 28
@@ -182,22 +182,24 @@ struct DetectionOverlayView: View {
         return positions
     }
     
-    // SIMPLIFIED LABEL - Detection first, LiDAR optional
-    private func buildSimpleLabel(for detection: YOLODetection) -> String {
+    // UPDATED: Enhanced label with position info when LiDAR is active
+    private func buildEnhancedLabel(for detection: YOLODetection) -> String {
         let confidence = Int((detection.score * 100).rounded())
         var label = "\(detection.className.lowercased()) \(confidence)%"
         
-        // Only add LiDAR distance if it's actually available and running
-        if LiDARManager.shared.isRunning && LiDARManager.shared.isAvailable {
+        // Add LiDAR info only when enabled and running
+        if LiDARManager.shared.isEnabled && LiDARManager.shared.isRunning {
             let center = CGPoint(x: detection.rect.midX, y: detection.rect.midY)
             
-            // Only try to get distance for reasonably-sized objects
-            let area = detection.rect.width * detection.rect.height
-            if area >= 0.02 && area <= 0.5 {
-                if let feet = LiDARManager.shared.distanceFeet(at: center),
-                   feet >= 1 && feet <= 30 {  // Reasonable range
-                    label += " \(feet)ft"
-                }
+            // Try to get distance reading
+            if let feet = LiDARManager.shared.distanceFeet(at: center),
+               feet >= 1 && feet <= 20 {
+                
+                // Get position (L/R/C) based on center point
+                let position = LiDARManager.horizontalBucket(forNormalizedX: center.x)
+                
+                // Format: "bottle 85% 3ft L" (distance first, then position)
+                label += " \(feet)ft \(position)"
             }
         }
         

@@ -109,8 +109,6 @@ class MetalImageResizer {
                 // pixelBuffer is a function parameter; cannot be set to nil, but document this
             }
             
-            print("Resize start - pixelBuffer retain count may not be accessible directly in Swift, printing description instead: \(pixelBuffer)")
-            
             // Enable rotation for portrait mode
             var shouldRotate = isPortrait && width > height
             
@@ -164,8 +162,6 @@ class MetalImageResizer {
                 CVMetalTextureCacheFlush(textureCache, 0)
                 // outputPixelBuffer will be released by ARC after function returns
             }
-            
-            print("Resize start - outputPixelBuffer description: \(outputPixelBuffer)")
             
             guard let commandBuffer = commandQueue.makeCommandBuffer() else {
                 return nil
@@ -238,9 +234,6 @@ class MetalImageResizer {
             
             CVMetalTextureCacheFlush(textureCache, 0)
             // All buffers will be released at this point
-            
-            print("Resize end - pixelBuffer description: \(pixelBuffer)")
-            print("Resize end - outputPixelBuffer description: \(outputPixelBuffer)")
             
             return outputPixelBuffer
         }

@@ -86,7 +86,6 @@ final class InstructionsSpeaker: NSObject, ObservableObject, AVSpeechSynthesizer
 struct AppInstructionsView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var speaker = InstructionsSpeaker()
-    @StateObject private var buttonDebouncer = ButtonPressDebouncer()  // Debouncer for button presses
     let selectedVoiceIdentifier: String  // Make it non-optional with default
 
     // Only used to slightly tailor the audio line
@@ -115,17 +114,14 @@ struct AppInstructionsView: View {
                         .font(.largeTitle.bold())
 
                     // Play / Stop toggle
-                    Button(action: {
-                        // Use debouncer to prevent quick repeated taps
-                        if buttonDebouncer.canPress() {
-                            if speaker.isSpeaking {
-                                speaker.stop()
-                            } else {
-                                print("About to play with voice ID: \(selectedVoiceIdentifier)")
-                                speaker.play(script: audioScript(liDARAvailable: supportsLiDAR), voiceId: selectedVoiceIdentifier.isEmpty ? nil : selectedVoiceIdentifier)
-                            }
+                    DebouncedButton {
+                        if speaker.isSpeaking {
+                            speaker.stop()
+                        } else {
+                            print("About to play with voice ID: \(selectedVoiceIdentifier)")
+                            speaker.play(script: audioScript(liDARAvailable: supportsLiDAR), voiceId: selectedVoiceIdentifier.isEmpty ? nil : selectedVoiceIdentifier)
                         }
-                    }) {
+                    } label: {
                         HStack(spacing: 8) {
                             Image(systemName: speaker.isSpeaking ? "stop.fill" : "speaker.wave.2.fill")
                             Text(speaker.isSpeaking ? "⏹ Stop Audio" : "🎧 Play Full Audio Tutorial")
@@ -206,12 +202,11 @@ struct AppInstructionsView: View {
             .navigationTitle("Instructions")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") {
-                        // Debounce the Done button to avoid multiple dismissals
-                        if buttonDebouncer.canPress() {
-                            speaker.stop()       // stop narration on close
-                            dismiss()
-                        }
+                    DebouncedButton {
+                        speaker.stop()
+                        dismiss()
+                    } label: {
+                        Text("Done")
                     }
                 }
             }
@@ -223,7 +218,7 @@ struct AppInstructionsView: View {
     // MARK: - Audio script (richer than on-screen text; avoids overlap issues)
     private func audioScript(liDARAvailable: Bool) -> String {
         var lines: [String] = []
-        lines.append("Welcome to RealTime A I Camera.")
+        lines.append("Welcome to the RealTime A I Camera.")
         lines.append("There are three main modes. Object Detection. English O C R. And Spanish to English Translate.")
         if liDARAvailable {
             lines.append("In Object Detection, you can turn on LiDAR Distance Assist by tapping the white ruler. It turns green when active and adds an approximate distance after the item, for example, Dog, three feet.")
@@ -237,3 +232,4 @@ struct AppInstructionsView: View {
         return lines.joined(separator: " ")
     }
 }
+

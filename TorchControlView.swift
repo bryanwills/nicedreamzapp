@@ -31,8 +31,8 @@ struct TorchButton: View {
     @State private var torchLevel: Float = 0.0
     let onLevelChanged: ((Float) -> Void)?
     
-    init(torchLevel: Float = 0.0, onLevelChanged: ((Float) -> Void)? = nil) {
-        self._torchLevel = State(initialValue: torchLevel)
+    init(initialTorchLevel: Float = 0.0, onLevelChanged: ((Float) -> Void)? = nil) {
+        self._torchLevel = State(initialValue: initialTorchLevel)
         self.onLevelChanged = onLevelChanged
     }
     

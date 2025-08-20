@@ -1,18 +1,46 @@
+@preconcurrency import AVFoundation
 import AVFoundation
 import Combine
 import UIKit
 import SwiftUI
+import Foundation
 
-// MARK: - Depth Data Delegate (Must be outside @MainActor class)
-final class DepthDataDelegate: NSObject, AVCaptureDepthDataOutputDelegate {
+// MARK: - ThermalManager
+final class ThermalManager {
+    static let shared = ThermalManager()
+    
+    private var thermalStateObserver: NSObjectProtocol?
+    
+    @Published private(set) var thermalState: ProcessInfo.ThermalState = .nominal
+    
+    private init() {
+        thermalState = ProcessInfo.processInfo.thermalState
+        thermalStateObserver = NotificationCenter.default.addObserver(forName: ProcessInfo.thermalStateDidChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            guard let self = self else { return }
+            self.thermalState = ProcessInfo.processInfo.thermalState
+        }
+    }
+    
+    deinit {
+        if let observer = thermalStateObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+    
+    var isThrottlingRecommended: Bool {
+        thermalState == .serious || thermalState == .critical
+    }
+}
+
+nonisolated final class DepthDataDelegate: NSObject, AVCaptureDepthDataOutputDelegate {
     func depthDataOutput(_ output: AVCaptureDepthDataOutput,
                         didOutput depthData: AVDepthData,
                         timestamp: CMTime,
                         connection: AVCaptureConnection) {
-        print("DepthDataDelegate: Received depth data")
-        // Send to LiDARManager on main thread
+        // Capture depthData immediately to avoid Sendable issues
+        let capturedDepthData = depthData
         DispatchQueue.main.async {
-            LiDARManager.shared.updateDepthData(depthData)
+            LiDARManager.shared.updateDepthData(capturedDepthData)
         }
     }
 }
@@ -35,11 +63,6 @@ struct CameraPermissionAlert: Identifiable {
     let openSettings: () -> Void
 }
 
-// MARK: - Voice Gender Enum
-enum AVSpeechSynthesisVoiceGender {
-    case unspecified, male, female
-}
-
 // MARK: - OCR Delegate Protocol
 protocol CameraViewModelOCRDelegate: AnyObject {
     func cameraViewModel(_ viewModel: CameraViewModel, didOutputPixelBuffer pixelBuffer: CVPixelBuffer)
@@ -52,89 +75,79 @@ extension UIDeviceOrientation {
     }
 }
 
-// Make CameraViewModel conform to AVSpeechSynthesizerDelegate
-extension CameraViewModel: AVSpeechSynthesizerDelegate {
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-        DispatchQueue.main.async { [weak self] in
-            self?.isSpeaking = false
-        }
-    }
-    
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
-        DispatchQueue.main.async { [weak self] in
-            self?.isSpeaking = false
-        }
-    }
-}
-
 class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: - Constants
     private enum Constants {
         static let sessionQueue = "AVCaptureSessionQueue"
         static let videoQueue = "videoQueue"
-        static let speechCooldown: TimeInterval = 45.0
-        static let minAnnouncementInterval: TimeInterval = 3.0
         static let maxFrameSamples = 15
-        static let defaultVoiceKey = "selectedVoice"
     }
     
-    // MARK: - Thermal Management
-    private var thermalState: ProcessInfo.ThermalState = .nominal
-    private var thermalObserver: NSObjectProtocol?
-    private var lastMemoryWarning = Date.distantPast
-    private var degradedPerformanceCounter = 0
+    private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Speech Manager
+    @StateObject private var speechManager = SpeechManager()
     
     // MARK: - Published Properties
     @Published var currentOrientation: UIDeviceOrientation = .portrait
-    @Published var isTorchOn = false
-    @Published var torchLevel: Float = 0.0
     @Published var isUltraWide = false
-    @Published var isSpeechEnabled = true
-    @Published var speechVoiceGender: AVSpeechSynthesisVoiceGender = .unspecified
     @Published var detections: [YOLODetection] = []
     @Published var framesPerSecond: Double = 0
     @Published var filterMode = "all"
     @Published var confidenceThreshold: Float = 0.75
     @Published var frameRate = 30 { didSet { updateFrameProcessingRate() } }
     @Published var currentZoomLevel: CGFloat = 1.0
-    @Published var selectedVoiceIdentifier: String {
-        didSet { UserDefaults.standard.set(selectedVoiceIdentifier, forKey: Constants.defaultVoiceKey) }
-    }
     @Published var cameraPosition: AVCaptureDevice.Position = .back
-    
-    // ==== NEW: LiDAR flags (safe defaults) ====
-    @Published var useLiDAR: Bool = false {
-        didSet { lidar?.isEnabled = useLiDAR }
-    }
-    @Published var isLiDARSupported: Bool = false  // set later by LiDARManager
-    
-    // ==== NEW: LiDAR enabled flag and last distances ====
-    @Published var isLiDAREnabled: Bool = false  // user-controllable; default off
-    private var lastDistancesFeet: [UUID: Int] = [:] // detection.id -> rounded feet
-    
     @Published var cameraPermissionAlert: CameraPermissionAlert?
+    
+    // LiDAR properties
+    @Published var useLiDAR: Bool = false {
+        didSet {
+            // Synchronize isLiDAREnabled with useLiDAR, but do NOT call LiDARManager here to avoid duplication
+            if isLiDAREnabled != useLiDAR {
+                isLiDAREnabled = useLiDAR
+            }
+        }
+    }
+    @Published var isLiDARSupported: Bool = false
+    @Published var isLiDAREnabled: Bool = false
+    private var lastDistancesFeet: [UUID: Int] = [:]
+    
+    // OCR flag
+    @Published var isOCREnabled: Bool = false
+
+    private var savedTorchLevel: Float = 0.0
+
+    @Published var currentTorchLevel: Float = 0.0 {
+        didSet {
+            // Only call setTorchLevel if we're not in the middle of session reconfiguration
+            if isSessionConfigured && session.isRunning {
+                setTorchLevel(currentTorchLevel)
+            }
+        }
+    }
     
     var detectedObjectCount: Int { detections.count }
     
+    // Speech properties (delegated to SpeechManager)
+    var isSpeechEnabled: Bool {
+        get { SpeechManager.shared.isSpeechEnabled }
+        set { SpeechManager.shared.isSpeechEnabled = newValue }
+    }
+    
+    var selectedVoiceIdentifier: String {
+        get { SpeechManager.shared.selectedVoiceIdentifier }
+        set { SpeechManager.shared.selectedVoiceIdentifier = newValue }
+    }
+    
     var availableEnglishVoices: [AVSpeechSynthesisVoice] {
-        let preferredLanguages = ["en-US", "en-GB", "en-AU", "en-IE", "en-ZA"]
-        let preferredNames = ["Samantha", "Daniel", "Moira", "Karen", "Tessa", "Serena"]
-        
-        return AVSpeechSynthesisVoice.speechVoices()
-            .filter { preferredLanguages.contains($0.language) }
-            .filter { voice in
-                let id = voice.identifier.lowercased()
-                return id.contains("premium") || id.contains("enhanced") || preferredNames.contains(voice.name)
-            }
-            .sorted { $0.name < $1.name }
-            .prefix(6)
-            .map { $0 }
+        speechManager.availableEnglishVoices
     }
     
     // MARK: - Internal Properties
     weak var ocrDelegate: CameraViewModelOCRDelegate?
     
-    // ==== NEW: LiDAR bridge ====
+    // LiDAR bridge
     weak var lidar: LiDARDepthProviding? {
         didSet {
             isLiDARSupported = lidar?.isAvailable ?? false
@@ -165,9 +178,6 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     private var frameCounter = 0
     private var isProcessing = false
     
-    private var depthDataOutput: AVCaptureDepthDataOutput?
-    private var depthDelegate: Any?
-    
     private static let sessionQueue = DispatchQueue(label: Constants.sessionQueue)
     private let videoQueue = DispatchQueue(label: Constants.videoQueue, qos: .userInitiated)
     
@@ -176,74 +186,83 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     private var processEveryNFrames = 1
     private var videoConnection: AVCaptureConnection?
     
-    // Speech properties
-    private let speechSynthesizer = AVSpeechSynthesizer()
-    private var lastSpokenTime: [String: Date] = [:]
-    private var lastAnnouncementTime = Date.distantPast
-    private var isSpeaking = false
-    
     // FPS tracking
     private var lastFrameTimestamps: [CFTimeInterval] = []
     
     // Observers
     private var orientationObserver: NSObjectProtocol?
-    private var rotationCoordinator: Any?  // No @available attribute
+    private var rotationCoordinator: Any?
     
     // Zoom
     var initialZoomFactor: CGFloat = 1.0
-    private var minimumZoomFactor: CGFloat = 1.0  // Track the minimum zoom for current camera
-    private var maximumZoomFactor: CGFloat = 5.0  // Track the maximum zoom for current camera
+    private var minimumZoomFactor: CGFloat = 1.0
+    private var maximumZoomFactor: CGFloat = 5.0
+    
+    // Removed LiDAR Camera Manager property
+    
+    // Added depth capture properties
+    private var depthDataOutput: AVCaptureDepthDataOutput?
+    private var depthDelegate: AVCaptureDepthDataOutputDelegate?
     
     // MARK: - Initialization
     override init() {
-        self.selectedVoiceIdentifier = UserDefaults.standard.string(forKey: Constants.defaultVoiceKey)
-        ?? AVSpeechSynthesisVoice(language: "en-US")?.identifier ?? ""
         super.init()
         
-        // Set delegate immediately after super.init
-        speechSynthesizer.delegate = self
+        setupThermalManagement()
+        enableThermalBreaks()
+        
+        self.lidar = LiDARManager.shared
         
         setupInitialState()
         
+        
+        // Observe LiDAR state changes
+        NotificationCenter.default.addObserver(forName: Notification.Name("LiDARStateChanged"), object: nil, queue: OperationQueue.main) { [weak self] notification in
+            self?.isLiDARSupported = LiDARManager.shared.isSupported
+            self?.useLiDAR = LiDARManager.shared.isEnabled
+        }
+
+        // Force update after brief delay to ensure support check completes
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.isLiDARSupported = LiDARManager.shared.isSupported
+        }
+        
+        // Set conservative defaults based on device tier
         switch DevicePerf.shared.tier {
         case .low:
-            self.frameRate = 15
-            self.setSessionPresetIfAvailable(.hd1280x720)
+            self.frameRate = 10
+            self.confidenceThreshold = 0.45
+            if session.canSetSessionPreset(.hd1280x720) {
+                session.sessionPreset = .hd1280x720
+            }
         case .mid:
-            self.frameRate = 30
-            self.setSessionPresetIfAvailable(.hd1920x1080)
+            self.frameRate = 15
+            self.confidenceThreshold = 0.42
+            if session.canSetSessionPreset(.hd1920x1080) {
+                session.sessionPreset = .hd1920x1080
+            }
         case .high:
-            self.frameRate = 60
-            self.setSessionPresetIfAvailable(.hd1920x1080)
+            self.frameRate = 20
+            self.confidenceThreshold = 0.39
+            if session.canSetSessionPreset(.hd1920x1080) {
+                session.sessionPreset = .hd1920x1080
+            }
         }
         
-        // Add MemoryManager observers for memory and frame rate reduction
+        // Add MemoryManager observers
         NotificationCenter.default.addObserver(forName: Notification.Name.reduceQualityForMemory, object: nil, queue: .main) { [weak self] _ in
             guard let self = self else { return }
-            print("CameraViewModel: Received reduceQualityForMemory notification")
             self.clearDetections()
             self.yoloProcessor?.reset()
-            self.lastSpokenTime.removeAll()
-            LiDARManager.shared.cleanupOldHistories(currentDetectionIds: Set())
         }
-        
         NotificationCenter.default.addObserver(forName: Notification.Name.reduceFrameRate, object: nil, queue: .main) { [weak self] _ in
             guard let self = self else { return }
-            print("CameraViewModel: Received reduceFrameRate notification")
             self.frameRate = 15
             self.processEveryNFrames = 3
             DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
                 self.frameRate = 30
                 self.processEveryNFrames = 1
             }
-        }
-    }
-    
-    func setSessionPresetIfAvailable(_ preset: AVCaptureSession.Preset) {
-        if session.canSetSessionPreset(preset) {
-            session.beginConfiguration()
-            session.sessionPreset = preset
-            session.commitConfiguration()
         }
     }
     
@@ -261,15 +280,6 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             currentOrientation = .portrait
         }
         
-        // Add thermal state monitoring
-        thermalObserver = NotificationCenter.default.addObserver(
-            forName: ProcessInfo.thermalStateDidChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.handleThermalStateChange()
-        }
-        // Add memory warning observer, forward to MemoryManager instead of duplicating cleanup
         NotificationCenter.default.addObserver(
             forName: UIApplication.didReceiveMemoryWarningNotification,
             object: nil,
@@ -278,13 +288,14 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         }
         
         updateFrameProcessingRate()
+        
+        LiDARManager.shared.$isSupported
+            .receive(on: DispatchQueue.main)
+            .assign(to: &self.$isLiDARSupported)
     }
     
     deinit {
         cleanup()
-        if let thermal = thermalObserver {
-            NotificationCenter.default.removeObserver(thermal)
-        }
     }
     
     private func cleanup() {
@@ -312,44 +323,17 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             currentOrientation = newOrientation
         }
         
+        // Preserve torch during orientation changes
+        let preservedTorch = currentTorchLevel
+        
         updateVideoRotation()
-    }
-    
-    private func handleThermalStateChange() {
-        thermalState = ProcessInfo.processInfo.thermalState
         
-        // MARK: - Progressive Thermal State Handling
-        adjustForThermalState(thermalState)
-        
-        print("📱 Thermal state: \(thermalState), FPS: \(frameRate)")
-    }
-    
-    // MARK: - Progressive Thermal State Handling
-    private func adjustForThermalState(_ state: ProcessInfo.ThermalState) {
-        switch state {
-        case .nominal:
-            frameRate = 30
-            // Use high quality defaults
-            setSessionPresetIfAvailable(.hd1920x1080)
-        case .fair:
-            frameRate = 15
-            setSessionPresetIfAvailable(.hd1280x720)
-        case .serious:
-            frameRate = 10
-            setSessionPresetIfAvailable(.vga640x480)
-            useLiDAR = false // Disable non-essential features
-        case .critical:
-            enterIdleMode()
-            // Optionally, show warning to user
-        @unknown default:
-            frameRate = 15
-            setSessionPresetIfAvailable(.hd1280x720)
+        // Restore torch if it was on
+        if preservedTorch > 0 && cameraPosition == .back {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.currentTorchLevel = preservedTorch
+            }
         }
-    }
-    
-    private func enterIdleMode() {
-        pauseCameraAndProcessing()
-        // Additional idle mode handling can be added here
     }
     
     private func updateFrameProcessingRate() {
@@ -360,21 +344,16 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     func handlePinchGesture(_ scale: CGFloat) {
         guard let device = currentDevice else { return }
         
-        // Calculate the target zoom
         let targetZoom = initialZoomFactor * scale
-        
-        // Clamp to valid range for this camera
         let clampedZoom = max(minimumZoomFactor, min(targetZoom, maximumZoomFactor))
         
-        // Only update if the zoom actually changed (prevents unnecessary updates)
         if abs(device.videoZoomFactor - clampedZoom) > 0.01 {
             configureDevice(device) { dev in
-                // Check if the zoom factor is supported by the device
                 let finalZoom = min(dev.activeFormat.videoMaxZoomFactor, max(1.0, clampedZoom))
                 dev.videoZoomFactor = finalZoom
+                
                 DispatchQueue.main.async {
                     self.currentZoomLevel = finalZoom
-                    // Update initial zoom if we're at the limits to prevent snap-back
                     if finalZoom <= self.minimumZoomFactor || finalZoom >= self.maximumZoomFactor {
                         self.initialZoomFactor = finalZoom
                     }
@@ -384,7 +363,6 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     }
     
     func setPinchGestureStartZoom() {
-        // Always use the current zoom level as the starting point
         if let device = currentDevice {
             initialZoomFactor = device.videoZoomFactor
         } else {
@@ -399,7 +377,19 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         }
         
         session.beginConfiguration()
-        configureSessionPreset()
+        if isOCREnabled {
+            if session.canSetSessionPreset(.photo) {
+                session.sessionPreset = .photo
+            } else if session.canSetSessionPreset(.hd4K3840x2160) {
+                session.sessionPreset = .hd4K3840x2160
+            } else if session.canSetSessionPreset(.hd1920x1080) {
+                session.sessionPreset = .hd1920x1080
+            } else {
+                configureSessionPreset()
+            }
+        } else {
+            configureSessionPreset()
+        }
         
         guard let device = selectCamera() else {
             session.commitConfiguration()
@@ -424,15 +414,12 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         if cameraPosition == .front {
             DispatchQueue.main.async {
                 self.isUltraWide = false
-                // LiDAR not available on front camera
                 LiDARManager.shared.setAvailable(false)
             }
             return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
         } else {
-            // Check ultra-wide FIRST before LiDAR
             if isUltraWide {
                 if let ultraWide = AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .back) {
-                    // LiDAR not available on ultra-wide
                     DispatchQueue.main.async {
                         LiDARManager.shared.setAvailable(false)
                     }
@@ -442,18 +429,14 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                 }
             }
             
-            // Then try LiDAR camera if not ultra-wide
             if !isUltraWide, let lidarCamera = AVCaptureDevice.default(.builtInLiDARDepthCamera, for: .video, position: .back) {
-                // LiDAR IS available on this camera
                 DispatchQueue.main.async {
                     LiDARManager.shared.setAvailable(true)
                 }
                 return lidarCamera
             }
             
-            // Fall back to regular wide camera - check if it supports depth
             if let wideCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
-                // Check if this camera supports depth
                 let supportsDepth = !wideCamera.activeFormat.supportedDepthDataFormats.isEmpty
                 DispatchQueue.main.async {
                     LiDARManager.shared.setAvailable(supportsDepth)
@@ -467,86 +450,19 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     
     private func configureCamera(_ camera: AVCaptureDevice) {
         configureDevice(camera) { device in
-            // Track zoom limits for this camera
             if device.deviceType == .builtInUltraWideCamera {
-                // Ultra-wide camera: use device's actual minimum (usually ~0.5)
                 self.minimumZoomFactor = device.minAvailableVideoZoomFactor
             } else if device.deviceType == .builtInLiDARDepthCamera {
-                // LiDAR camera: Force allow zoom out to 0.5x and in to 10x
-                // The LiDAR camera sometimes reports 1.0 as minimum but actually supports digital zoom
                 self.minimumZoomFactor = 0.5
             } else {
-                // Regular wide camera: allow digital zoom out to 0.5x
                 self.minimumZoomFactor = max(0.5, device.minAvailableVideoZoomFactor)
             }
             
-            // Set maximum zoom
             let deviceMax = device.maxAvailableVideoZoomFactor
             if device.deviceType == .builtInLiDARDepthCamera {
-                // LiDAR camera: ensure we get good zoom range
                 self.maximumZoomFactor = min(deviceMax, 10.0)
             } else {
-                // Other cameras
                 self.maximumZoomFactor = min(deviceMax * 0.95, 10.0)
-            }
-            
-            let needsDepth = LiDARManager.shared.isSupported && self.cameraPosition == .back
-            let targetFPS: Double = 60.0
-            var selectedFormat: AVCaptureDevice.Format?
-            var selectedMaxFrameRate: Double = 0  // DECLARE IT HERE, OUTSIDE THE LOOP
-            
-            for format in device.formats {
-                let desc = format.formatDescription
-                let dimensions = CMVideoFormatDescriptionGetDimensions(desc)
-                
-                let matchesPreset = (self.session.sessionPreset == .hd1920x1080 && dimensions.width == 1920 && dimensions.height == 1080) ||
-                (self.session.sessionPreset == .hd1280x720 && dimensions.width == 1280 && dimensions.height == 720)
-                
-                if !matchesPreset { continue }
-                
-                // Check if format supports depth if needed
-                if needsDepth && format.supportedDepthDataFormats.isEmpty {
-                    continue
-                }
-                
-                for range in format.videoSupportedFrameRateRanges {
-                    let maxFPS = range.maxFrameRate
-                    if maxFPS >= targetFPS && maxFPS > selectedMaxFrameRate {
-                        selectedFormat = format
-                        selectedMaxFrameRate = maxFPS  // NOW THIS IS JUST AN ASSIGNMENT, NOT A DECLARATION
-                    } else if selectedFormat == nil && maxFPS > selectedMaxFrameRate {
-                        selectedFormat = format
-                        selectedMaxFrameRate = maxFPS  // SAME HERE
-                    }
-                }
-            }
-            
-            // Rest of your method continues...
-            // If no format with depth was found but depth is needed, find any format with depth
-            if selectedFormat == nil && needsDepth {
-                for format in device.formats {
-                    if !format.supportedDepthDataFormats.isEmpty {
-                        selectedFormat = format
-                        break
-                    }
-                }
-            }
-            
-            if let format = selectedFormat {
-                device.activeFormat = format
-                
-                // Select appropriate depth format if available
-                if !format.supportedDepthDataFormats.isEmpty {
-                    // Choose the best depth format (usually the first one is fine)
-                    if let depthFormat = format.supportedDepthDataFormats.first {
-                        device.activeDepthDataFormat = depthFormat
-                        print("CameraViewModel: Set depth data format")
-                    }
-                }
-                
-                let duration = CMTime(value: 1, timescale: Int32(targetFPS))
-                device.activeVideoMinFrameDuration = duration
-                device.activeVideoMaxFrameDuration = duration
             }
             
             if device.isFocusModeSupported(.continuousAutoFocus) {
@@ -556,16 +472,24 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                 device.exposureMode = .continuousAutoExposure
             }
             
-            // Set initial zoom based on camera type
+            if isOCREnabled {
+                if device.isFocusPointOfInterestSupported {
+                    device.focusPointOfInterest = CGPoint(x: 0.5, y: 0.5)
+                    device.focusMode = .continuousAutoFocus
+                }
+                if device.isExposurePointOfInterestSupported {
+                    device.exposurePointOfInterest = CGPoint(x: 0.5, y: 0.5)
+                    device.exposureMode = .continuousAutoExposure
+                }
+            }
+            
             if device.deviceType == .builtInUltraWideCamera {
-                // For ultra-wide, start at minimum zoom to show full wide view
                 device.videoZoomFactor = self.minimumZoomFactor
                 DispatchQueue.main.async {
                     self.currentZoomLevel = self.minimumZoomFactor
                     self.initialZoomFactor = self.minimumZoomFactor
                 }
             } else {
-                // For regular and LiDAR cameras, start at 1.0
                 device.videoZoomFactor = 1.0
                 DispatchQueue.main.async {
                     self.currentZoomLevel = 1.0
@@ -598,7 +522,6 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                 super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             }
         } else {
-            // Handle iOS 16 and earlier
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
@@ -670,220 +593,84 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             }
         }
         
-        // No depth output setup here - removed as per instructions
-        
         session.commitConfiguration()
         isSessionConfigured = true
     }
     
     // MARK: - Session Control
     func startSession() {
+        guard !session.isRunning else {
+            return
+        }
         checkAndHandleCameraPermission()
-        
         Self.sessionQueue.async { [weak self] in
             guard let self = self else { return }
-            
             if self.isSessionConfigured {
                 if !self.session.isRunning {
                     self.session.startRunning()
                     DispatchQueue.main.async { self.updateVideoRotation() }
-                    // Check if LiDAR should be enabled
-                    if LiDARManager.shared.isActive && self.cameraPosition == .back {
-                        self.toggleDepthCapture(enabled: true)
-                    }
-                    if self.isLiDAREnabled {
-                        LiDARManager.shared.setEnabled(true)
-                        LiDARManager.shared.start()
-                    }
                 }
             } else {
                 self.setupCamera()
+                
+                if self.useLiDAR && self.cameraPosition == .back {
+                    self.toggleDepthCapture(enabled: true)
+                }
+                
                 if self.isSessionConfigured && !self.session.isRunning {
                     self.session.startRunning()
                     DispatchQueue.main.async { self.updateVideoRotation() }
-                    // Check if LiDAR should be enabled
-                    if LiDARManager.shared.isActive && self.cameraPosition == .back {
-                        self.toggleDepthCapture(enabled: true)
-                    }
-                    if self.isLiDAREnabled {
-                        LiDARManager.shared.setEnabled(true)
-                        LiDARManager.shared.start()
-                    }
                 }
             }
         }
     }
     
     func stopSession() {
-        print("🛑 STOPPING CAMERA SESSION")
+        guard session.isRunning else {
+            return
+        }
         Self.sessionQueue.async { [weak self] in
             guard let self = self else { return }
             if self.session.isRunning {
                 self.session.stopRunning()
                 DispatchQueue.main.async { self.detections = [] }
                 LiDARManager.shared.stop()
+                
+                self.stopSpeech()
+                SpeechManager.shared.stopSpeech()
+                SpeechManager.shared.resetSpeechState()
             }
         }
     }
     
-    func toggleDepthCapture(enabled: Bool) {
-        Self.sessionQueue.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.session.beginConfiguration()
-            
-            if enabled && self.cameraPosition == .back {
-                // Remove existing depth output if any
-                if let existingDepth = self.depthDataOutput {
-                    self.session.removeOutput(existingDepth)
-                    self.depthDataOutput = nil
-                    self.depthDelegate = nil
-                }
-                
-                // Create depth delegate if needed
-                if self.depthDelegate == nil {
-                    self.depthDelegate = DepthDataDelegate()
-                }
-                
-                // Add new depth output
-                let depthOutput = AVCaptureDepthDataOutput()
-                if let delegate = self.depthDelegate as? AVCaptureDepthDataOutputDelegate {
-                    depthOutput.setDelegate(delegate, callbackQueue: self.videoQueue)
-                }
-                depthOutput.isFilteringEnabled = true
-                
-                if self.session.canAddOutput(depthOutput) {
-                    self.session.addOutput(depthOutput)
-                    self.depthDataOutput = depthOutput
-                    
-                    // Configure connection
-                    if let connection = depthOutput.connection(with: .depthData) {
-                        connection.isEnabled = true
-                        // Set video orientation to match camera
-                        if #available(iOS 17.0, *) {
-                            if connection.isVideoRotationAngleSupported(0) {
-                                connection.videoRotationAngle = 0
-                            }
-                        } else {
-                            if connection.isVideoOrientationSupported {
-                                connection.videoOrientation = .portrait
-                            }
-                        }
-                    }
-                    
-                    print("CameraViewModel: Depth output added successfully")
-                } else {
-                    print("CameraViewModel: Cannot add depth output - checking for alternative setup")
-                    
-                    // Try with a different configuration
-                    self.tryAlternativeDepthSetup()
-                }
-            } else if !enabled {
-                // Only remove if explicitly disabled
-                if let depthOutput = self.depthDataOutput {
-                    self.session.removeOutput(depthOutput)
-                    self.depthDataOutput = nil
-                    self.depthDelegate = nil
-                    print("CameraViewModel: Depth output removed")
-                }
-            }
-            
-            self.session.commitConfiguration()
-        }
-    }
-    
-    private func tryAlternativeDepthSetup() {
-        // Try to find a format that supports depth
-        guard let device = currentDevice else { return }
-        
-        let formats = device.formats
-        var depthFormat: AVCaptureDevice.Format?
-        
-        for format in formats {
-            let depthFormats = format.supportedDepthDataFormats
-            if !depthFormats.isEmpty {
-                depthFormat = format
-                break
-            }
-        }
-        
-        if let format = depthFormat {
-            do {
-                try device.lockForConfiguration()
-                device.activeFormat = format
-                device.unlockForConfiguration()
-                
-                print("CameraViewModel: Set device format with depth support")
-                
-                // Try adding depth output again
-                if depthDelegate == nil {
-                    depthDelegate = DepthDataDelegate()
-                }
-                
-                let depthOutput = AVCaptureDepthDataOutput()
-                if let delegate = depthDelegate as? AVCaptureDepthDataOutputDelegate {
-                    depthOutput.setDelegate(delegate, callbackQueue: videoQueue)
-                }
-                depthOutput.isFilteringEnabled = true
-                
-                if session.canAddOutput(depthOutput) {
-                    session.addOutput(depthOutput)
-                    depthDataOutput = depthOutput
-                    
-                    if let connection = depthOutput.connection(with: .depthData) {
-                        connection.isEnabled = true
-                    }
-                    
-                    print("CameraViewModel: Depth output added with alternative format")
-                }
-            } catch {
-                print("CameraViewModel: Failed to configure depth format: \(error)")
-            }
-        }
-    }
-    
-    func onLiDARToggled() {
-        // Read the current state directly from LiDARManager
-        let isEnabled = LiDARManager.shared.isEnabled
-        print("CameraViewModel: LiDAR toggled, enabling depth: \(isEnabled)")
-        toggleDepthCapture(enabled: isEnabled)
-    }
-    
-    // MARK: - Torch Control
+    // MARK: - Camera Controls
     func setTorchLevel(_ level: Float) {
         guard let device = currentDevice ?? session.inputs.compactMap({ ($0 as? AVCaptureDeviceInput)?.device }).first,
               device.hasTorch else {
             return
         }
-        
-        configureDevice(device) { dev in
+        do {
+            try device.lockForConfiguration()
             if level > 0 {
-                try? dev.setTorchModeOn(level: level)
-                DispatchQueue.main.async {
-                    self.torchLevel = level
-                    self.isTorchOn = true
-                }
+                try device.setTorchModeOn(level: level)
             } else {
-                dev.torchMode = .off
-                DispatchQueue.main.async {
-                    self.torchLevel = 0.0
-                    self.isTorchOn = false
-                }
+                device.torchMode = .off
             }
+            device.unlockForConfiguration()
+        } catch {
         }
     }
     
-    func toggleTorch() {
-        setTorchLevel(torchLevel > 0 ? 0.0 : 1.0)
-    }
-    
-    // MARK: - Camera Controls
     func toggleCameraZoom() {
+        // Save torch state before reconfiguring
+        savedTorchLevel = currentTorchLevel
         DispatchQueue.main.async { self.isUltraWide.toggle() }
         reconfigureCamera()
     }
     
     func flipCamera() {
+        // Save torch state before reconfiguring (but will be reset to 0 for front camera)
+        savedTorchLevel = cameraPosition == .back ? currentTorchLevel : 0.0
         DispatchQueue.main.async {
             self.cameraPosition = self.cameraPosition == .back ? .front : .back
         }
@@ -891,6 +678,9 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     }
     
     private func reconfigureCamera() {
+        // Save current torch level before stopping session
+        savedTorchLevel = currentTorchLevel
+        
         Self.sessionQueue.async { [weak self] in
             guard let self = self else { return }
             
@@ -898,19 +688,13 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                 self.session.stopRunning()
             }
             
-            // Store LiDAR state before reconfiguring
-            let wasLiDARActive = LiDARManager.shared.isActive
-            
-            // Clear depth output reference when reconfiguring
-            self.depthDataOutput = nil
-            self.depthDelegate = nil
-            
             DispatchQueue.main.async {
                 self.detections = []
                 self.currentZoomLevel = 1.0
                 if self.cameraPosition == .front {
                     self.isUltraWide = false
-                    // Stop LiDAR when switching to front camera
+                    // Don't restore torch for front camera
+                    self.savedTorchLevel = 0.0
                     if LiDARManager.shared.isActive {
                         LiDARManager.shared.stop()
                     }
@@ -922,30 +706,30 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             
             if self.isSessionConfigured {
                 self.session.startRunning()
-                
-                // Re-enable depth if LiDAR was active and we're on back camera
-                if wasLiDARActive && self.cameraPosition == .back {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        self.toggleDepthCapture(enabled: true)
+                // Restore torch level after a brief delay for camera to stabilize
+                if self.savedTorchLevel > 0 && self.cameraPosition == .back {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        self.currentTorchLevel = self.savedTorchLevel
                     }
                 }
             }
         }
     }
     
-    // MARK: - Speech Control
+    // MARK: - Speech Control (Delegated to SpeechManager)
     func stopSpeech() {
-        speechSynthesizer.stopSpeaking(at: .immediate)
-        
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.speechSynthesizer.stopSpeaking(at: .immediate)
-            self.isSpeaking = false
-            self.lastSpokenTime.removeAll()
-            self.lastAnnouncementTime = .distantPast
-        }
+        SpeechManager.shared.stopSpeech()
     }
     
+    func announceSpeechEnabled() {
+        SpeechManager.shared.announceSpeechEnabled()
+    }
+    
+    func playWelcomeMessage() {
+        speechManager.playWelcomeMessage()
+    }
+    
+    // MARK: - Session Management
     func clearDetections() {
         DispatchQueue.main.async { [weak self] in
             self?.detections = []
@@ -988,28 +772,9 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         autoreleasepool {
             frameCounter += 1
+            // updateFPS() is removed here to measure detection completions only
             
-            // Remove periodic memory cleanup here to avoid duplication (MemoryManager handles it)
-            
-            // Adaptive frame skipping based on thermal state
-            let skipFrames = thermalState == .serious ? 4 :
-                             thermalState == .fair ? 2 :
-                             processEveryNFrames
-            guard frameCounter % skipFrames == 0 else { return }
-            
-            updateFPS()
-            
-            // Detect performance degradation
-            if framesPerSecond < 10 && frameCounter > 100 {
-                degradedPerformanceCounter += 1
-                if degradedPerformanceCounter > 30 {
-                    print("⚠️ Performance degraded, forcing reset")
-                    reinitialize()
-                    degradedPerformanceCounter = 0
-                }
-            } else {
-                degradedPerformanceCounter = max(0, degradedPerformanceCounter - 1)
-            }
+            guard frameCounter % processEveryNFrames == 0 else { return }
             
             guard !isProcessing else { return }
             guard session.isRunning else {
@@ -1019,22 +784,26 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
                 return
             }
+            
             ocrDelegate?.cameraViewModel(self, didOutputPixelBuffer: pixelBuffer)
             guard let yoloProcessor = yoloProcessor else {
                 return
             }
+            
+            enableMemoryPressureRelief()
             isProcessing = true
-            yoloProcessor.predict(
+            
+            yoloProcessor.predictWithThermalLimits(
                 image: pixelBuffer,
                 isPortrait: currentOrientation.isPortrait,
                 filterMode: filterMode,
                 confidenceThreshold: confidenceThreshold
-            ) { [weak self] results in
+            ) { (results: [YOLODetection]) in
                 DispatchQueue.main.async {
-                    self?.isProcessing = false
-                    self?.detections = results
-                    // === LiDAR distance sampling (optional) ===
-                    if let self = self, self.isLiDAREnabled, !results.isEmpty {
+                    self.isProcessing = false
+                    self.detections = results
+                    
+                    if self.isLiDAREnabled && !results.isEmpty {
                         let pts: [(id: UUID, point: CGPoint)] = results.map { det in
                             let center = CGPoint(x: det.rect.midX, y: det.rect.midY)
                             return (det.id, center)
@@ -1047,12 +816,14 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
                             }
                         }
                         self.lastDistancesFeet = feetByID
-                    } else {
-                        self?.lastDistancesFeet.removeAll()
                     }
-                    // === Speech ===
-                    if self?.isSpeechEnabled == true && !results.isEmpty {
-                        self?.processDetectionsForSpeech(results)
+                    
+                    // FPS now measures detection completions per second, not input frames.
+                    self.updateFPS()
+                    
+                    // Speech processing (delegated to shared SpeechManager)
+                    if !results.isEmpty {
+                        SpeechManager.shared.processDetectionsForSpeech(results, lidarManager: LiDARManager.shared)
                     }
                 }
             }
@@ -1072,140 +843,83 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         }
     }
     
-    // MARK: - Speech Processing (FIXED WITH LIDAR)
-    private func processDetectionsForSpeech(_ detections: [YOLODetection]) {
-        let now = Date()
-        guard !isSpeaking,
-              now.timeIntervalSince(lastAnnouncementTime) >= Constants.minAnnouncementInterval else { return }
-        
-        let bestDetections = detections.reduce(into: [String: YOLODetection]()) { result, detection in
-            let className = normalizeClassName(detection.className)
-            if let existing = result[className] {
-                if detection.score > existing.score {
-                    result[className] = detection
+    // MARK: - LiDAR Control Removed: toggleDepthCapture and onLiDARToggled deleted
+    
+    func toggleDepthCapture(enabled: Bool) {
+        Self.sessionQueue.async { [weak self] in
+            guard let self = self else { return }
+            
+            self.session.beginConfiguration()
+            defer { self.session.commitConfiguration() }
+            
+            if enabled && self.cameraPosition == .back {
+                // Remove existing depth output if any
+                if let existingDepth = self.depthDataOutput {
+                    self.session.removeOutput(existingDepth)
+                    self.depthDataOutput = nil
+                    self.depthDelegate = nil
                 }
-            } else {
-                result[className] = detection
-            }
-        }
-        
-        let sortedDetections = bestDetections.values.sorted { d1, d2 in
-            (d1.rect.width * d1.rect.height) > (d2.rect.width * d2.rect.height)
-        }
-        
-        for detection in sortedDetections {
-            let className = normalizeClassName(detection.className)
-            let lastSpoken = lastSpokenTime[className] ?? .distantPast
-            if now.timeIntervalSince(lastSpoken) >= Constants.speechCooldown {
                 
-                // Get LiDAR distance if available and enabled
-                var spokenText = className
-                if LiDARManager.shared.isActive && LiDARManager.shared.isSupported {
-                    // Check if object is good candidate for depth measurement
-                    let detectionArea = detection.rect.width * detection.rect.height
+                // Create and configure depth output
+                let depthOutput = AVCaptureDepthDataOutput()
+                let delegate = DepthDataDelegate()
+                
+                depthOutput.setDelegate(delegate, callbackQueue: self.videoQueue)
+                depthOutput.isFilteringEnabled = true
+                
+                if self.session.canAddOutput(depthOutput) {
+                    self.session.addOutput(depthOutput)
+                    self.depthDataOutput = depthOutput
+                    self.depthDelegate = delegate
                     
-                    if detectionArea > 0.05 && detectionArea < 0.30 {
-                        let center = CGPoint(x: detection.rect.midX, y: detection.rect.midY)
-                        
-                        // Use smoothed distance for more reliable speech
-                        if let feet = LiDARManager.shared.smoothedDistanceFeet(for: detection.id, at: center) {
-                            // Only announce distance if it's reasonable for indoor use
-                            if feet >= 1 && feet <= 15 {
-                                let side = LiDARManager.horizontalBucket(forNormalizedX: detection.rect.midX)
-                                let sideWord = (side == "L" ? "left" : side == "R" ? "right" : "center")
-                                spokenText = "\(className), \(feet) feet, \(sideWord)"
+                    // Configure connection
+                    if let connection = depthOutput.connection(with: .depthData) {
+                        connection.isEnabled = true
+                        if #available(iOS 17.0, *) {
+                            if connection.isVideoRotationAngleSupported(0) {
+                                connection.videoRotationAngle = 0
+                            }
+                        } else {
+                            if connection.isVideoOrientationSupported {
+                                connection.videoOrientation = .portrait
                             }
                         }
                     }
                 }
-                
-                announceObject(spokenText)
-                lastSpokenTime[className] = now
-                lastAnnouncementTime = now
-                break
+            } else if !enabled {
+                // Remove depth output
+                if let depthOutput = self.depthDataOutput {
+                    self.session.removeOutput(depthOutput)
+                    self.depthDataOutput = nil
+                    self.depthDelegate = nil
+                }
             }
         }
     }
     
-    private func normalizeClassName(_ className: String) -> String {
-        let normalized = className.lowercased()
-        let personVariants = ["person", "man", "woman", "human face", "human head", "human body"]
-        if personVariants.contains(where: normalized.contains) {
-            return "person"
-        }
-        let tvVariants = ["television", "tv"]
-        if tvVariants.contains(normalized) {
-            return "TV"
-        }
-        if normalized.contains("glasses") || normalized.contains("sunglasses") {
-            return "glasses"
-        }
-        return className
+    // CRITICAL METHOD - CONNECTS UI TO DEPTH CAPTURE
+    func onLiDARToggled() {
+        // Read the current state directly from LiDARManager
+        let isEnabled = LiDARManager.shared.isEnabled
+        toggleDepthCapture(enabled: isEnabled)
     }
     
-    // ==== NEW: side letter L/R/C from bbox center thirds ====
-    private func sideLetter(for detection: YOLODetection) -> String {
-        let mid = detection.rect.midX
-        if mid < 0.33 { return "L" }
-        if mid > 0.67 { return "R" }
-        return "C"
-    }
-    
-    // ==== NEW: compute feet if LiDAR is enabled/supported ====
-    private func computeDistanceFeetIfEnabled(for detection: YOLODetection) -> Int? {
-        guard useLiDAR, let lidar = lidar, lidar.isAvailable else { return nil }
-        let p = CGPoint(x: detection.rect.midX, y: detection.rect.midY)
-        guard let meters = lidar.depthInMeters(at: p), meters.isFinite, meters > 0 else { return nil }
-        let feet = meters * 3.28084
-        return Int((feet).rounded())  // nearest foot
-    }
-    
-    // ==== UPDATED: announceObject to handle string directly ====
-    private func announceObject(_ text: String) {
-        guard !isSpeaking else { return }
-        
-        let utterance = AVSpeechUtterance(string: text)
-        if let chosenVoice = AVSpeechSynthesisVoice(identifier: selectedVoiceIdentifier) {
-            utterance.voice = chosenVoice
+    func setLiDAR(enabled: Bool) {
+        isLiDAREnabled = enabled
+        useLiDAR = enabled
+        LiDARManager.shared.setEnabled(enabled)
+        if enabled {
+            LiDARManager.shared.start()
+            toggleDepthCapture(enabled: true)
+        } else {
+            LiDARManager.shared.stop()
+            toggleDepthCapture(enabled: false)
         }
-        utterance.rate = 0.52
-        utterance.pitchMultiplier = 1.0
-        utterance.volume = 0.9
-        
-        isSpeaking = true
-        speechSynthesizer.stopSpeaking(at: .immediate)
-        speechSynthesizer.speak(utterance)
     }
     
-    private func createNaturalDescription(for className: String) -> String {
-        let descriptions: [String: String] = [
-            "person": "person", "man": "man", "woman": "woman",
-            "human face": "person", "human head": "person",
-            "dog": "dog", "cat": "cat", "bird": "bird",
-            "chair": "chair", "desk": "desk", "table": "table",
-            "couch": "couch", "sofa": "sofa",
-            "television": "TV", "tv": "TV",
-            "computer monitor": "monitor", "monitor": "monitor",
-            "mobile phone": "phone", "phone": "phone",
-            "laptop": "laptop", "book": "book", "books": "book",
-            "bottle": "bottle", "cup": "cup", "mug": "mug",
-            "plant": "plant", "flower": "flower",
-            "clock": "clock", "door": "door", "window": "window"
-        ]
-        return descriptions[className.lowercased()] ?? className.replacingOccurrences(of: "_", with: " ")
-    }
-    
-    func announceSpeechEnabled() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            let utterance = AVSpeechUtterance(string: "Speech enabled")
-            if let chosenVoice = AVSpeechSynthesisVoice(identifier: self.selectedVoiceIdentifier) {
-                utterance.voice = chosenVoice
-            }
-            utterance.rate = 0.52
-            utterance.volume = 0.9
-            self.speechSynthesizer.speak(utterance)
-        }
+    func setOCREnabled(_ enabled: Bool) {
+        isOCREnabled = enabled
+        reconfigureCamera()
     }
     
     // MARK: - Helper Methods
@@ -1215,57 +929,7 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             try configuration(device)
             device.unlockForConfiguration()
         } catch {
-        }
-    }
-    
-    // ==== NEW: LiDAR enable/disable helper ====
-    func setLiDAR(enabled: Bool) {
-        isLiDAREnabled = enabled
-        if enabled {
-            LiDARManager.shared.setEnabled(true)
-            LiDARManager.shared.start()
-        } else {
-            LiDARManager.shared.stop()
-        }
-    }
-    
-    // MARK: - Cleanup Methods
-    func shutdown() {
-        // Stop all active sessions
-        stopSession()
-        stopSpeech()
-        clearDetections()
-        
-        // Release YOLO processor for memory drop
-        yoloProcessor = nil
-        
-        // Remove all observers
-        if let observer = orientationObserver {
-            NotificationCenter.default.removeObserver(observer)
-            orientationObserver = nil
-        }
-        
-        if #available(iOS 17.0, *) {
-            if let coordinator = rotationCoordinator as? AVCaptureDevice.RotationCoordinator {
-                coordinator.removeObserver(self, forKeyPath: "videoRotationAngleForHorizonLevelCapture")
-            }
-        }
-        
-        // Release depth delegate
-        depthDelegate = nil
-        
-        // Release rotation coordinator
-        rotationCoordinator = nil
-        
-        // Clear depth data output
-        depthDataOutput = nil
-        
-        // Clear camera device
-        currentDevice = nil
-        
-        // Force cleanup
-        autoreleasepool {
-            // Release retained objects
+            // Handle error silently
         }
     }
     
@@ -1302,68 +966,177 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         )
     }
     
-    // MARK: - Reinitialization Method (SAFER VERSION)
+    // MARK: - Reinitialization
     func reinitialize() {
-        // Stop current session without destroying it
+        // Reset torch state completely when reinitializing
+        currentTorchLevel = 0.0
+        savedTorchLevel = 0.0
+
         stopSession()
-        stopSpeech()
+        // Removed direct calls to SpeechManager and LiDARManager here.
+        // Resource lifecycle for Speech and LiDAR is now managed by ResourceManager, not by CameraViewModel.
         clearDetections()
         
-        // Reset state properties to defaults
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             
-            // Reset camera settings (but don't destroy camera)
             self.currentOrientation = .portrait
-            self.isTorchOn = false
-            self.torchLevel = 0.0
             self.isUltraWide = false
             self.currentZoomLevel = 1.0
             self.minimumZoomFactor = 1.0
             self.maximumZoomFactor = 5.0
             self.initialZoomFactor = 1.0
             
-            // Reset detection settings
             self.detections = []
             self.framesPerSecond = 0
             self.filterMode = "all"
-            self.confidenceThreshold = 0.75
-            self.frameRate = 30
+            self.confidenceThreshold = 0.39
+            self.frameRate = 20
             
-            // Reset speech settings (keep voice selection)
-            self.isSpeechEnabled = true
-            self.speechVoiceGender = .unspecified
-            
-            // Reset LiDAR
             self.useLiDAR = false
             self.isLiDAREnabled = false
             self.lastDistancesFeet = [:]
             
-            // Clear FPS tracking
             self.lastFrameTimestamps = []
             
-            // Reset processing state
             self.frameCounter = 0
             self.isProcessing = false
             self.processEveryNFrames = 1
-            self.lastSpokenTime = [:]
-            self.lastAnnouncementTime = Date.distantPast
-            self.isSpeaking = false
             
-            // Keep camera position at back (don't change it)
             self.cameraPosition = .back
+            self.isOCREnabled = false
         }
         
-        // Clear LiDAR Manager state
-        LiDARManager.shared.stop()
-        LiDARManager.shared.setEnabled(false)
+        // Removed: LiDARManager.shared.stop()
+        // Removed: LiDARManager.shared.setEnabled(false)
+        // Removed: speechManager.resetSpeechState()
+        // Resource lifecycle for Speech and LiDAR is now managed by ResourceManager, not by CameraViewModel.
         
-        // Force memory cleanup
         autoreleasepool {
-            // This helps release any retained objects
+            // Memory cleanup
         }
     }
     
-    // MARK: - Memory Management
-    // Remove duplicated handleMemoryWarning implementation; MemoryManager handles now.
+    // MARK: - Cleanup Methods
+    func shutdown() {
+        stopSession()
+        stopSpeech()
+        SpeechManager.shared.stopSpeech()
+        SpeechManager.shared.resetSpeechState()
+        clearDetections()
+        
+        yoloProcessor = nil
+        
+        if let observer = orientationObserver {
+            NotificationCenter.default.removeObserver(observer)
+            orientationObserver = nil
+        }
+        
+        if #available(iOS 17.0, *) {
+            if let coordinator = rotationCoordinator as? AVCaptureDevice.RotationCoordinator {
+                coordinator.removeObserver(self, forKeyPath: "videoRotationAngleForHorizonLevelCapture")
+            }
+        }
+        
+        rotationCoordinator = nil
+        currentDevice = nil
+        
+        // Removed direct calls to SpeechManager and LiDARManager here.
+        // Resource lifecycle for Speech and LiDAR is now managed by ResourceManager, not by CameraViewModel.
+        
+        autoreleasepool {
+            // Release retained objects
+        }
+    }
+    
+    func setSessionPresetIfAvailable(_ preset: AVCaptureSession.Preset) {
+        if session.canSetSessionPreset(preset) {
+            session.beginConfiguration()
+            session.sessionPreset = preset
+            session.commitConfiguration()
+        }
+    }
+    
 }
+
+// MARK: - CameraViewModel Aggressive Thermal Management Extension
+extension CameraViewModel {
+    private func setupThermalManagement() {
+        ThermalManager.shared.$thermalState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newState in
+                self?.handleThermalChange(newState)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func handleThermalChange(_ newState: ProcessInfo.ThermalState) {
+        switch newState {
+        case .nominal:
+            restorePerformance()
+        case .fair:
+            applyThermalThrottling(level: 1)
+        case .serious:
+            applyThermalThrottling(level: 2)
+        case .critical:
+            applyThermalThrottling(level: 3)
+        @unknown default:
+            restorePerformance()
+        }
+    }
+    
+    private func applyThermalThrottling(level: Int) {
+        // Adjust frame rate and detection processing based on thermal level
+        switch level {
+        case 1:
+            frameRate = max(10, frameRate - 5)
+            processEveryNFrames = 2
+            setThermalOptimizedSessionPreset()
+        case 2:
+            frameRate = max(5, frameRate - 10)
+            processEveryNFrames = 4
+            setThermalOptimizedSessionPreset()
+        case 3:
+            frameRate = 5
+            processEveryNFrames = 6
+            setThermalOptimizedSessionPreset()
+            takeProcessingBreak()
+        default:
+            restorePerformance()
+        }
+    }
+    
+    private func restorePerformance() {
+        frameRate = 30
+        processEveryNFrames = 1
+        setSessionPresetIfAvailable(.hd1920x1080)
+    }
+    
+    private func enableThermalBreaks() {
+        // Optionally implement additional timer-based breaks or cooldowns here if needed
+    }
+    
+    private func takeProcessingBreak() {
+        // Pause processing briefly to reduce thermal load
+        pauseCameraAndProcessing()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+            self?.resumeCameraAndProcessing()
+        }
+    }
+    
+    func enableMemoryPressureRelief() {
+        // This can be called before intensive operations to reduce memory pressure
+        if frameRate > 15 {
+            frameRate = 15
+            processEveryNFrames = 3
+        }
+    }
+    
+    private func setThermalOptimizedSessionPreset() {
+        // Lower session preset for thermal savings if possible
+        if session.canSetSessionPreset(.hd1280x720) {
+            setSessionPresetIfAvailable(.hd1280x720)
+        }
+    }
+}
+

@@ -6,20 +6,18 @@ struct SettingsOverlayView: View {
     let mode: ContentView.Mode
     let onAppear: (() -> Void)? = nil
     let onDisappear: (() -> Void)? = nil
-    let onDismiss: (() -> Void)? = nil // Use this to immediately pause/stop any processing before dismissing the overlay
+    let onDismiss: (() -> Void)? = nil
     
-    @StateObject private var buttonDebouncer = ButtonPressDebouncer() // Prevent rapid multiple presses
+    @StateObject private var buttonDebouncer = ButtonPressDebouncer()
     
-    // Copy history for OCR modes - use State instead of loading in onAppear
     @State private var copyHistory: [String] = UserDefaults.standard.stringArray(forKey: "ocrCopyHistory") ?? []
     
     var body: some View {
         ZStack {
-            // Background dimming
             Color.black.opacity(0.4)
                 .ignoresSafeArea()
                 .onTapGesture {
-                    if buttonDebouncer.canPress() { // Debounce background tap to dismiss
+                    if buttonDebouncer.canPress() {
                         onDismiss?()
                         withAnimation(.spring(response: 0.3)) {
                             isPresented = false
@@ -27,9 +25,7 @@ struct SettingsOverlayView: View {
                     }
                 }
             
-            // Settings content
             VStack(spacing: 0) {
-                // Header
                 HStack {
                     Text("Settings")
                         .font(.title2)
@@ -38,7 +34,7 @@ struct SettingsOverlayView: View {
                     Spacer()
                     
                     Button(action: {
-                        if buttonDebouncer.canPress() { // Debounce close button
+                        if buttonDebouncer.canPress() {
                             onDismiss?()
                             withAnimation(.spring(response: 0.3)) {
                                 isPresented = false
@@ -58,10 +54,8 @@ struct SettingsOverlayView: View {
                 
                 ScrollView {
                     VStack(spacing: 20) {
-                        // Object Detection Settings
                         if mode == .objectDetection {
                             VStack(alignment: .leading, spacing: 16) {
-                                // Confidence Threshold
                                 VStack(alignment: .leading, spacing: 8) {
                                     HStack {
                                         Image(systemName: "eye.circle")
@@ -96,34 +90,9 @@ struct SettingsOverlayView: View {
                                     RoundedRectangle(cornerRadius: 12)
                                         .fill(.ultraThinMaterial.opacity(0.3))
                                 )
-                                
-                                // Frame Rate
-                                VStack(alignment: .leading, spacing: 12) {
-                                    HStack {
-                                        Image(systemName: "speedometer")
-                                            .font(.system(size: 20))
-                                            .foregroundStyle(.green)
-                                        
-                                        Text("Processing Speed")
-                                            .font(.headline)
-                                    }
-                                    
-                                    Picker("Frame Rate", selection: $viewModel.frameRate) {
-                                        Text("Battery Saver (15 fps)").tag(15)
-                                        Text("Balanced (30 fps)").tag(30)
-                                        Text("Performance (60 fps)").tag(60)
-                                    }
-                                    .pickerStyle(SegmentedPickerStyle())
-                                }
-                                .padding()
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(.ultraThinMaterial.opacity(0.3))
-                                )
                             }
                         }
                         
-                        // OCR Copy History
                         if mode == .englishOCR || mode == .spanishToEnglishOCR {
                             VStack(alignment: .leading, spacing: 12) {
                                 HStack {
@@ -138,7 +107,7 @@ struct SettingsOverlayView: View {
                                     
                                     if !copyHistory.isEmpty {
                                         Button("Clear") {
-                                            if buttonDebouncer.canPress() { // Debounce clear button
+                                            if buttonDebouncer.canPress() {
                                                 copyHistory.removeAll()
                                                 UserDefaults.standard.removeObject(forKey: "ocrCopyHistory")
                                             }
@@ -164,10 +133,9 @@ struct SettingsOverlayView: View {
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                                 
                                                 Button(action: {
-                                                    if buttonDebouncer.canPress() { // Debounce copy button
+                                                    if buttonDebouncer.canPress() {
                                                         UIPasteboard.general.string = text
                                                         
-                                                        // Haptic feedback
                                                         let generator = UINotificationFeedbackGenerator()
                                                         generator.notificationOccurred(.success)
                                                     }
@@ -193,7 +161,6 @@ struct SettingsOverlayView: View {
                             )
                         }
                         
-                        // Current Zoom Level Indicator (all modes)
                         if viewModel.currentZoomLevel > 1.05 || viewModel.currentZoomLevel < 0.95 {
                             HStack {
                                 Image(systemName: "camera.viewfinder")
@@ -217,7 +184,6 @@ struct SettingsOverlayView: View {
                             )
                         }
                         
-                        // Instructions
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
                                 Image(systemName: "info.circle")
@@ -232,7 +198,7 @@ struct SettingsOverlayView: View {
                                 Text("• 🤏 Pinch to zoom the camera")
                                 Text("• 🗣️ Speak detected objects")
                                 Text("• 🔦 Adjust flashlight")
-                                Text("• 🌐 Toggle wide/ultra-wide lens")
+                                Text("• 🌎 Toggle wide/ultra-wide lens")
                                 Text("• ⚙️ Open settings")
                             } else {
                                 Text("• 🤏 Pinch to zoom the camera")
@@ -240,7 +206,7 @@ struct SettingsOverlayView: View {
                                 Text("• 💬 Show/hide text overlay")
                                 Text("• 🗣️ Speak detected/translated text")
                                 Text("• 🔦 Adjust flashlight")
-                                Text("• 🌐 Toggle wide/ultra-wide lens")
+                                Text("• 🌎 Toggle wide/ultra-wide lens")
                                 Text("• ⚙️ Open settings/history")
                             }
                         }
@@ -270,11 +236,10 @@ struct SettingsOverlayView: View {
             .scaleEffect(isPresented ? 1 : 0.9)
             .opacity(isPresented ? 1 : 0)
         }
-        // Swipe-down dismiss gesture for a natural modal feel
         .gesture(
             DragGesture().onEnded { value in
                 if value.translation.height > 80 && abs(value.translation.width) < 50 {
-                    if buttonDebouncer.canPress() { // Debounce swipe-down dismiss
+                    if buttonDebouncer.canPress() {
                         onDismiss?()
                         withAnimation(.spring(response: 0.3)) {
                             isPresented = false
@@ -290,20 +255,14 @@ struct SettingsOverlayView: View {
     static func addToCopyHistory(_ text: String) {
         var history = UserDefaults.standard.stringArray(forKey: "ocrCopyHistory") ?? []
         
-        // Remove if already exists
         history.removeAll { $0 == text }
-        
-        // Add to beginning
         history.insert(text, at: 0)
-        
-        // Keep only last 5
         history = Array(history.prefix(5))
         
         UserDefaults.standard.set(history, forKey: "ocrCopyHistory")
     }
 }
 
-// MARK: - Privacy Card
 private struct PrivacyCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
