@@ -84,7 +84,7 @@ No ads, no in-app purchases, no subscriptions
 No tracking, no servers, airplane-mode ready
 
 ⚡ **Optimized for iPhone**  
-CoreML + Metal acceleration with **safe 30 FPS cap**
+CoreML + Metal acceleration with **safe 1-3 FPS cap**
 
 </td>
 <td width="50%" valign="top">
