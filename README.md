@@ -2,7 +2,7 @@
 
 # ✨ RealTime AI Camera ✨
 
-### 🚀 YOLOv8 with all 601 object classes on iPhone — capped at 1–3 FPS for stability & battery safety
+### 🚀 YOLOv8 with all 601 object classes on iPhone — runs at ~1–3 FPS depending on device
 
 <img src="./EA08B469-F8A2-435D-A3B3-44AEF833E38E.png" alt="RealTime AI Camera Banner" width="80%" style="border-radius: 15px; margin: 25px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
 
@@ -31,7 +31,7 @@ Built specifically for **iPhone** • Works **100% offline** • Privacy-first d
 ![Privacy Focused](https://img.shields.io/badge/Privacy-Focused-red?style=for-the-badge)
 ![100% Free](https://img.shields.io/badge/100%25_Free-No_Ads-brightgreen?style=for-the-badge&logo=gift)
 
-![Real-Time](https://img.shields.io/badge/Real--Time-30_FPS-success?style=for-the-badge)
+![Real-Time](https://img.shields.io/badge/Frame_Rate-~1–3_FPS-success?style=for-the-badge)
 ![SwiftUI](https://img.shields.io/badge/SwiftUI-5.0-orange?style=for-the-badge&logo=swift)
 ![CoreML](https://img.shields.io/badge/CoreML-Powered-purple?style=for-the-badge&logo=apple)
 ![Metal](https://img.shields.io/badge/Metal-Accelerated-silver?style=for-the-badge&logo=apple)
@@ -57,7 +57,7 @@ Built specifically for **iPhone** • Works **100% offline** • Privacy-first d
 - 📏 **LiDAR Distance** — Per-object depth on supported iPhones  
 - 💝 **100% Free** — No ads, no in-app purchases, no subscriptions  
 - 🔒 **Privacy-Focused** — No tracking, no servers, airplane-mode ready  
-- ⚡ **Optimized for iPhone** — CoreML + Metal with safe **1–3 FPS cap**
+- ⚡ **Optimized for iPhone** — CoreML + Metal + Neural Engine acceleration  
 
 ---
 
@@ -72,19 +72,11 @@ Built specifically for **iPhone** • Works **100% offline** • Privacy-first d
 
 ---
 
-## 🛡️ Performance & Safety
+## ⚡ Performance
 
-**Performance**
-- Frame-rate capped at **1–3 FPS**  
-- Dynamic resolution scaling  
-- Neural Engine/GPU balancing  
-- Smart memory management  
-
-**Safety**
-- Heat protection  
-- Battery optimization  
-- Frame skipping when needed  
-- Adaptive thermal throttling  
+- Real-time detection runs at **~1–3 FPS** depending on device and workload  
+- Optimized with CoreML, Metal, and Neural Engine  
+- Built-in battery and thermal safeguards  
 
 ---
 
@@ -108,7 +100,7 @@ Built specifically for **iPhone** • Works **100% offline** • Privacy-first d
 
 **Build Steps**
 1. Clone this repository  
-2. Open `RealTime AI Cam.xcodeproj`  
+2. Open `RealTime Ai Cam.xcodeproj`  
 3. Connect your iPhone  
 4. Build & run  
 
