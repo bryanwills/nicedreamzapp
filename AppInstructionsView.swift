@@ -179,7 +179,10 @@ struct AppInstructionsView: View {
                         Text("🌐 Lens Toggle — Wide ↔ Ultra-wide")
                         Text("🔦 Torch — 25% / 50% / 75% / 100%")
                         Text("🤏 Pinch to Zoom")
-                        Text("💬 Show / Hide Text Overlay")
+                        HStack {
+                            Image(systemName: "arrow.clockwise")
+                            Text("Reset/Stop — Clears text, translation, and stops speaking")
+                        }
                         Text("🗣️ Speak Detected / Translated Text")
                         Text("📋 Copy to History")
                         Text("⚙️ Settings")

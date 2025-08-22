@@ -300,21 +300,21 @@ struct LiveOCRView: View {
                                     .opacity(0.85)
                             )
                         }
-                        .padding(.leading, 20)
+                        .padding(.leading, geometry.size.width <= 390 ? 8 : 20)
                         
                         Spacer()
                         
                         // Mode indicator
                         Text(ocrMode == .english ? "English" : "Span → Eng")
-                            .font(.system(size: 15, weight: .medium))
+                            .font(.system(size: 14, weight: .medium))
                             .foregroundStyle(.white)
-                            .padding(.horizontal, 14)
+                            .padding(.horizontal, 9)
                             .padding(.vertical, 8)
                             .background(
                                 Capsule()
                                     .fill(.ultraThinMaterial.opacity(0.9))
                             )
-                            .padding(.trailing, 20)
+                            .padding(.trailing, geometry.size.width <= 390 ? 8 : 20)
                     }
                     .padding(.top, geometry.safeAreaInsets.top + 10)
                     
@@ -598,7 +598,7 @@ struct LiveOCRView: View {
                         }
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, geometry.size.width <= 390 ? 8 : 24)
                     .padding(.bottom, 30)
                 }
                 

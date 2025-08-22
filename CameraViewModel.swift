@@ -669,6 +669,7 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     }
     
     func flipCamera() {
+        stopSpeech() // Stop all speech immediately on camera flip
         // Save torch state before reconfiguring (but will be reset to 0 for front camera)
         savedTorchLevel = cameraPosition == .back ? currentTorchLevel : 0.0
         DispatchQueue.main.async {
@@ -1014,6 +1015,26 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
         
         autoreleasepool {
             // Memory cleanup
+        }
+    }
+    
+    /// Fully tears down and rebuilds the camera session and all inputs/outputs.
+    func forceReconfigureSession() {
+        Self.sessionQueue.async { [weak self] in
+            guard let self = self else { return }
+            if self.session.isRunning {
+                self.session.stopRunning()
+            }
+            // Remove all inputs
+            self.session.inputs.forEach { self.session.removeInput($0) }
+            // Remove all outputs
+            self.session.outputs.forEach { self.session.removeOutput($0) }
+            self.isSessionConfigured = false
+            self.setupCamera()
+            if self.isSessionConfigured && !self.session.isRunning {
+                self.session.startRunning()
+                DispatchQueue.main.async { self.updateVideoRotation() }
+            }
         }
     }
     

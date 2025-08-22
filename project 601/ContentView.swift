@@ -132,8 +132,8 @@ struct ContentView: View {
             )
             .ignoresSafeArea()
             .onAppear {
-                viewModel.reinitialize()
-                viewModel.startSession()
+                // Fully reset and reconfigure the camera session for object detection
+                viewModel.forceReconfigureSession()
             }
             .onDisappear {
                 cleanupCurrentMode()

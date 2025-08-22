@@ -69,47 +69,41 @@ struct ObjectDetectionView: View {
                 // Performance Overlay - Fixed positioning for both camera modes
                 if isPortrait {
                     VStack {
-                        HStack {
-                            // Left side - Back button (styled like performance indicators)
-                            VStack {
-                                Button(action: {
-                                    guard buttonDebouncer.canPress() else { return }
-                                    let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-                                    impactFeedback.impactOccurred()
-                                    viewModel.stopSession()
-                                    viewModel.clearDetections()
-                                    viewModel.stopSpeech()
-                                    SpeechManager.shared.stopSpeech()
-                                    SpeechManager.shared.resetSpeechState()
-                                    onBack()
-                                }) {
-                                    HStack(spacing: 6) {
-                                        Image(systemName: "chevron.left")
-                                            .font(.system(size: 16, weight: .bold))
-                                            .foregroundColor(.white)
-                                        Text("Back")
-                                            .font(.system(size: 16, weight: .bold))
-                                            .foregroundColor(.white)
-                                    }
-                                    .padding(.vertical, 10)
-                                    .padding(.horizontal, 16)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .fill(.ultraThinMaterial)
-                                            .opacity(0.85)
-                                    )
+                        HStack(alignment: .top) {
+                            Button(action: {
+                                guard buttonDebouncer.canPress() else { return }
+                                let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+                                impactFeedback.impactOccurred()
+                                viewModel.stopSession()
+                                viewModel.clearDetections()
+                                viewModel.stopSpeech()
+                                SpeechManager.shared.stopSpeech()
+                                SpeechManager.shared.resetSpeechState()
+                                onBack()
+                            }) {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "chevron.left")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(.white)
+                                    Text("Back")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(.white)
                                 }
-                                Spacer()
+                                .padding(.vertical, 10)
+                                .padding(.horizontal, 16)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(.ultraThinMaterial)
+                                        .opacity(0.85)
+                                )
                             }
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.top, geometry.safeAreaInsets.top + 20)
-                            .padding(.leading, -50)
+                            .padding(.leading, geometry.size.width <= 390 ? 8 : 20)
 
                             Spacer()
 
-                            // Right side - Performance indicators stacked vertically (consistent positioning)
-                            VStack(spacing: 8) {
-                                // FPS indicator on top
+                            // Right side - FPS indicator aligned at top with Back button
+                            HStack(spacing: 10) {
+                                // FPS indicator on top, aligned with Back button top
                                 HStack(spacing: 6) {
                                     Image(systemName: "speedometer")
                                         .font(.system(size: 12, weight: .medium))
@@ -129,42 +123,45 @@ struct ObjectDetectionView: View {
                                         .opacity(0.55)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 12)
-                                                .stroke(fpsColor, lineWidth: 1.5)
+                                                .stroke(fpsColor, lineWidth: 1.25)
                                         )
                                 )
                                 .fixedSize()
                                 .layoutPriority(1)
-                                
-                                // Object count indicator below
-                                if viewModel.detectedObjectCount > 0 {
-                                    HStack(spacing: 6) {
-                                        Image(systemName: "eye")
-                                            .font(.system(size: 12, weight: .medium))
-                                            .foregroundColor(objectCountColor)
-                                        Text("\(viewModel.detectedObjectCount)")
-                                            .font(.system(size: 14, weight: .bold, design: .rounded))
-                                            .foregroundColor(.white)
-                                    }
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 12)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(.ultraThinMaterial)
-                                            .opacity(0.85)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 12)
-                                                    .stroke(objectCountColor, lineWidth: 1.5)
-                                            )
-                                    )
-                                }
-                                
-                                Spacer()
                             }
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.top, geometry.safeAreaInsets.top + 20)
-                            .padding(.trailing, 20)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+
                         }
-                        
+                        .padding(.top, geometry.safeAreaInsets.top + 50)
+                        .padding(.trailing, max(geometry.safeAreaInsets.trailing + 16, 22))
+
+                        // Object count indicator below FPS (no vertical offset to FPS)
+                        if viewModel.detectedObjectCount > 0 {
+                            HStack {
+                                Spacer()
+                                HStack(spacing: 6) {
+                                    Image(systemName: "eye")
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(objectCountColor)
+                                    Text("\(viewModel.detectedObjectCount)")
+                                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                                        .foregroundColor(.white)
+                                }
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 12)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(.ultraThinMaterial)
+                                        .opacity(0.85)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(objectCountColor, lineWidth: 1.5)
+                                        )
+                                )
+                                .padding(.trailing, max(geometry.safeAreaInsets.trailing + 16, 22))
+                            }
+                        }
+
                         Spacer()
                     }
                 } else {
@@ -329,151 +326,142 @@ struct ObjectDetectionView: View {
     
     @ViewBuilder
     private func portraitOverlays(geometry: GeometryProxy) -> some View {
-        VStack {
-            Spacer()
-            
-            // Mode picker above the control buttons
-            Picker("Mode", selection: $viewModel.filterMode) {
-                Text("All").tag("all")
-                Text("Indoor").tag("indoor")
-                Text("Outdoor").tag("outdoor")
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding(.horizontal, 40)
-            .padding(.bottom, 10)
-            
-            HStack(spacing: 12) {
-                Spacer()
-                
-                controlButton(
-                    systemName: "camera.rotate",
-                    foregroundColor: .primary,
-                    size: 26,
-                    frameSize: 48,
-                    action: {
-                        guard buttonDebouncer.canPress() else { return }
-                        viewModel.flipCamera()
-                        if viewModel.cameraPosition == .front {
-                            // Torch handled inside TorchButton now
+        Spacer()
+        // Place the segmented control and controls in a safe area inset (bottom bar)
+        Color.clear
+            .safeAreaInset(edge: .bottom) {
+                VStack(spacing: 12) {
+                    // Segmented control area – width capped so it never pushes off-screen on mini
+                    GeometryReader { geo in
+                        let cap = min(geo.size.width - 32, 560)
+                        HStack {
+                            Spacer()
+                            Picker("Mode", selection: $viewModel.filterMode) {
+                                Text("All").tag("all")
+                                Text("Indoor").tag("indoor")
+                                Text("Outdoor").tag("outdoor")
+                            }
+                            .pickerStyle(SegmentedPickerStyle())
+                            .frame(width: cap, height: 36)
+                            Spacer()
                         }
                     }
-                )
-                .accessibilityLabel("Switch Camera")
-                .accessibilityHint("Switches between front and rear camera")
-                .accessibilityValue(viewModel.cameraPosition == .back ? "Using rear camera" : "Using front camera")
-                
-                // Ultra-wide button - hidden but maintains space in front camera
-                controlButton(
-                    systemName: "rectangle.3.offgrid",
-                    foregroundColor: viewModel.isUltraWide ? .cyan : .primary,
-                    size: 26,
-                    frameSize: 48,
-                    action: {
-                        guard buttonDebouncer.canPress() else { return }
-                        viewModel.toggleCameraZoom()
-                    }
-                )
-                .opacity(viewModel.cameraPosition == .back ? 1.0 : 0.0)
-                .disabled(viewModel.cameraPosition == .front)
-                .accessibilityLabel(viewModel.isUltraWide ? "Switch to normal camera" : "Switch to wide angle camera")
-                .accessibilityHint("Changes camera field of view for wider or normal view")
-                
-                // TorchButton properly connected to viewModel
-                TorchButton(
-                    initialTorchLevel: viewModel.currentTorchLevel,
-                    onLevelChanged: { level in
-                        viewModel.currentTorchLevel = level
-                    }
-                )
-                .frame(width: 48, height: 48)
-                .opacity(viewModel.cameraPosition == .back ? 1.0 : 0.0)
-                .disabled(viewModel.cameraPosition == .front)
-                
-                // LiDAR button - hidden but maintains space when not available
-                controlButton(
-                    systemName: "ruler",
-                    foregroundColor: viewModel.useLiDAR && LiDARManager.shared.isEnabled ? .green : .blue,
-                    size: 26,
-                    frameSize: 48,
-                    action: {
-                        guard buttonDebouncer.canPress() else { return }
-                        let newState = !viewModel.useLiDAR
-                        viewModel.setLiDAR(enabled: newState)
-                        if newState {
-                            showLiDARNotification("LiDAR distance enabled")
-                            print("✅ LiDAR turned ON")
-                        } else {
-                            showLiDARNotification("LiDAR distance disabled")
-                            print("❌ LiDAR turned OFF")
-                        }
-                    }
-                )
-                .opacity(viewModel.isLiDARSupported && viewModel.cameraPosition == .back && LiDARManager.shared.isAvailable ? 1.0 : 0.0)
-                .disabled(!(viewModel.isLiDARSupported && viewModel.cameraPosition == .back && LiDARManager.shared.isAvailable))
-                .accessibilityLabel(
-                    viewModel.useLiDAR ? "Turn off LiDAR distance measurement" : "Turn on LiDAR distance measurement"
-                )
-                .accessibilityHint("Measures distance to detected objects")
-                
-                Button(action: {
-                    guard buttonDebouncer.canPress() else { return }
-                    viewModel.isSpeechEnabled.toggle()
-                    if viewModel.isSpeechEnabled {
-                        viewModel.announceSpeechEnabled()
-                    } else {
-                        viewModel.stopSpeech()
-                    }
-                }) {
-                    Text("🗣️")
-                        .font(.system(size: 22, weight: .medium))
-                        .frame(width: 48, height: 48)
-                        .background(
-                            Circle()
-                                .fill(.ultraThinMaterial)
-                                .opacity(0.15)
+                    .frame(height: 36)
+
+                    // Icon row – equal spacing, fixed hit areas, centered
+                    HStack(spacing: 16) {
+                        controlButton(
+                            systemName: "camera.rotate",
+                            foregroundColor: .primary,
+                            size: 22,
+                            frameSize: 44,
+                            action: {
+                                guard buttonDebouncer.canPress() else { return }
+                                viewModel.flipCamera()
+                            }
                         )
-                        .overlay(
-                            Circle()
-                                .stroke(
-                                    viewModel.isSpeechEnabled
-                                        ? Color.green.opacity(0.5)
-                                        : Color.white.opacity(0.25),
-                                    lineWidth: viewModel.isSpeechEnabled ? 2 : 1
+                        .accessibilityLabel("Switch Camera")
+                        .accessibilityHint("Switches between front and rear camera")
+                        .accessibilityValue(viewModel.cameraPosition == .back ? "Using rear camera" : "Using front camera")
+
+                        controlButton(
+                            systemName: "rectangle.3.offgrid",
+                            foregroundColor: viewModel.isUltraWide ? .cyan : .primary,
+                            size: 22,
+                            frameSize: 44,
+                            action: {
+                                guard buttonDebouncer.canPress() else { return }
+                                viewModel.toggleCameraZoom()
+                            }
+                        )
+                        .opacity(viewModel.cameraPosition == .back ? 1.0 : 0.0)
+                        .disabled(viewModel.cameraPosition == .front)
+                        .accessibilityLabel(viewModel.isUltraWide ? "Switch to normal camera" : "Switch to wide angle camera")
+                        .accessibilityHint("Changes camera field of view for wider or normal view")
+
+                        TorchButton(
+                            initialTorchLevel: viewModel.currentTorchLevel,
+                            onLevelChanged: { level in viewModel.currentTorchLevel = level }
+                        )
+                        .frame(width: 44, height: 44)
+                        .opacity(viewModel.cameraPosition == .back ? 1.0 : 0.0)
+                        .disabled(viewModel.cameraPosition == .front)
+
+                        controlButton(
+                            systemName: "ruler",
+                            foregroundColor: viewModel.useLiDAR && LiDARManager.shared.isEnabled ? .green : .blue,
+                            size: 22,
+                            frameSize: 44,
+                            action: {
+                                guard buttonDebouncer.canPress() else { return }
+                                let newState = !viewModel.useLiDAR
+                                viewModel.setLiDAR(enabled: newState)
+                                if newState {
+                                    showLiDARNotification("LiDAR distance enabled")
+                                } else {
+                                    showLiDARNotification("LiDAR distance disabled")
+                                }
+                            }
+                        )
+                        .opacity(viewModel.isLiDARSupported && viewModel.cameraPosition == .back && LiDARManager.shared.isAvailable ? 1.0 : 0.0)
+                        .disabled(!(viewModel.isLiDARSupported && viewModel.cameraPosition == .back && LiDARManager.shared.isAvailable))
+
+                        Button(action: {
+                            guard buttonDebouncer.canPress() else { return }
+                            viewModel.isSpeechEnabled.toggle()
+                            if viewModel.isSpeechEnabled {
+                                viewModel.announceSpeechEnabled()
+                            } else {
+                                viewModel.stopSpeech()
+                            }
+                        }) {
+                            Text("🗣️")
+                                .font(.system(size: 20, weight: .medium))
+                                .frame(width: 44, height: 44)
+                                .background(
+                                    Circle()
+                                        .fill(.ultraThinMaterial.opacity(0.15))
                                 )
+                                .overlay(
+                                    Circle()
+                                        .stroke(
+                                            viewModel.isSpeechEnabled ? Color.green.opacity(0.5) : Color.white.opacity(0.25),
+                                            lineWidth: viewModel.isSpeechEnabled ? 2 : 1
+                                        )
+                                )
+                                .shadow(color: Color.black.opacity(0.18), radius: 2, y: 1)
+                                .foregroundColor(viewModel.isSpeechEnabled ? .black : .primary)
+                        }
+                        .accessibilityLabel(viewModel.isSpeechEnabled ? "Turn off speech announcements" : "Turn on speech announcements")
+                        .accessibilityHint("Controls automatic object detection announcements")
+                        .accessibilityValue(viewModel.isSpeechEnabled ? "Speech enabled" : "Speech disabled")
+                        
+                        Button(action: {
+                            guard buttonDebouncer.canPress() else { return }
+                            withAnimation(.spring(response: 0.3)) {
+                                showConfidenceSlider.toggle()
+                            }
+                        }) {
+                            VStack(spacing: 2) {
+                                Image(systemName: "eye")
+                                    .font(.system(size: 20, weight: .medium))
+                                Text("\(Int(viewModel.confidenceThreshold * 100))%")
+                                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                            }
+                            .foregroundColor(.primary)
+                            .frame(width: 44, height: 44)
+                            .background(.ultraThinMaterial.opacity(0.20))
+                            .clipShape(Circle())
+                        }
+                        .overlay(
+                            confidenceSliderOverlay(isPortrait: true)
                         )
-                        .shadow(color: Color.black.opacity(0.18), radius: 4, y: 2)
-                        .foregroundColor(viewModel.isSpeechEnabled ? .black : .primary)
-                }
-                .accessibilityLabel(viewModel.isSpeechEnabled ? "Turn off speech announcements" : "Turn on speech announcements")
-                .accessibilityHint("Controls automatic object detection announcements")
-                .accessibilityValue(viewModel.isSpeechEnabled ? "Speech enabled" : "Speech disabled")
-                
-                Button(action: {
-                    guard buttonDebouncer.canPress() else { return }
-                    withAnimation(.spring(response: 0.3)) {
-                        showConfidenceSlider.toggle()
                     }
-                }) {
-                    VStack(spacing: 2) {
-                        Image(systemName: "eye")
-                            .font(.system(size: 22, weight: .medium))
-                        Text("\(Int(viewModel.confidenceThreshold * 100))%")
-                            .font(.system(size: 14, weight: .bold, design: .rounded))
-                    }
-                    .foregroundColor(.primary)
-                    .frame(width: 48, height: 48)
-                    .background(.ultraThinMaterial.opacity(0.20))
-                    .clipShape(Circle())
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 32) // Updated bottom padding here
                 }
-                .overlay(
-                    confidenceSliderOverlay(isPortrait: true)
-                )
-                
-                Spacer()
+                .background(.black.opacity(0.001)) // Keep safe-area contrast, allows taps
             }
-            .padding(.horizontal, 32)
-            .padding(.bottom, 36)
-        }
     }
     
     @ViewBuilder

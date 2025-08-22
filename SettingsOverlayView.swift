@@ -203,7 +203,10 @@ struct SettingsOverlayView: View {
                             } else {
                                 Text("• 🤏 Pinch to zoom the camera")
                                 Text("• 📋 Copy detected/translated text")
-                                Text("• 💬 Show/hide text overlay")
+                                HStack {
+                                    Image(systemName: "arrow.clockwise")
+                                    Text("Reset/Stop — Clears text, translation, and stops speaking")
+                                }
                                 Text("• 🗣️ Speak detected/translated text")
                                 Text("• 🔦 Adjust flashlight")
                                 Text("• 🌎 Toggle wide/ultra-wide lens")
