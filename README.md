@@ -15,7 +15,7 @@ Built specifically for **iPhone** • Works **100% offline** • Privacy-first d
 
 <div align="center">
 
-## 🌟 [🎨 Shop Nice Dreamz →](https://nicedreamzwholesale.com/github-realtime-ai-camera/)  
+## 🌟 [🎨 Nice Dreamz apps product page →](https://nicedreamzwholesale.com/github-realtime-ai-camera/)  
 *brought to you by NiceDreamzApps*
 
 </div>
