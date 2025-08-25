@@ -54,7 +54,7 @@ Built specifically for **iPhone** • Works **100% offline** • Privacy-first d
 ![Works Offline](https://img.shields.io/badge/Works_Offline-100%25-brightgreen?style=for-the-badge)
 ![Privacy Focused](https://img.shields.io/badge/Privacy-First-red?style=for-the-badge&logo=shield)
 ![GPL-3.0 License](https://img.shields.io/badge/License-GPL--3.0-blue?style=for-the-badge)
-![Active Development](https://img.shields.io/badge/Status-Active_Development-brightgreen?style=for-the-badge)
+![On App Store Now](https://img.shields.io/badge/Status-Active_Development-brightgreen?style=for-the-badge)
 
 </div>
 
