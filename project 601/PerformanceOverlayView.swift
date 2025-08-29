@@ -4,25 +4,25 @@ struct PerformanceOverlayView: View {
     let fps: Double
     let objectCount: Int
     let isPortrait: Bool
-    
+
     // Dynamic color based on FPS performance
     private var fpsColor: Color {
         switch fps {
-        case 0..<15: return .red
-        case 15..<25: return .orange
-        case 25..<30: return .yellow
-        default: return .green
+        case 0 ..< 15: .red
+        case 15 ..< 25: .orange
+        case 25 ..< 30: .yellow
+        default: .green
         }
     }
-    
+
     // Dynamic color based on object count
     private var objectCountColor: Color {
         switch objectCount {
-        case 0: return .gray
-        case 1...3: return .blue
-        case 4...6: return .orange
-        case 7...10: return .red
-        default: return .purple
+        case 0: .gray
+        case 1 ... 3: .blue
+        case 4 ... 6: .orange
+        case 7 ... 10: .red
+        default: .purple
         }
     }
 
@@ -56,7 +56,7 @@ struct PerformanceOverlayView: View {
                         .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 4)
                 )
             }
-            
+
             // FPS Indicator
             HStack(spacing: 6) {
                 Image(systemName: "speedometer")
@@ -91,6 +91,7 @@ struct PerformanceOverlayView: View {
 }
 
 // MARK: - Preview
+
 #Preview {
     ZStack {
         Color.gray

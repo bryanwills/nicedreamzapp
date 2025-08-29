@@ -1,28 +1,31 @@
 import AVFoundation
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Speech Manager (CONSOLIDATED - ONLY SPEECH SYSTEM IN APP)
+
 class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
-    
     // MARK: - Singleton Pattern to Prevent Multiple Instances
+
     static let shared = SpeechManager()
-    
+
     // MARK: - Constants
+
     private enum Constants {
-        static let announcementInterval: TimeInterval = 1.0  // Between announcement cycles
-        static let classCooldown: TimeInterval = 45.0  // Back to 45 seconds as requested
+        static let announcementInterval: TimeInterval = 1.0 // Between announcement cycles
+        static let classCooldown: TimeInterval = 45.0 // Back to 45 seconds as requested
         static let defaultVoiceKey = "selectedVoice"
-        static let interObjectDelay: TimeInterval = 0.8  // Delay between objects in queue
+        static let interObjectDelay: TimeInterval = 0.8 // Delay between objects in queue
     }
-    
+
     // MARK: - Properties
+
     private let speechSynthesizer = AVSpeechSynthesizer()
     private var announcementQueue: [String] = []
     private var isProcessingQueue = false
     private var lastAnnouncementTime = Date.distantPast
-    private var lastSpokenByClass: [String: Date] = [:]  // Track by class name
-    
+    private var lastSpokenByClass: [String: Date] = [:] // Track by class name
+
     @Published var isSpeaking = false
     @Published var isSpeechEnabled = false
     @Published var selectedVoiceIdentifier: String {
@@ -30,12 +33,13 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
             UserDefaults.standard.set(selectedVoiceIdentifier, forKey: Constants.defaultVoiceKey)
         }
     }
-    
+
     // MARK: - Voice Properties
+
     var availableEnglishVoices: [AVSpeechSynthesisVoice] {
         let preferredLanguages = ["en-US", "en-GB", "en-AU", "en-IE", "en-ZA"]
         let preferredNames = ["Samantha", "Daniel", "Moira", "Karen", "Tessa", "Serena"]
-        
+
         return AVSpeechSynthesisVoice.speechVoices()
             .filter { preferredLanguages.contains($0.language) }
             .filter { voice in
@@ -46,19 +50,21 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
             .prefix(6)
             .map { $0 }
     }
-    
+
     // MARK: - Initialization
+
     override init() {
-        self.selectedVoiceIdentifier = UserDefaults.standard.string(forKey: Constants.defaultVoiceKey)
+        selectedVoiceIdentifier = UserDefaults.standard.string(forKey: Constants.defaultVoiceKey)
             ?? AVSpeechSynthesisVoice(language: "en-US")?.identifier ?? ""
         super.init()
-        
+
         // CRITICAL: Set up audio session and delegate
         setupAudioSession()
         speechSynthesizer.delegate = self
     }
-    
+
     // MARK: - Audio Session Setup
+
     private func setupAudioSession() {
         do {
             let audioSession = AVAudioSession.sharedInstance()
@@ -68,28 +74,29 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
             // Audio session setup failed - silently ignore
         }
     }
-    
+
     // MARK: - Enhanced Detection Speech Processing (UPDATED FOR LIDAR + POSITION)
+
     func processDetectionsForSpeech(_ detections: [YOLODetection], lidarManager: LiDARManager) {
         guard isSpeechEnabled else { return }
-        
+
         let now = Date()
-        
+
         // Check timing
         let timeSinceLastAnnouncement = now.timeIntervalSince(lastAnnouncementTime)
         guard timeSinceLastAnnouncement >= Constants.announcementInterval else { return }
-        
+
         // Don't interrupt current speech
-        guard !isSpeaking && !isProcessingQueue else { return }
-        
+        guard !isSpeaking, !isProcessingQueue else { return }
+
         // Find new objects to announce - NO NORMALIZATION, USE EXACT NAMES
         var objectsToAnnounce: [String] = []
-        
+
         for detection in detections {
-            let exactObjectName = detection.className  // Use exact name, no normalization
+            let exactObjectName = detection.className // Use exact name, no normalization
             let lastSpoken = lastSpokenByClass[exactObjectName] ?? .distantPast
             let timeSinceSpoken = now.timeIntervalSince(lastSpoken)
-            
+
             // Only announce if this EXACT object name hasn't been spoken recently
             if timeSinceSpoken >= Constants.classCooldown {
                 // BUILD SPEECH STRING BASED ON LIDAR STATUS
@@ -98,54 +105,57 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
                 lastSpokenByClass[exactObjectName] = now
             }
         }
-        
+
         lastAnnouncementTime = now
-        
+
         // Start queue if we have objects
         if !objectsToAnnounce.isEmpty {
             announcementQueue = objectsToAnnounce
             processNextInQueue()
         }
-        
+
         cleanupOldEntries(now: now)
     }
-    
+
     // MARK: - NEW: Build Speech Text Based on LiDAR Status
+
     private func buildSpeechText(for detection: YOLODetection, lidarManager: LiDARManager) -> String {
         let objectName = detection.className.lowercased()
-        
+
         // Check if LiDAR is active and enabled
-        if lidarManager.isEnabled && lidarManager.isRunning {
+        if lidarManager.isEnabled, lidarManager.isRunning {
             let center = CGPoint(x: detection.rect.midX, y: detection.rect.midY)
-            
+
             // Try to get distance reading
             if let distanceFeet = lidarManager.distanceFeet(at: center),
-               distanceFeet >= 1 && distanceFeet <= 20 {
-                
+               distanceFeet >= 1, distanceFeet <= 20
+            {
                 // Get position (L/R/C) based on center point
                 let position = LiDARManager.horizontalBucket(forNormalizedX: center.x)
                 let positionWord = convertPositionToWord(position)
-                
+
                 // Format: "bottle left 3 feet"
                 return "\(objectName) \(positionWord) \(distanceFeet) feet"
             }
         }
-        
+
         // Fallback: just object name (no confidence)
         return objectName
     }
-    
+
     // MARK: - NEW: Convert L/R/C to spoken words
+
     private func convertPositionToWord(_ position: String) -> String {
         switch position {
-        case "L": return "left"
-        case "R": return "right"
-        case "C": return "center"
-        default: return "center"
+        case "L": "left"
+        case "R": "right"
+        case "C": "center"
+        default: "center"
         }
     }
-    
+
     // MARK: - Queue Processing
+
     private func processNextInQueue() {
         guard !announcementQueue.isEmpty, !isSpeaking, isSpeechEnabled else {
             if announcementQueue.isEmpty {
@@ -153,14 +163,15 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
             }
             return
         }
-        
+
         isProcessingQueue = true
         let nextObject = announcementQueue.removeFirst()
-        
+
         announceObject(nextObject)
     }
-    
+
     // MARK: - Cleanup Old Entries
+
     private func cleanupOldEntries(now: Date) {
         // Remove entries older than 60 seconds to prevent memory buildup
         let cutoffTime = now.addingTimeInterval(-60.0)
@@ -168,11 +179,12 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
             lastTime > cutoffTime
         }
     }
-    
+
     // MARK: - Speech Announcements
+
     private func announceObject(_ text: String) {
         guard !isSpeaking else { return }
-        
+
         let utterance = AVSpeechUtterance(string: text)
         if let chosenVoice = AVSpeechSynthesisVoice(identifier: selectedVoiceIdentifier) {
             utterance.voice = chosenVoice
@@ -180,9 +192,9 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
         utterance.rate = 0.56
         utterance.pitchMultiplier = 1.0
         utterance.volume = 0.9
-        
+
         speechSynthesizer.speak(utterance)
-        
+
         // Safety timeout - force continue if delegate fails
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
             if self?.isSpeaking == true {
@@ -191,18 +203,19 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
             }
         }
     }
-    
+
     // MARK: - Public Speech Methods (REPLACE ALL OTHER SPEECH SYSTEMS)
+
     func speak(_ text: String) {
         // Stop current speech if any
         if speechSynthesizer.isSpeaking {
             speechSynthesizer.stopSpeaking(at: .immediate)
         }
-        
+
         // Clear queue
         announcementQueue.removeAll()
         isProcessingQueue = false
-        
+
         let utterance = AVSpeechUtterance(string: text)
         if let chosenVoice = AVSpeechSynthesisVoice(identifier: selectedVoiceIdentifier) {
             utterance.voice = chosenVoice
@@ -212,12 +225,12 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
         utterance.rate = 0.5
         speechSynthesizer.speak(utterance)
     }
-    
+
     func announceSpeechEnabled() {
         // Clear any existing queue
         announcementQueue.removeAll()
         isProcessingQueue = false
-        
+
         let utterance = AVSpeechUtterance(string: "Speech enabled")
         if let chosenVoice = AVSpeechSynthesisVoice(identifier: selectedVoiceIdentifier) {
             utterance.voice = chosenVoice
@@ -226,16 +239,16 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
         utterance.volume = 0.9
         speechSynthesizer.speak(utterance)
     }
-    
+
     func playWelcomeMessage() {
         if speechSynthesizer.isSpeaking {
             speechSynthesizer.stopSpeaking(at: .immediate)
         }
-        
+
         // Clear queue
         announcementQueue.removeAll()
         isProcessingQueue = false
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             let utterance = AVSpeechUtterance(string: "Welcome to the real-time AI iOS Detection app. Thank you for choosing this voice!")
             if let chosenVoice = AVSpeechSynthesisVoice(identifier: self.selectedVoiceIdentifier) {
@@ -246,14 +259,15 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
             self.speechSynthesizer.speak(utterance)
         }
     }
-    
+
     // MARK: - Instructions Speech
+
     func speakInstructions(supportsLiDAR: Bool) {
         var instructions = [
             "Welcome to the RealTime AI Camera.",
             "Object Detection mode detects and labels up to six hundred and one objects in real time.",
             "English OCR mode reads printed English text aloud.",
-            "Spanish to English mode translates printed Spanish text into English and reads it aloud."
+            "Spanish to English mode translates printed Spanish text into English and reads it aloud.",
         ]
 
         if supportsLiDAR {
@@ -274,26 +288,28 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
             "Toggle text overlay on or off.",
             "Speak detected or translated text aloud.",
             "Copy text to the history for later use.",
-            "Tap 'Play Complete Audio Tutorial' any time to hear these instructions again."
+            "Tap 'Play Complete Audio Tutorial' any time to hear these instructions again.",
         ])
 
         speak(instructions.joined(separator: " "))
     }
-    
+
     // MARK: - Speech Control
+
     func stopSpeech() {
         speechSynthesizer.stopSpeaking(at: .immediate)
         isSpeaking = false
         isProcessingQueue = false
         announcementQueue.removeAll()
         lastAnnouncementTime = .distantPast
-        isSpeechEnabled = false  // Force-disable speech; prevents any late callback from speaking again
+        isSpeechEnabled = false // Force-disable speech; prevents any late callback from speaking again
     }
-    
+
     // MARK: - Reset Methods
+
     func resetSpeechState() {
         lastAnnouncementTime = .distantPast
-        lastSpokenByClass.removeAll()  // Clear class cooldowns
+        lastSpokenByClass.removeAll() // Clear class cooldowns
         isSpeaking = false
         isProcessingQueue = false
         announcementQueue.removeAll()
@@ -301,14 +317,15 @@ class SpeechManager: NSObject, ObservableObject, @unchecked Sendable {
 }
 
 // MARK: - AVSpeechSynthesizerDelegate
+
 extension SpeechManager: AVSpeechSynthesizerDelegate {
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
+    func speechSynthesizer(_: AVSpeechSynthesizer, didStart _: AVSpeechUtterance) {
         DispatchQueue.main.async { [weak self] in
             self?.isSpeaking = true
         }
     }
-    
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+
+    func speechSynthesizer(_: AVSpeechSynthesizer, didFinish _: AVSpeechUtterance) {
         DispatchQueue.main.async { [weak self] in
             self?.isSpeaking = false
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interObjectDelay) {
@@ -316,8 +333,8 @@ extension SpeechManager: AVSpeechSynthesizerDelegate {
             }
         }
     }
-    
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+
+    func speechSynthesizer(_: AVSpeechSynthesizer, didCancel _: AVSpeechUtterance) {
         DispatchQueue.main.async { [weak self] in
             self?.isSpeaking = false
             self?.isProcessingQueue = false
@@ -325,4 +342,3 @@ extension SpeechManager: AVSpeechSynthesizerDelegate {
         }
     }
 }
-

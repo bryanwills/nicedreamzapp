@@ -1,30 +1,30 @@
-import SwiftUI
 import AVFoundation
+import SwiftUI
 
 struct HomeView: View {
     @ObservedObject var viewModel: CameraViewModel
     @Binding var animationState: ContentView.AnimationState
     @Binding var mode: ContentView.Mode
     @State private var showInstructions = false
-    
+
     @StateObject var buttonDebouncer: ButtonPressDebouncer
-    
+
     let onEnglishOCR: () -> Void
     let onSpanishOCR: () -> Void
     let onObjectDetection: () -> Void
     let onVoiceChange: () -> Void
     let speechSynthesizer: AVSpeechSynthesizer
-    
+
     var body: some View {
         ZStack {
             splashBackground
-            
+
             VStack {
                 Spacer(minLength: 80)
                 VStack(spacing: 12) {
                     HeadingView(animateIn: animationState.heading)
                     Spacer(minLength: 30)
-                    GeometryReader { geometry in
+                    GeometryReader { _ in
                         VStack(spacing: 18) {
                             englishOCRButton
                             spanishOCRButton
@@ -39,7 +39,7 @@ struct HomeView: View {
                 .padding(.horizontal)
                 Spacer(minLength: 50)
             }
-            
+
             infoButton
         }
         .sheet(isPresented: $showInstructions) {
@@ -65,25 +65,25 @@ struct HomeView: View {
             } else {
                 animationState.showAll()
             }
-            
+
             if !UserDefaults.standard.bool(forKey: "hasShownInstructions") {
                 showInstructions = true
                 UserDefaults.standard.set(true, forKey: "hasShownInstructions")
             }
         }
     }
-    
+
     // MARK: - View Components
-    
+
     private var splashBackground: some View {
-        GeometryReader { geometry in
+        GeometryReader { _ in
             Image("SplashScreen")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea(.all, edges: .all)
         }
     }
-    
+
     private var englishOCRButton: some View {
         Button(action: {
             guard buttonDebouncer.canPress() else { return }
@@ -111,7 +111,7 @@ struct HomeView: View {
         .accessibilityHint("Point camera at English text to read it aloud")
         .accessibilityAddTraits(.isButton)
     }
-    
+
     private var spanishOCRButton: some View {
         Button(action: {
             guard buttonDebouncer.canPress() else { return }
@@ -142,7 +142,7 @@ struct HomeView: View {
         .accessibilityHint("Point camera at Spanish text to translate and speak in English")
         .accessibilityAddTraits(.isButton)
     }
-    
+
     private var objectDetectionButton: some View {
         Button(action: {
             guard buttonDebouncer.canPress() else { return }
@@ -169,7 +169,7 @@ struct HomeView: View {
         .accessibilityHint("Identify objects around you and hear them announced")
         .accessibilityAddTraits(.isButton)
     }
-    
+
     private var voicePicker: some View {
         AnimatedVoicePicker(
             viewModel: viewModel,
@@ -181,7 +181,7 @@ struct HomeView: View {
             _ = buttonDebouncer.canPress()
         }
     }
-    
+
     private var infoButton: some View {
         Button(action: {
             guard buttonDebouncer.canPress() else { return }
@@ -203,12 +203,12 @@ struct HomeView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
         .padding()
     }
-    
+
     // MARK: - Helper Methods
-    
+
     private func animateInSequence() {
         animationState.reset()
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
             animationState.splash = true
         }

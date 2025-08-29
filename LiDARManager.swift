@@ -1,61 +1,62 @@
 // LiDARManager.swift - RESTORED WORKING VERSION
-import Foundation
 import AVFoundation
-import CoreVideo
 import Combine
+import CoreVideo
+import Foundation
 import UIKit
 
 private extension Comparable {
     func clamped(to limits: ClosedRange<Self>) -> Self {
-        return min(max(self, limits.lowerBound), limits.upperBound)
+        min(max(self, limits.lowerBound), limits.upperBound)
     }
 }
 
 /// LiDAR state manager with actual depth processing
 final class LiDARManager: NSObject, ObservableObject {
     // MARK: - Singleton
+
     static let shared = LiDARManager()
 
     // MARK: - Public state
+
     @Published private(set) var isSupported: Bool = false
     @Published private(set) var isRunning: Bool = false
     @Published var isEnabled: Bool = false
     @Published private(set) var isAvailable: Bool = false
-    
+
     var isActive: Bool {
-        return isEnabled && isAvailable
+        isEnabled && isAvailable
     }
 
     // MARK: - Private
+
     private var latestDepthData: AVDepthData?
     private let processingQueue = DispatchQueue(label: "lidar.processing", qos: .userInitiated)
     private var depthHistory: [UUID: [Double]] = [:]
     private let maxHistorySize = 7
-    
+
     // MARK: - Init
-    private override init() {
+
+    override private init() {
         super.init()
-        
+
         // Force immediate support check
         checkSupport()
-        
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(handleReduceQualityForMemory), name: .reduceQualityForMemory, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleReduceFrameRate), name: .reduceFrameRate, object: nil)
     }
-    
+
     @objc private func handleReduceQualityForMemory() {
         DispatchQueue.main.async { [weak self] in
             self?.latestDepthData = nil
             self?.depthHistory.removeAll()
         }
     }
-    
-    @objc private func handleReduceFrameRate() {
-    }
-    
+
+    @objc private func handleReduceFrameRate() {}
+
     private func checkSupport() {
-        
         // First check for dedicated LiDAR camera (iPhone 12 Pro+, iPhone 13 Pro+, iPhone 14 Pro+, iPhone 15 Pro+)
         if AVCaptureDevice.default(.builtInLiDARDepthCamera, for: .video, position: .back) != nil {
             DispatchQueue.main.async {
@@ -63,7 +64,7 @@ final class LiDARManager: NSObject, ObservableObject {
             }
             return
         }
-        
+
         // Fallback check for other depth-capable devices
         let discoverySession = AVCaptureDevice.DiscoverySession(
             deviceTypes: [
@@ -71,61 +72,60 @@ final class LiDARManager: NSObject, ObservableObject {
                 .builtInDualCamera,
                 .builtInDualWideCamera,
                 .builtInTripleCamera,
-                .builtInWideAngleCamera
+                .builtInWideAngleCamera,
             ],
             mediaType: .video,
             position: .back
         )
-        
-        
+
         for device in discoverySession.devices {
-            
-            
             if !device.activeFormat.supportedDepthDataFormats.isEmpty {
                 DispatchQueue.main.async {
                     self.isSupported = true
                 }
                 return
             }
-            
+
             if device.deviceType == .builtInTrueDepthCamera ||
-               device.deviceType == .builtInDualCamera ||
-               device.deviceType == .builtInDualWideCamera ||
-               device.deviceType == .builtInTripleCamera {
+                device.deviceType == .builtInDualCamera ||
+                device.deviceType == .builtInDualWideCamera ||
+                device.deviceType == .builtInTripleCamera
+            {
                 DispatchQueue.main.async {
                     self.isSupported = true
                 }
                 return
             }
         }
-        
+
         DispatchQueue.main.async {
             self.isSupported = false
         }
     }
 
     // MARK: - Control
+
     func setEnabled(_ enabled: Bool) {
         DispatchQueue.main.async { [weak self] in
             self?.isEnabled = enabled
             self?.isRunning = enabled
         }
     }
-    
+
     /// Manual support check - call this if button doesn't appear
     func recheckSupport() {
         checkSupport()
     }
-    
+
     func toggle() {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            let newState = !self.isEnabled
-            self.isEnabled = newState
-            self.isRunning = newState
-            
+            guard let self else { return }
+            let newState = !isEnabled
+            isEnabled = newState
+            isRunning = newState
+
             if !newState {
-                self.latestDepthData = nil
+                latestDepthData = nil
             }
         }
     }
@@ -133,9 +133,9 @@ final class LiDARManager: NSObject, ObservableObject {
     func setAvailable(_ available: Bool) {
         DispatchQueue.main.async { [weak self] in
             self?.isAvailable = available
-            if !available && self?.isEnabled == true {
+            if !available, self?.isEnabled == true {
                 self?.isRunning = false
-            } else if available && self?.isEnabled == true {
+            } else if available, self?.isEnabled == true {
                 self?.isRunning = true
             }
         }
@@ -147,7 +147,7 @@ final class LiDARManager: NSObject, ObservableObject {
             self?.isRunning = true
         }
     }
-    
+
     func stop() {
         DispatchQueue.main.async { [weak self] in
             self?.isEnabled = false
@@ -155,14 +155,15 @@ final class LiDARManager: NSObject, ObservableObject {
             self?.latestDepthData = nil
         }
     }
-    
+
     // MARK: - Depth Data Update (called by CameraViewModel)
+
     func updateDepthData(_ depthData: AVDepthData) {
         guard isEnabled else {
             // print("LiDAR: Depth data received but LiDAR is disabled")
             return
         }
-        self.latestDepthData = depthData
+        latestDepthData = depthData
         // Suppressed frequent per-frame depth data size print to avoid console spamming
         // print("LiDAR: Depth data updated - size: \(width)x\(height)")
     }
@@ -175,9 +176,9 @@ final class LiDARManager: NSObject, ObservableObject {
             // print("LiDAR: No depth data available")
             return nil
         }
-        
+
         var allDepths: [Double] = []
-        
+
         for yOffset in stride(from: -0.04, through: 0.04, by: 0.02) {
             for xOffset in stride(from: -0.04, through: 0.04, by: 0.02) {
                 let samplePoint = CGPoint(
@@ -185,28 +186,29 @@ final class LiDARManager: NSObject, ObservableObject {
                     y: max(0, min(1, pt.y + yOffset))
                 )
                 if let depth = sampleSinglePoint(samplePoint, from: depthData) {
-                    if depth > 0.3 && depth < 10.0 && depth.isFinite {
+                    if depth > 0.3, depth < 10.0, depth.isFinite {
                         allDepths.append(depth)
                     }
                 }
             }
         }
-        
+
         guard !allDepths.isEmpty else {
             // print("LiDAR: No valid samples found")
             return nil
         }
-        
+
         allDepths.sort()
         let medianDepth = allDepths[allDepths.count / 2]
-        
+
         // Suppressed per-call detailed depth sample print to reduce console spam
         // print("LiDAR: Sampled \(allDepths.count) points, depths range from \(allDepths.first!)m to \(allDepths.last!)m, using median: \(medianDepth)m = \(Int(medianDepth * 3.28))ft")
-        
+
         return medianDepth
     }
 
     // MARK: - Multi-point sampling helper (pixel buffer read)
+
     private func sampleSinglePoint(_ pt: CGPoint, from depthData: AVDepthData) -> Double? {
         let depthMap = depthData.depthDataMap
         let width = CVPixelBufferGetWidth(depthMap)
@@ -220,34 +222,34 @@ final class LiDARManager: NSObject, ObservableObject {
         guard let baseAddress = CVPixelBufferGetBaseAddress(depthMap) else { return nil }
         let pixelFormat = CVPixelBufferGetPixelFormatType(depthMap)
         var depthValue: Float = 0
-        
+
         switch pixelFormat {
         case kCVPixelFormatType_DisparityFloat32:
             let rowData = baseAddress + y * CVPixelBufferGetBytesPerRow(depthMap)
             let depthPointer = rowData.assumingMemoryBound(to: Float32.self)
             let disparity = depthPointer[x]
             depthValue = 1.0 / disparity
-            
+
         case kCVPixelFormatType_DepthFloat32:
             let rowData = baseAddress + y * CVPixelBufferGetBytesPerRow(depthMap)
             let depthPointer = rowData.assumingMemoryBound(to: Float32.self)
             depthValue = depthPointer[x]
-            
+
         case kCVPixelFormatType_DisparityFloat16:
             let rowData = baseAddress + y * CVPixelBufferGetBytesPerRow(depthMap)
             let depthPointer = rowData.assumingMemoryBound(to: Float16.self)
             let disparity = Float(depthPointer[x])
             depthValue = 1.0 / disparity
-            
+
         case kCVPixelFormatType_DepthFloat16:
             let rowData = baseAddress + y * CVPixelBufferGetBytesPerRow(depthMap)
             let depthPointer = rowData.assumingMemoryBound(to: Float16.self)
             depthValue = Float(depthPointer[x])
-            
+
         default:
             return nil
         }
-        
+
         guard depthValue > 0, depthValue.isFinite else {
             // print("LiDAR: Invalid depth value: \(depthValue)")
             return nil
@@ -287,7 +289,7 @@ final class LiDARManager: NSObject, ObservableObject {
     func cleanupOldHistories(currentDetectionIds: Set<UUID>) {
         depthHistory.keys.filter { !currentDetectionIds.contains($0) }.forEach { depthHistory.removeValue(forKey: $0) }
     }
-    
+
     /// Convenience method to get distance in feet
     func distanceFeet(at normalizedPoint: CGPoint) -> Int? {
         guard let meters = distanceInMeters(atNormalizedPoint: normalizedPoint) else {
@@ -325,10 +327,10 @@ final class LiDARManager: NSObject, ObservableObject {
 }
 
 // MARK: - LiDARDepthProviding Protocol Conformance
+
 extension LiDARManager: LiDARDepthProviding {
     func depthInMeters(at normalizedPoint: CGPoint) -> Float? {
         guard let meters = distanceInMeters(atNormalizedPoint: normalizedPoint) else { return nil }
         return Float(meters)
     }
 }
-

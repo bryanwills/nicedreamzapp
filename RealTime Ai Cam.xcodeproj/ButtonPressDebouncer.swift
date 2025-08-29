@@ -9,7 +9,7 @@ import SwiftUI
 final class ButtonPressDebouncer: ObservableObject {
     private var lastTapDate: Date = .distantPast
     private let minimumInterval: TimeInterval
-    
+
     /// Create a new debouncer. Default = 500ms between taps.
     init(minimumInterval: TimeInterval = 0.5) {
         self.minimumInterval = minimumInterval

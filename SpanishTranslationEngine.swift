@@ -1,6 +1,7 @@
 import Foundation
 
 // MARK: - JSON Models (All shared types in one place)
+
 private struct ESMetadata: Decodable {
     let cleaned: Bool?
     let language_pair: String?
@@ -40,7 +41,7 @@ private struct AnyDecodable: Decodable {
         if let dict = try? c.decode([String: AnyDecodable].self) {
             value = dict.mapValues { $0.value }
         } else if let arr = try? c.decode([AnyDecodable].self) {
-            value = arr.map { $0.value }
+            value = arr.map(\.value)
         } else if let s = try? c.decode(String.self) {
             value = s
         } else if let i = try? c.decode(Int.self) {
@@ -56,6 +57,7 @@ private struct AnyDecodable: Decodable {
 }
 
 // MARK: - Aho-Corasick-lite phrase matcher
+
 final class PhraseMatcher {
     private var phraseMap: [String: String] = [:]
     private var lengths: [Int] = []
@@ -65,14 +67,16 @@ final class PhraseMatcher {
             let nk = PhraseMatcher.normalize(k)
             if !nk.isEmpty { norm[nk] = v }
         }
-        self.phraseMap = norm
-        self.lengths = Set(norm.keys.map { $0.split(separator: " ").count }).sorted(by: >)
+        phraseMap = norm
+        lengths = Set(norm.keys.map { $0.split(separator: " ").count }).sorted(by: >)
     }
+
     private static func normalize(_ s: String) -> String {
         s.lowercased()
-         .replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
-         .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
+
     func match(tokens: [String]) -> [(String, String?)] {
         var i = 0
         var out: [(String, String?)] = []
@@ -80,7 +84,7 @@ final class PhraseMatcher {
             var matched = false
             for L in lengths {
                 guard i + L <= tokens.count else { continue }
-                let span = tokens[i..<(i+L)].joined(separator: " ")
+                let span = tokens[i ..< (i + L)].joined(separator: " ")
                 if let eng = phraseMap[span] {
                     out.append((span, eng))
                     i += L
@@ -95,11 +99,13 @@ final class PhraseMatcher {
 }
 
 // MARK: - Text Domain Detection
+
 enum TextDomain {
     case restaurant, signage, narrative, general
 }
 
 // MARK: - Translation Result Models
+
 struct TranslationResult {
     let text: String
     let confidence: Double
@@ -107,14 +113,15 @@ struct TranslationResult {
 }
 
 // MARK: - Static Spanish Processor
+
 @MainActor
 final class SpanishTranslationProcessor {
     static let shared = SpanishTranslationProcessor()
 
     // Core stores
-    private var dict: [String: String] = [:]                    // surface (lowercased) → translation
+    private var dict: [String: String] = [:] // surface (lowercased) → translation
     private var phraseMatcher: PhraseMatcher?
-    private var reflexiveMap: [String: String] = [:]            // "se vende" → "for sale"
+    private var reflexiveMap: [String: String] = [:] // "se vende" → "for sale"
 
     // Compiled regex packs (from JSON)
     private var compiledGeneral: [(NSRegularExpression, String)] = []
@@ -138,13 +145,14 @@ final class SpanishTranslationProcessor {
     private init() { Task { await loadSpanishData() } }
 
     // MARK: - Public Translation Methods (Using your exact method names!)
+
     func interpretSpanishWithContext(_ text: String) -> String {
         guard isLoaded else { return text }
         let cacheKey = normalizeKey(text)
         if let cached = cache[cacheKey] {
             return cached
         }
-        
+
         let domain = detectDomain(text)
         let sentences = splitIntoSentences(text)
         let batches = batchSentences(sentences, targetChars: 2200)
@@ -162,7 +170,7 @@ final class SpanishTranslationProcessor {
         cache[cacheKey] = result
         return result
     }
-    
+
     func interpretSpanishWithConfidence(_ text: String) -> TranslationResult {
         guard isLoaded else { return .init(text: text, confidence: 0, unknownTokens: []) }
         let domain = detectDomain(text)
@@ -189,6 +197,7 @@ final class SpanishTranslationProcessor {
     }
 
     // MARK: - Core Translation Methods (Your exact working logic!)
+
     private func translateBatch(_ text: String, domain: TextDomain) -> String {
         let tokens = tokenize(text.replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression))
         let phraseApplied = phraseMatcher?.match(tokens: tokens.map { $0.lowercased() }) ?? tokens.map { ($0.lowercased(), nil) }
@@ -220,10 +229,10 @@ final class SpanishTranslationProcessor {
         }
 
         // Built-ins first (surgical, deterministic)
-        out = applyRulePack(builtinPriceAndUnits, to: out)         // price/unit
-        out = applyRulePack(builtinMenuLexicon, to: out)           // menu lexicon
-        out = applyRulePack(builtinAlInfinitivo, to: out)          // al + infinitivo
-        out = applyRulePack(builtinPrepositions, to: out)          // prepositions & OCRish
+        out = applyRulePack(builtinPriceAndUnits, to: out) // price/unit
+        out = applyRulePack(builtinMenuLexicon, to: out) // menu lexicon
+        out = applyRulePack(builtinAlInfinitivo, to: out) // al + infinitivo
+        out = applyRulePack(builtinPrepositions, to: out) // prepositions & OCRish
 
         // JSON packs
         out = applyRulePack(compiledGeneral, to: out)
@@ -245,7 +254,7 @@ final class SpanishTranslationProcessor {
         out = finalize(out)
         return out
     }
-    
+
     private func translateBatchTelemetry(_ text: String, domain: TextDomain) -> (String, [String], Int, Int) {
         let tokens = tokenize(text.replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression))
         let phraseApplied = phraseMatcher?.match(tokens: tokens.map { $0.lowercased() }) ?? tokens.map { ($0.lowercased(), nil) }
@@ -292,7 +301,7 @@ final class SpanishTranslationProcessor {
         out = finalize(out)
         return (out, unknowns, total, translated)
     }
-    
+
     private func applyRulePack(_ pack: [(NSRegularExpression, String)], to text: String) -> String {
         guard !pack.isEmpty else { return text }
         var s = text
@@ -303,13 +312,14 @@ final class SpanishTranslationProcessor {
     }
 
     // MARK: - Text Processing Utilities (Your exact methods)
+
     private func detectDomain(_ text: String) -> TextDomain {
         let t = text.lowercased()
-        let menuHits = ["menú","menu","plato","platos","postre","entrante","bebida","bebidas","cuenta","€","euros","kilo","docena","kg","precio","oferta"]
+        let menuHits = ["menú", "menu", "plato", "platos", "postre", "entrante", "bebida", "bebidas", "cuenta", "€", "euros", "kilo", "docena", "kg", "precio", "oferta"]
             .filter { t.contains($0) }.count
-        let signHits = ["se vende","se alquila","prohibido","entrada","salida","cerrado","abierto","peligro","precaución","no fumar","no pasar"]
+        let signHits = ["se vende", "se alquila", "prohibido", "entrada", "salida", "cerrado", "abierto", "peligro", "precaución", "no fumar", "no pasar"]
             .filter { t.contains($0) }.count
-        let narrativeHits = ["ayer","mañana","me desperté","mientras","de pronto","cuando","entonces","luego","sonriendo","caminé","pensé","observé","—","\""]
+        let narrativeHits = ["ayer", "mañana", "me desperté", "mientras", "de pronto", "cuando", "entonces", "luego", "sonriendo", "caminé", "pensé", "observé", "—", "\""]
             .filter { t.contains($0) }.count
         let m = max(menuHits, signHits, narrativeHits)
         if m == 0 { return .general }
@@ -321,7 +331,7 @@ final class SpanishTranslationProcessor {
     private func splitIntoSentences(_ text: String) -> [String] {
         guard !text.isEmpty else { return [] }
         var s = text
-        let abbrs = ["Sr","Sra","Dr","Dra","etc","vs","pág","pp"]
+        let abbrs = ["Sr", "Sra", "Dr", "Dra", "etc", "vs", "pág", "pp"]
         for abbr in abbrs {
             s = s.replacingOccurrences(of: "\(abbr).", with: "\(abbr)<<DOT>>", options: .caseInsensitive)
         }
@@ -330,16 +340,16 @@ final class SpanishTranslationProcessor {
         var sentences: [String] = []
         var last = s.startIndex
         pattern.enumerateMatches(in: s, options: [], range: range) { m, _, _ in
-            guard let m = m else { return }
+            guard let m else { return }
             let r = Range(m.range, in: s)!
             let end = r.lowerBound
-            sentences.append(String(s[last..<end]))
+            sentences.append(String(s[last ..< end]))
             last = r.upperBound
         }
         sentences.append(String(s[last...]))
         sentences = sentences.map {
             $0.replacingOccurrences(of: "<<DOT>>", with: ".")
-             .trimmingCharacters(in: .whitespacesAndNewlines)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
         }.filter { !$0.isEmpty }
         return sentences
     }
@@ -366,6 +376,7 @@ final class SpanishTranslationProcessor {
     }
 
     // MARK: - Tokenizer & Finalizer (Your exact working methods)
+
     private func tokenize(_ s: String) -> [String] {
         var tokens: [String] = []
         var current = ""
@@ -387,16 +398,18 @@ final class SpanishTranslationProcessor {
         out = out.replacingOccurrences(of: #"([,\.!\?:;])([^\s\)\]\}])"#, with: "$1 $2", options: .regularExpression)
         out = out.replacingOccurrences(of: #"([\(\[\{])\s+"#, with: "$1", options: .regularExpression)
         out = out.replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
-                 .trimmingCharacters(in: .whitespacesAndNewlines)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
         // Capitalize sentence starts
         let sentenceEnd = CharacterSet(charactersIn: ".!?")
         var chars = Array(out)
         if let first = chars.first, first.isLetter { chars[0] = Character(String(first).capitalized) }
         var i = 1
         while i < chars.count {
-            if let u = chars[i-1].unicodeScalars.first, sentenceEnd.contains(u) {
+            if let u = chars[i - 1].unicodeScalars.first, sentenceEnd.contains(u) {
                 var j = i
-                while j < chars.count && chars[j].isWhitespace { j += 1 }
+                while j < chars.count, chars[j].isWhitespace {
+                    j += 1
+                }
                 if j < chars.count, chars[j].isLetter {
                     chars[j] = Character(String(chars[j]).capitalized)
                 }
@@ -407,11 +420,13 @@ final class SpanishTranslationProcessor {
     }
 
     // MARK: - Data Loading (Your exact JSON loading logic)
+
     private func loadSpanishData() async {
         // Load & decode JSON on main actor, then parse off main actor, then assign on main actor
         let (master, _) = await MainActor.run { () -> (ESMaster?, URL?) in
             guard let url = locateJSON(),
-                  let data = try? Data(contentsOf: url, options: .mappedIfSafe) else {
+                  let data = try? Data(contentsOf: url, options: .mappedIfSafe)
+            else {
                 print("⚠ Could not find/load es_final_with_rules*.json")
                 return (nil, nil)
             }
@@ -425,7 +440,7 @@ final class SpanishTranslationProcessor {
             }
         }
 
-        guard let master = master else { return }
+        guard let master else { return }
 
         // Process off-main actor
         var newDict: [String: String] = [:]
@@ -452,7 +467,9 @@ final class SpanishTranslationProcessor {
                 if let pdict = rawPhrases as? [String: String] {
                     phrases = pdict
                 } else if let parr = rawPhrases as? [[String: String]] {
-                    for row in parr { if let k = row["src"], let v = row["tgt"] { phrases[k] = v } }
+                    for row in parr {
+                        if let k = row["src"], let v = row["tgt"] { phrases[k] = v }
+                    }
                 }
             }
             // reflexives
@@ -495,7 +512,9 @@ final class SpanishTranslationProcessor {
 
         // Phrase matcher incl. multiword dict keys
         var phraseSource = phrases
-        for k in newDict.keys where k.contains(" ") { phraseSource[k] = newDict[k] }
+        for k in newDict.keys where k.contains(" ") {
+            phraseSource[k] = newDict[k]
+        }
         let matcher = phraseSource.isEmpty ? nil : PhraseMatcher(phrases: phraseSource)
 
         // Compile built-ins
@@ -508,15 +527,15 @@ final class SpanishTranslationProcessor {
             self.reflexiveMap = reflexives
             self.compiledGeneral = gen
             self.compiledDialogueFromJSON = diaJSON
-            self.compiledGrammar  = gra
-            self.compiledCleanup  = cle
+            self.compiledGrammar = gra
+            self.compiledCleanup = cle
 
-            self.builtinPriceAndUnits  = packs.priceUnits
-            self.builtinAlInfinitivo   = packs.alInf
-            self.builtinPrepositions   = packs.preps
-            self.builtinMenuLexicon    = packs.menuLex
+            self.builtinPriceAndUnits = packs.priceUnits
+            self.builtinAlInfinitivo = packs.alInf
+            self.builtinPrepositions = packs.preps
+            self.builtinMenuLexicon = packs.menuLex
             self.builtinNarrativeGrammar = packs.narrative
-            self.builtinDialogue       = packs.dialogue
+            self.builtinDialogue = packs.dialogue
 
             self.cache.removeAll()
             self.isLoaded = true
@@ -529,7 +548,7 @@ final class SpanishTranslationProcessor {
             ("es_final_with_rules_CLEANED", "json"),
             ("es_final_with_rules_ENRICHED", "json"),
             ("es_final_with_rules_CLEAN", "json"),
-            ("es_final_with_rules", "json")
+            ("es_final_with_rules", "json"),
         ]
         for (name, ext) in candidates {
             if let url = Bundle.main.url(forResource: name, withExtension: ext) { return url }
@@ -541,6 +560,7 @@ final class SpanishTranslationProcessor {
     }
 
     // MARK: - Built-in deterministic rules (Your exact code)
+
     private struct Packs {
         let priceUnits: [(NSRegularExpression, String)]
         let alInf: [(NSRegularExpression, String)]
@@ -557,18 +577,18 @@ final class SpanishTranslationProcessor {
     private static func compileBuiltinRules() -> Packs {
         // Prices/units
         let pricePatterns: [(String, String)] = [
-            (#"(\d+)\s*(€|euros?)\s+el\s+kilo"#,    "$1$2 per kilo"),
+            (#"(\d+)\s*(€|euros?)\s+el\s+kilo"#, "$1$2 per kilo"),
             (#"(\d+)\s*(€|euros?)\s+la\s+docena"#, "$1$2 per dozen"),
-            (#"(\d+)\s*(€|euros?)\s+cada\s+uno"#,  "$1$2 each"),
-            (#"\bto fifteen euros the kilo\b"#,    "for fifteen euros a kilo")
+            (#"(\d+)\s*(€|euros?)\s+cada\s+uno"#, "$1$2 each"),
+            (#"\bto fifteen euros the kilo\b"#, "for fifteen euros a kilo"),
         ]
-        let priceUnits = pricePatterns.compactMap { (p, r) in rex(p).map { ($0, r) } }
+        let priceUnits = pricePatterns.compactMap { p, r in rex(p).map { ($0, r) } }
 
         // "al + infinitivo" → "upon <gerund>"
-        let alInfPatterns: [(String, String)] = [
-            (#"\bal\s+([a-záéíóúñ]+)r\b"#, "upon $1ing")
+        let alInfPatterns = [
+            (#"\bal\s+([a-záéíóúñ]+)r\b"#, "upon $1ing"),
         ]
-        let alInf = alInfPatterns.compactMap { (p, r) in rex(p).map { ($0, r) } }
+        let alInf = alInfPatterns.compactMap { p, r in rex(p).map { ($0, r) } }
 
         // Preposition/cleanup fixes (general)
         let prepPatterns: [(String, String)] = [
@@ -582,18 +602,18 @@ final class SpanishTranslationProcessor {
             (#"\bunder the awning of a little coffee\b"#, "under the awning of a small café"),
             (#"\brestaurant of to the side\b"#, "next-door restaurant"),
             (#"\bOctopos\b"#, "octopus"),
-            (#"\boctopos\b"#, "octopus")
+            (#"\boctopos\b"#, "octopus"),
         ]
-        let preps = prepPatterns.compactMap { (p, r) in rex(p).map { ($0, r) } }
+        let preps = prepPatterns.compactMap { p, r in rex(p).map { ($0, r) } }
 
         // Menu lexicon tweaks (English-side)
         let menuPatterns: [(String, String)] = [
             (#"\bPosts of\b"#, "stalls of"),
             (#"\bstalls of fruit\b"#, "fruit stalls"),
             (#"\bpuestos de\s+([a-záéíóúñ]+)\b"#, "$1 stalls"),
-            (#"\bpremises\b"#, "locals")
+            (#"\bpremises\b"#, "locals"),
         ]
-        let menuLex = menuPatterns.compactMap { (p, r) in rex(p).map { ($0, r) } }
+        let menuLex = menuPatterns.compactMap { p, r in rex(p).map { ($0, r) } }
 
         // Narrative grammar/idiom targets (exact issues you reported)
         let narrativePatterns: [(String, String)] = [
@@ -637,16 +657,16 @@ final class SpanishTranslationProcessor {
             (#"\bHappens by a\b"#, "I stopped by a"),
             (#"\bwith he low the arm\b"#, "with it under my arm"),
             (#"\bEnjoying of the calm\b"#, "enjoying the calm"),
-            (#"\bis left over after of the rain\b"#, "lingers after the rain")
+            (#"\bis left over after of the rain\b"#, "lingers after the rain"),
         ]
-        let narrative = narrativePatterns.compactMap { (p, r) in rex(p).map { ($0, r) } }
+        let narrative = narrativePatterns.compactMap { p, r in rex(p).map { ($0, r) } }
 
         // Dialogue: handle a common Spanish em-dash pattern (your sample)
         // —Pruébala, chico —me dijo sonriendo—.  ->  "Try it, kid," he said, smiling.
-        let dialoguePatterns: [(String, String)] = [
-            (#"—\s*([^—]+?)\s*—\s*me dijo sonriendo—\s*\."#, "\"$1,\" he said, smiling.")
+        let dialoguePatterns = [
+            (#"—\s*([^—]+?)\s*—\s*me dijo sonriendo—\s*\."#, "\"$1,\" he said, smiling."),
         ]
-        let dialogue = dialoguePatterns.compactMap { (p, r) in rex(p).map { ($0, r) } }
+        let dialogue = dialoguePatterns.compactMap { p, r in rex(p).map { ($0, r) } }
 
         return Packs(priceUnits: priceUnits, alInf: alInf, preps: preps, menuLex: menuLex, narrative: narrative, dialogue: dialogue)
     }

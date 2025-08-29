@@ -1,15 +1,16 @@
+import AVFoundation
+import Combine
+import CoreVideo
 import SwiftUI
 import Vision
-import AVFoundation
-import CoreVideo
-import Combine
 
 // MARK: - Zoom Camera Manager (unchanged)
+
 class ZoomCameraManager: NSObject, ObservableObject {
     @Published var currentZoomLevel: CGFloat = 1.0
     private var captureDevice: AVCaptureDevice?
     private var initialZoomFactor: CGFloat = 1.0
-    func setup(device: AVCaptureDevice) { self.captureDevice = device }
+    func setup(device: AVCaptureDevice) { captureDevice = device }
     func handlePinchGesture(_ scale: CGFloat) {
         guard let device = captureDevice else { return }
         let newZoomFactor = initialZoomFactor * scale
@@ -19,14 +20,17 @@ class ZoomCameraManager: NSObject, ObservableObject {
             device.videoZoomFactor = clampedZoom
             device.unlockForConfiguration()
             DispatchQueue.main.async { self.currentZoomLevel = clampedZoom }
-        } catch { }
+        } catch {}
     }
+
     func setPinchGestureStartZoom() { initialZoomFactor = captureDevice?.videoZoomFactor ?? 1.0 }
 }
 
 // MARK: - Live OCR View Model (Massively Simplified!)
+
 final class LiveOCRViewModel: NSObject, ObservableObject {
     // MARK: - Properties
+
     @Published var recognizedText: String = ""
     @Published var translatedText: String = ""
     @Published var isProcessing: Bool = false
@@ -49,13 +53,14 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
 
     private var processInterval: TimeInterval {
         switch DevicePerf.shared.tier {
-        case .low:  return 1.2
-        case .mid:  return 0.8
-        case .high: return 0.6
+        case .low: 1.2
+        case .mid: 0.8
+        case .high: 0.6
         }
     }
 
     // MARK: - Initialization
+
     override init() {
         super.init()
         setupTextRecognition()
@@ -102,6 +107,7 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - Frame Processing (OCR Only)
+
     // This method is now backgrounded using Swift Concurrency (Task.detached) for UI performance
     func processFrame(_ pixelBuffer: CVPixelBuffer, mode: OCRMode) {
         autoreleasepool {
@@ -117,7 +123,7 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
             let targetLanguage = (mode == .spanishToEnglish) ? "es-ES" : "en-US"
             if currentLanguage != targetLanguage {
                 currentLanguage = targetLanguage
-                textRecognitionRequest?.recognitionLanguages = (mode == .spanishToEnglish) ? ["es-ES","es"] : ["en-US","en"]
+                textRecognitionRequest?.recognitionLanguages = (mode == .spanishToEnglish) ? ["es-ES", "es"] : ["en-US", "en"]
             }
 
             let request = self.textRecognitionRequest
@@ -127,7 +133,7 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
                     self.isProcessing = true
                 }
                 let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
-                if let request = request {
+                if let request {
                     do {
                         try handler.perform([request])
                     } catch {
@@ -144,6 +150,7 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - On-Demand Translation (Now uses the extracted processor!)
+
     func translateSpanishText(completion: @escaping (Bool) -> Void) {
         guard !recognizedText.isEmpty else { completion(false); return }
         // NEW: freeze so OCR won't overwrite while we review/copy
@@ -172,6 +179,7 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - Reset Translation
+
     func resetTranslation() {
         isTranslated = false
         translatedText = ""
@@ -186,10 +194,11 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - Speech
+
     func speak(text: String, voiceIdentifier: String, completion: @escaping () -> Void) {
         guard !text.isEmpty else { completion(); return }
         if speechSynthesizer.isSpeaking { speechSynthesizer.stopSpeaking(at: .immediate) }
-        self.speechCompletionHandler = completion
+        speechCompletionHandler = completion
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             let utterance = AVSpeechUtterance(string: text)
             if let voice = AVSpeechSynthesisVoice(identifier: voiceIdentifier) { utterance.voice = voice }
@@ -204,6 +213,7 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - Text Management
+
     func copyText(_ text: String) {
         guard !text.isEmpty else { return }
         UIPasteboard.general.string = text
@@ -220,17 +230,21 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - Camera Controls
+
     func toggleCameraZoom() {
         isUltraWide.toggle()
     }
+
     func flipCamera() {
         cameraPosition = (cameraPosition == .back ? .front : .back)
         if cameraPosition == .front { isUltraWide = false }
     }
-    func setCameraPreview(_ preview: CameraPreviewView) { self.cameraPreviewView = preview }
+
+    func setCameraPreview(_ preview: CameraPreviewView) { cameraPreviewView = preview }
 
     // MARK: - Session Management
-    func startSession() { }
+
+    func startSession() {}
     func stopSession() { stopSpeaking() }
     func shutdown() {
         cameraPreviewView?.stopSession()
@@ -240,11 +254,13 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
 }
 
 // MARK: - AVSpeechSynthesizerDelegate
+
 extension LiveOCRViewModel: AVSpeechSynthesizerDelegate {
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+    func speechSynthesizer(_: AVSpeechSynthesizer, didFinish _: AVSpeechUtterance) {
         DispatchQueue.main.async { self.speechCompletionHandler?(); self.speechCompletionHandler = nil }
     }
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+
+    func speechSynthesizer(_: AVSpeechSynthesizer, didCancel _: AVSpeechUtterance) {
         DispatchQueue.main.async { self.speechCompletionHandler?(); self.speechCompletionHandler = nil }
     }
 }

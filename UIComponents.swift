@@ -1,12 +1,12 @@
-import SwiftUI
 import AVFoundation
+import SwiftUI
 
 // MARK: - Basic UI Components
 
 struct ShadedEmoji: View {
     let emoji: String
     let size: CGFloat
-    
+
     var body: some View {
         ZStack {
             Circle()
@@ -25,7 +25,7 @@ struct OutlinedText: View {
     let strokeWidth: CGFloat
     let strokeColor: Color
     let fillColor: Color
-    
+
     init(
         text: String,
         fontSize: CGFloat,
@@ -39,7 +39,7 @@ struct OutlinedText: View {
         self.strokeColor = strokeColor
         self.fillColor = fillColor
     }
-    
+
     var body: some View {
         ZStack {
             Text(text)
@@ -58,7 +58,7 @@ struct OutlinedText: View {
                 .font(.system(size: fontSize, weight: .bold, design: .default))
                 .foregroundColor(strokeColor)
                 .offset(x: strokeWidth, y: strokeWidth)
-            
+
             Text(text)
                 .font(.system(size: fontSize, weight: .bold, design: .default))
                 .foregroundColor(fillColor)
@@ -75,7 +75,7 @@ enum ButtonStyles {
             Capsule()
                 .fill(.ultraThinMaterial.opacity(0.25))
                 .background(Color.clear)
-            
+
             Capsule()
                 .fill(
                     LinearGradient(
@@ -86,13 +86,13 @@ enum ButtonStyles {
                 )
                 .blendMode(.screen)
                 .opacity(0.7)
-            
+
             Capsule()
                 .stroke(Color.white.opacity(0.15), lineWidth: 1)
                 .shadow(color: Color.white.opacity(0.2), radius: 8, x: -2, y: -2)
                 .shadow(color: Color.black.opacity(0.2), radius: 8, x: 2, y: 2)
                 .blur(radius: 2)
-            
+
             Capsule()
                 .stroke(Color.black.opacity(0.30), lineWidth: 2)
                 .blur(radius: 2)
@@ -106,7 +106,7 @@ enum ButtonStyles {
 
 struct HeadingView: View {
     let animateIn: Bool
-    
+
     var body: some View {
         GeometryReader { geometry in
             let scaleFactor = min(geometry.size.width / 390, 1.0)
@@ -154,12 +154,12 @@ struct AnimatedVoicePicker: View {
     let onVoiceChange: () -> Void
     let speechSynthesizer: AVSpeechSynthesizer
     @State private var showVoiceGrid = false
-    
+
     private func isPremiumPlus(_ voice: AVSpeechSynthesisVoice) -> Bool {
         let name = voice.name.lowercased()
         return name.contains("premium") || name.contains("plus") || name.contains("ava")
     }
-    
+
     private var premiumEnglishVoices: [AVSpeechSynthesisVoice] {
         let allVoices = AVSpeechSynthesisVoice.speechVoices().filter { v in
             v.language.hasPrefix("en") && !v.name.lowercased().contains("robot") && !v.name.lowercased().contains("whisper") && !v.name.lowercased().contains("grandma")
@@ -168,17 +168,17 @@ struct AnimatedVoicePicker: View {
         let premiumPlus = allVoices.filter { isPremiumPlus($0) }
         let enhanced = allVoices.filter { $0.quality == .enhanced && !isPremiumPlus($0) }
         let regular = allVoices.filter { $0.quality != .enhanced && !isPremiumPlus($0) }
-        let sortedPremiumPlus = premiumPlus.sorted { (lhs, rhs) in
+        let sortedPremiumPlus = premiumPlus.sorted { lhs, rhs in
             let f1 = favoriteNames.firstIndex(of: lhs.name) ?? Int.max
             let f2 = favoriteNames.firstIndex(of: rhs.name) ?? Int.max
             return f1 < f2
         }
-        let sortedEnhanced = enhanced.sorted { (lhs, rhs) in
+        let sortedEnhanced = enhanced.sorted { lhs, rhs in
             let f1 = favoriteNames.firstIndex(of: lhs.name) ?? Int.max
             let f2 = favoriteNames.firstIndex(of: rhs.name) ?? Int.max
             return f1 < f2
         }
-        let sortedRegular = regular.sorted { (lhs, rhs) in
+        let sortedRegular = regular.sorted { lhs, rhs in
             let f1 = favoriteNames.firstIndex(of: lhs.name) ?? Int.max
             let f2 = favoriteNames.firstIndex(of: rhs.name) ?? Int.max
             return f1 < f2
@@ -192,15 +192,15 @@ struct AnimatedVoicePicker: View {
         }
         return Array(result.prefix(10))
     }
-    
+
     private func genderEmoji(for voice: AVSpeechSynthesisVoice) -> String {
         switch voice.gender {
-        case .female: return "👩"
-        case .male: return "👨"
-        default: return "🧑"
+        case .female: "👩"
+        case .male: "👨"
+        default: "🧑"
         }
     }
-    
+
     private func qualityTag(for voice: AVSpeechSynthesisVoice) -> String {
         if isPremiumPlus(voice) {
             return "(Premium)"
@@ -214,7 +214,7 @@ struct AnimatedVoicePicker: View {
     private var selectedVoice: AVSpeechSynthesisVoice? {
         premiumEnglishVoices.first(where: { $0.identifier == viewModel.selectedVoiceIdentifier })
     }
-    
+
     var body: some View {
         Button(action: {
             withAnimation(.spring(response: 0.3)) {
@@ -261,7 +261,7 @@ struct AnimatedVoicePicker: View {
                             }
                         }
                         .offset(y: -400)
-                    
+
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                         ForEach(premiumEnglishVoices, id: \.identifier) { voice in
                             Button(action: {
@@ -286,8 +286,8 @@ struct AnimatedVoicePicker: View {
                                 .background(
                                     RoundedRectangle(cornerRadius: 8)
                                         .fill(voice.identifier == viewModel.selectedVoiceIdentifier ?
-                                              Color.purple.opacity(0.5) :
-                                              Color.black.opacity(0.6))
+                                            Color.purple.opacity(0.5) :
+                                            Color.black.opacity(0.6))
                                 )
                             }
                         }

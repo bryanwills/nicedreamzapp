@@ -1,12 +1,12 @@
-import SwiftUI
 import AVFoundation
+import SwiftUI
 
 // Simple torch preset button
 struct TorchPresetButton: View {
     let percentage: Int
     let isSelected: Bool
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Text("\(percentage)%")
@@ -30,12 +30,12 @@ struct TorchButton: View {
     @State private var showPresets = false
     @State private var torchLevel: Float = 0.0
     let onLevelChanged: ((Float) -> Void)?
-    
+
     init(initialTorchLevel: Float = 0.0, onLevelChanged: ((Float) -> Void)? = nil) {
-        self._torchLevel = State(initialValue: initialTorchLevel)
+        _torchLevel = State(initialValue: initialTorchLevel)
         self.onLevelChanged = onLevelChanged
     }
-    
+
     var body: some View {
         Button(action: {
             if torchLevel > 0 {
@@ -97,8 +97,8 @@ struct TorchButton: View {
                     .transition(.scale(scale: 0.95).combined(with: .opacity))
                     .animation(.easeOut(duration: 0.1), value: showPresets)
                 }
-            }
-            , alignment: .top
+            },
+            alignment: .top
         )
     }
 }

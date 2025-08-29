@@ -7,11 +7,11 @@ struct SettingsOverlayView: View {
     let onAppear: (() -> Void)? = nil
     let onDisappear: (() -> Void)? = nil
     let onDismiss: (() -> Void)? = nil
-    
+
     @StateObject private var buttonDebouncer = ButtonPressDebouncer()
-    
+
     @State private var copyHistory: [String] = UserDefaults.standard.stringArray(forKey: "ocrCopyHistory") ?? []
-    
+
     var body: some View {
         ZStack {
             Color.black.opacity(0.4)
@@ -24,15 +24,15 @@ struct SettingsOverlayView: View {
                         }
                     }
                 }
-            
+
             VStack(spacing: 0) {
                 HStack {
                     Text("Settings")
                         .font(.title2)
                         .fontWeight(.semibold)
-                    
+
                     Spacer()
-                    
+
                     Button(action: {
                         if buttonDebouncer.canPress() {
                             onDismiss?()
@@ -48,10 +48,10 @@ struct SettingsOverlayView: View {
                     }
                 }
                 .padding()
-                
+
                 Divider()
                     .opacity(0.5)
-                
+
                 ScrollView {
                     VStack(spacing: 20) {
                         if mode == .objectDetection {
@@ -61,20 +61,20 @@ struct SettingsOverlayView: View {
                                         Image(systemName: "eye.circle")
                                             .font(.system(size: 20))
                                             .foregroundStyle(.blue)
-                                        
+
                                         Text("Detection Sensitivity")
                                             .font(.headline)
-                                        
+
                                         Spacer()
-                                        
+
                                         Text("\(Int(viewModel.confidenceThreshold * 100))%")
                                             .font(.system(.body, design: .rounded))
                                             .foregroundStyle(.secondary)
                                     }
-                                    
-                                    Slider(value: $viewModel.confidenceThreshold, in: 0.0001...1.0)
+
+                                    Slider(value: $viewModel.confidenceThreshold, in: 0.0001 ... 1.0)
                                         .accentColor(.blue)
-                                    
+
                                     HStack {
                                         Text("More Objects")
                                             .font(.caption)
@@ -92,19 +92,19 @@ struct SettingsOverlayView: View {
                                 )
                             }
                         }
-                        
+
                         if mode == .englishOCR || mode == .spanishToEnglishOCR {
                             VStack(alignment: .leading, spacing: 12) {
                                 HStack {
                                     Image(systemName: "doc.on.clipboard")
                                         .font(.system(size: 20))
                                         .foregroundStyle(.orange)
-                                    
+
                                     Text("Copy History")
                                         .font(.headline)
-                                    
+
                                     Spacer()
-                                    
+
                                     if !copyHistory.isEmpty {
                                         Button("Clear") {
                                             if buttonDebouncer.canPress() {
@@ -116,7 +116,7 @@ struct SettingsOverlayView: View {
                                         .foregroundStyle(.red)
                                     }
                                 }
-                                
+
                                 if copyHistory.isEmpty {
                                     Text("No copied text yet")
                                         .font(.body)
@@ -125,17 +125,17 @@ struct SettingsOverlayView: View {
                                         .padding(.vertical, 20)
                                 } else {
                                     VStack(spacing: 8) {
-                                        ForEach(Array(copyHistory.enumerated()), id: \.offset) { index, text in
+                                        ForEach(Array(copyHistory.enumerated()), id: \.offset) { _, text in
                                             HStack {
                                                 Text(text)
                                                     .font(.system(.body, design: .monospaced))
                                                     .lineLimit(2)
                                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                                
+
                                                 Button(action: {
                                                     if buttonDebouncer.canPress() {
                                                         UIPasteboard.general.string = text
-                                                        
+
                                                         let generator = UINotificationFeedbackGenerator()
                                                         generator.notificationOccurred(.success)
                                                     }
@@ -160,18 +160,18 @@ struct SettingsOverlayView: View {
                                     .fill(.ultraThinMaterial.opacity(0.3))
                             )
                         }
-                        
+
                         if viewModel.currentZoomLevel > 1.05 || viewModel.currentZoomLevel < 0.95 {
                             HStack {
                                 Image(systemName: "camera.viewfinder")
                                     .font(.system(size: 20))
                                     .foregroundStyle(.purple)
-                                
+
                                 Text("Camera Zoom")
                                     .font(.headline)
-                                
+
                                 Spacer()
-                                
+
                                 Text(String(format: "%.1fx", viewModel.currentZoomLevel))
                                     .font(.system(.title3, design: .rounded))
                                     .fontWeight(.medium)
@@ -183,17 +183,17 @@ struct SettingsOverlayView: View {
                                     .fill(.ultraThinMaterial.opacity(0.3))
                             )
                         }
-                        
+
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
                                 Image(systemName: "info.circle")
                                     .font(.system(size: 20))
                                     .foregroundStyle(.blue)
-                                
+
                                 Text("Tips")
                                     .font(.headline)
                             }
-                            
+
                             if mode == .objectDetection {
                                 Text("• 🤏 Pinch to zoom the camera")
                                 Text("• 🗣️ Speak detected objects")
@@ -220,7 +220,7 @@ struct SettingsOverlayView: View {
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(.ultraThinMaterial.opacity(0.3))
                         )
-                        
+
                         PrivacyCardView()
                     }
                     .padding()
@@ -241,7 +241,7 @@ struct SettingsOverlayView: View {
         }
         .gesture(
             DragGesture().onEnded { value in
-                if value.translation.height > 80 && abs(value.translation.width) < 50 {
+                if value.translation.height > 80, abs(value.translation.width) < 50 {
                     if buttonDebouncer.canPress() {
                         onDismiss?()
                         withAnimation(.spring(response: 0.3)) {
@@ -254,14 +254,14 @@ struct SettingsOverlayView: View {
         .onAppear { onAppear?() }
         .onDisappear { onDisappear?() }
     }
-    
+
     static func addToCopyHistory(_ text: String) {
         var history = UserDefaults.standard.stringArray(forKey: "ocrCopyHistory") ?? []
-        
+
         history.removeAll { $0 == text }
         history.insert(text, at: 0)
         history = Array(history.prefix(5))
-        
+
         UserDefaults.standard.set(history, forKey: "ocrCopyHistory")
     }
 }

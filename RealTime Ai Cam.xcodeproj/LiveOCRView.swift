@@ -1,19 +1,19 @@
-import SwiftUI
 import AVFoundation
+import SwiftUI
 
 struct LiveOCRView: View {
     @StateObject var viewModel = LiveOCRViewModel()
-    
+
     var body: some View {
         ZStack {
             // Camera preview fills entire screen
             CameraView(viewModel: viewModel.cameraViewModel)
                 .ignoresSafeArea()
-            
+
             // Overlay UI controls
             VStack {
                 Spacer()
-                
+
                 // Recognized Text Display
                 ScrollView {
                     Text(viewModel.recognizedText)
@@ -26,7 +26,7 @@ struct LiveOCRView: View {
                         .padding(.horizontal)
                 }
                 .frame(maxHeight: 120)
-                
+
                 // Translated Text Display
                 ScrollView {
                     Text(viewModel.translatedText)
@@ -40,7 +40,7 @@ struct LiveOCRView: View {
                 }
                 .frame(maxHeight: 120)
                 .padding(.top, 4)
-                
+
                 // Buttons
                 HStack(spacing: 20) {
                     Button(action: {
@@ -56,7 +56,7 @@ struct LiveOCRView: View {
                             .cornerRadius(15)
                             .shadow(radius: 5)
                     }
-                    
+
                     Button(action: {
                         UIPasteboard.general.string = viewModel.recognizedText
                     }) {
@@ -67,7 +67,7 @@ struct LiveOCRView: View {
                             .cornerRadius(15)
                             .shadow(radius: 5)
                     }
-                    
+
                     Button(action: {
                         // Back action implementation depends on navigation management in parent view
                     }) {
@@ -90,4 +90,3 @@ struct LiveOCRView: View {
 }
 
 // Assume CameraView and LiveOCRViewModel are implemented elsewhere as per original code
-

@@ -1,15 +1,15 @@
 // MemoryManager.swift
 // Centralizes all memory cleanup, system warning observers, and app-wide memory-related notifications.
 
-import Foundation
-import UIKit
-import SwiftUI
 import Combine
+import Foundation
+import SwiftUI
+import UIKit
 
 /// Singleton for global memory management. Performs cleanup and notifies observers on system memory warnings.
 final class MemoryManager: ObservableObject {
     var objectWillChange = ObservableObjectPublisher()
-    
+
     static let shared = MemoryManager()
 
     private init() {
@@ -44,7 +44,9 @@ final class MemoryManager: ObservableObject {
             URLCache.shared.removeAllCachedResponses()
             // Small allocation trick to trigger further GC.
             var dummy: [Data] = []
-            for _ in 0..<100 { dummy.append(Data(count: 1024)) }
+            for _ in 0 ..< 100 {
+                dummy.append(Data(count: 1024))
+            }
             dummy.removeAll()
         }
         // Notify all components to reduce memory, lower quality, reduce frame rate, etc.
@@ -54,6 +56,7 @@ final class MemoryManager: ObservableObject {
 }
 
 // MARK: - Notifications
+
 extension Notification.Name {
     static let reduceQualityForMemory = Notification.Name("reduceQualityForMemory")
     static let reduceFrameRate = Notification.Name("reduceFrameRate")

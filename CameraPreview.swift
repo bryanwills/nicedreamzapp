@@ -1,14 +1,15 @@
-import SwiftUI
 import AVFoundation
+import SwiftUI
 
 // MARK: - Camera Preview for OCR
+
 struct CameraPreview: UIViewRepresentable {
     let onFrame: (CVPixelBuffer) -> Void
-    var onCameraReady: ((AVCaptureDevice) -> Void)? = nil
+    var onCameraReady: ((AVCaptureDevice) -> Void)?
     var isUltraWide: Bool = false
     var cameraPosition: AVCaptureDevice.Position = .back
-    
-    func makeUIView(context: Context) -> CameraPreviewView {
+
+    func makeUIView(context _: Context) -> CameraPreviewView {
         let view = CameraPreviewView()
         view.onFrame = onFrame
         view.onCameraReady = onCameraReady
@@ -16,8 +17,8 @@ struct CameraPreview: UIViewRepresentable {
         view.cameraPosition = cameraPosition
         return view
     }
-    
-    func updateUIView(_ uiView: CameraPreviewView, context: Context) {
+
+    func updateUIView(_ uiView: CameraPreviewView, context _: Context) {
         // Check if camera settings changed
         if uiView.isUltraWide != isUltraWide || uiView.cameraPosition != cameraPosition {
             uiView.isUltraWide = isUltraWide
@@ -25,13 +26,14 @@ struct CameraPreview: UIViewRepresentable {
             uiView.reconfigureCamera()
         }
     }
-    
-    static func dismantleUIView(_ uiView: CameraPreviewView, coordinator: ()) {
+
+    static func dismantleUIView(_ uiView: CameraPreviewView, coordinator _: ()) {
         uiView.stopSession()
     }
 }
 
 // MARK: - Camera Preview UIView
+
 class CameraPreviewView: UIView {
     // Add a callback for when the view is ready
     var onViewReady: ((CameraPreviewView) -> Void)?
@@ -40,16 +42,16 @@ class CameraPreviewView: UIView {
     private let videoOutput = AVCaptureVideoDataOutput()
     private let sessionQueue = DispatchQueue(label: "ocr.camera.session")
     private let videoQueue = DispatchQueue(label: "ocr.camera.video", qos: .userInitiated)
-    
+
     var onFrame: ((CVPixelBuffer) -> Void)?
     var onCameraReady: ((AVCaptureDevice) -> Void)?
-    
+
     private var currentDevice: AVCaptureDevice?
     private var focusIndicatorLayer: CALayer?
     private var isPaused = false
     var isUltraWide: Bool = false
     var cameraPosition: AVCaptureDevice.Position = .back
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCamera()
@@ -57,12 +59,12 @@ class CameraPreviewView: UIView {
         setupTapGesture()
         // Notify that view is ready
         DispatchQueue.main.async { [weak self] in
-            if let self = self {
-                self.onViewReady?(self)
+            if let self {
+                onViewReady?(self)
             }
         }
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupCamera()
@@ -70,27 +72,27 @@ class CameraPreviewView: UIView {
         setupTapGesture()
         // Notify that view is ready
         DispatchQueue.main.async { [weak self] in
-            if let self = self {
-                self.onViewReady?(self)
+            if let self {
+                onViewReady?(self)
             }
         }
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         previewLayer?.frame = bounds
     }
-    
+
     private var previewLayer: AVCaptureVideoPreviewLayer? {
-        return layer as? AVCaptureVideoPreviewLayer
+        layer as? AVCaptureVideoPreviewLayer
     }
-    
+
     override class var layerClass: AnyClass {
-        return AVCaptureVideoPreviewLayer.self
+        AVCaptureVideoPreviewLayer.self
     }
-    
+
     // MARK: - Focus Features
-    
+
     private func setupFocusIndicator() {
         let focusLayer = CALayer()
         focusLayer.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
@@ -101,56 +103,56 @@ class CameraPreviewView: UIView {
         layer.addSublayer(focusLayer)
         focusIndicatorLayer = focusLayer
     }
-    
+
     private func setupTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapToFocus(_:)))
         addGestureRecognizer(tapGesture)
     }
-    
+
     @objc private func handleTapToFocus(_ gesture: UITapGestureRecognizer) {
         let location = gesture.location(in: self)
         focusAtPoint(location)
     }
-    
+
     private func focusAtPoint(_ point: CGPoint) {
         guard let device = currentDevice,
-              let previewLayer = previewLayer else { return }
-        
+              let previewLayer else { return }
+
         // Convert UI point to camera point
         let devicePoint = previewLayer.captureDevicePointConverted(fromLayerPoint: point)
-        
+
         // Configure focus
         do {
             try device.lockForConfiguration()
-            
-            if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(.autoFocus) {
+
+            if device.isFocusPointOfInterestSupported, device.isFocusModeSupported(.autoFocus) {
                 device.focusPointOfInterest = devicePoint
                 device.focusMode = .autoFocus
             }
-            
-            if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(.autoExpose) {
+
+            if device.isExposurePointOfInterestSupported, device.isExposureModeSupported(.autoExpose) {
                 device.exposurePointOfInterest = devicePoint
                 device.exposureMode = .autoExpose
             }
-            
+
             device.unlockForConfiguration()
-            
+
             // Show focus animation
             showFocusAnimation(at: point)
-            
+
             // Return to continuous autofocus after 2 seconds
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
                 self?.resetToContinuousAutoFocus()
             }
-            
+
         } catch {
             // Removed print statement
         }
     }
-    
+
     private func showFocusAnimation(at point: CGPoint) {
         guard let focusLayer = focusIndicatorLayer else { return }
-        
+
         // Position the focus indicator
         CATransaction.begin()
         CATransaction.setDisableActions(true)
@@ -158,115 +160,113 @@ class CameraPreviewView: UIView {
         focusLayer.opacity = 0
         focusLayer.transform = CATransform3DMakeScale(1.5, 1.5, 1.0)
         CATransaction.commit()
-        
+
         // Animate the focus indicator
         CATransaction.begin()
         CATransaction.setAnimationDuration(0.3)
-        
+
         // Scale down animation
         let scaleAnimation = CABasicAnimation(keyPath: "transform.scale")
         scaleAnimation.fromValue = 1.5
         scaleAnimation.toValue = 1.0
         scaleAnimation.duration = 0.3
-        
+
         // Fade in then out animation
         let opacityAnimation = CAKeyframeAnimation(keyPath: "opacity")
         opacityAnimation.values = [0, 1, 1, 0]
         opacityAnimation.keyTimes = [0, 0.2, 0.8, 1]
         opacityAnimation.duration = 1.5
-        
+
         focusLayer.add(scaleAnimation, forKey: "scale")
         focusLayer.add(opacityAnimation, forKey: "opacity")
-        
+
         CATransaction.commit()
-        
+
         // Haptic feedback
         let impactFeedback = UIImpactFeedbackGenerator(style: .light)
         impactFeedback.impactOccurred()
     }
-    
+
     private func resetToContinuousAutoFocus() {
         guard let device = currentDevice else { return }
-        
+
         do {
             try device.lockForConfiguration()
-            
+
             if device.isFocusModeSupported(.continuousAutoFocus) {
                 device.focusMode = .continuousAutoFocus
             }
-            
+
             if device.isExposureModeSupported(.continuousAutoExposure) {
                 device.exposureMode = .continuousAutoExposure
             }
-            
+
             device.unlockForConfiguration()
         } catch {
             // Removed print statement
         }
     }
-    
+
     // MARK: - Camera Setup
-    
+
     private func setupCamera() {
         sessionQueue.async { [weak self] in
             self?.configureSession()
         }
     }
-    
+
     private func configureSession() {
         session.beginConfiguration()
-        
+
         // Configure session preset for OCR (lower resolution is fine)
         session.sessionPreset = .hd1280x720
-        
+
         // Select camera based on position and wide angle setting
-        let camera: AVCaptureDevice?
-        
-        if cameraPosition == .front {
-            camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+        let camera: AVCaptureDevice? = if cameraPosition == .front {
+            AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
         } else {
             // Back camera - check for ultra wide
             if isUltraWide {
-                camera = AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .back)
+                AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .back)
                     ?? AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
             } else {
-                camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
             }
         }
-        
-        guard let camera = camera else {
+
+        guard let camera else {
             // Removed print statement
             session.commitConfiguration()
             return
         }
-        
+
         currentDevice = camera
-        
+
         do {
             let input = try AVCaptureDeviceInput(device: camera)
             if session.canAddInput(input) {
                 session.addInput(input)
-                
+
                 // Configure camera for optimal focus
                 try camera.lockForConfiguration()
-                
+
                 // Set continuous autofocus as default
                 if camera.isFocusModeSupported(.continuousAutoFocus) {
                     camera.focusMode = .continuousAutoFocus
                 }
-                
+
                 // Set continuous auto exposure
                 if camera.isExposureModeSupported(.continuousAutoExposure) {
                     camera.exposureMode = .continuousAutoExposure
                 }
-                
+
                 // Enable auto focus range restriction for close-up text when available
                 if camera.isAutoFocusRangeRestrictionSupported {
                     camera.autoFocusRangeRestriction = .none // Will detect automatically
                 }
-                
+
                 camera.unlockForConfiguration()
-                
+
                 // Notify that camera is ready
                 DispatchQueue.main.async { [weak self] in
                     self?.onCameraReady?(camera)
@@ -277,18 +277,18 @@ class CameraPreviewView: UIView {
             session.commitConfiguration()
             return
         }
-        
+
         // Configure video output
         videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
         videoOutput.videoSettings = [
-            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
         ]
         videoOutput.alwaysDiscardsLateVideoFrames = true
-        
+
         if session.canAddOutput(videoOutput) {
             session.addOutput(videoOutput)
         }
-        
+
         // Set video orientation
         if let connection = videoOutput.connection(with: .video) {
             if #available(iOS 17.0, *) {
@@ -303,22 +303,22 @@ class CameraPreviewView: UIView {
                 }
             }
         }
-        
+
         session.commitConfiguration()
-        
+
         // Configure preview layer
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            if let previewLayer = self.layer as? AVCaptureVideoPreviewLayer {
-                previewLayer.session = self.session
+            guard let self else { return }
+            if let previewLayer = layer as? AVCaptureVideoPreviewLayer {
+                previewLayer.session = session
                 previewLayer.videoGravity = .resizeAspectFill
             }
         }
-        
+
         // Start session
         session.startRunning()
     }
-    
+
     func stopSession() {
         print("📷 CameraPreviewView: Stopping camera session")
         sessionQueue.async { [weak self] in
@@ -326,22 +326,22 @@ class CameraPreviewView: UIView {
             print("📷 CameraPreviewView: Camera session stopped")
         }
     }
-    
+
     // MARK: - Torch Control
-    
+
     func setTorchLevel(_ level: Float) {
         guard let device = currentDevice,
               device.hasTorch else { return }
-        
+
         do {
             try device.lockForConfiguration()
-            
+
             if level > 0 {
                 try device.setTorchModeOn(level: level)
             } else {
                 device.torchMode = .off
             }
-            
+
             device.unlockForConfiguration()
         } catch {
             // Removed print statement
@@ -361,27 +361,28 @@ class CameraPreviewView: UIView {
             }
         }
     }
-    
+
     func reconfigureCamera() {
         sessionQueue.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.session.stopRunning()
-            
+            guard let self else { return }
+
+            session.stopRunning()
+
             // Remove all inputs
-            self.session.inputs.forEach { self.session.removeInput($0) }
-            
+            session.inputs.forEach { self.session.removeInput($0) }
+
             // Reconfigure with new settings
-            self.configureSession()
-            
-            self.session.startRunning()
+            configureSession()
+
+            session.startRunning()
         }
     }
 }
 
 // MARK: - Video Output Delegate
+
 extension CameraPreviewView: AVCaptureVideoDataOutputSampleBufferDelegate {
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+    func captureOutput(_: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from _: AVCaptureConnection) {
         guard !isPaused else { return }
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         onFrame?(pixelBuffer)
