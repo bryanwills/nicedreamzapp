@@ -7,7 +7,6 @@ struct ObjectDetectionView: View {
     @Binding var mode: ContentView.Mode
     @Binding var showSettings: Bool
     @StateObject private var lidar = LiDARManager.shared
-    @State private var lidarNotificationMessage: String? = nil
     @State private var showConfidenceSlider = false
     let orientation: UIDeviceOrientation
     let isPortrait: Bool
@@ -72,14 +71,8 @@ struct ObjectDetectionView: View {
                         HStack(alignment: .top) {
                             Button(action: {
                                 guard buttonDebouncer.canPress() else { return }
-                                let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-                                impactFeedback.impactOccurred()
-                                viewModel.stopSession()
-                                viewModel.clearDetections()
-                                viewModel.stopSpeech()
-                                SpeechManager.shared.stopSpeech()
-                                SpeechManager.shared.resetSpeechState()
-                                onBack()
+                                // Encapsulated back action logic
+                                viewModel.handleBackAction(onBack: onBack)
                             }) {
                                 HStack(spacing: 6) {
                                     Image(systemName: "chevron.left")
@@ -178,14 +171,8 @@ struct ObjectDetectionView: View {
                     // Landscape back button - consistent positioning and styled
                     Button(action: {
                         guard buttonDebouncer.canPress() else { return }
-                        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-                        impactFeedback.impactOccurred()
-                        viewModel.stopSession()
-                        viewModel.clearDetections()
-                        viewModel.stopSpeech()
-                        SpeechManager.shared.stopSpeech()
-                        SpeechManager.shared.resetSpeechState()
-                        onBack()
+                        // Encapsulated back action logic
+                        viewModel.handleBackAction(onBack: onBack)
                     }) {
                         HStack(spacing: 6) {
                             Image(systemName: "chevron.left")
@@ -231,7 +218,7 @@ struct ObjectDetectionView: View {
 
                 // LiDAR notification overlay
                 Group {
-                    if let message = lidarNotificationMessage {
+                    if let message = viewModel.lidarNotificationMessage {
                         VStack {
                             Spacer()
                             HStack {
@@ -266,7 +253,7 @@ struct ObjectDetectionView: View {
                                     .shadow(color: .black.opacity(0.2), radius: 10, y: 5)
                             )
                             .transition(.scale(scale: 0.9).combined(with: .opacity))
-                            .animation(.spring(response: 0.3), value: lidarNotificationMessage)
+                            .animation(.spring(response: 0.3), value: viewModel.lidarNotificationMessage)
                             Spacer()
                         }
                         .rotationEffect(isPortrait ? .zero : rotationAngle)
@@ -296,29 +283,22 @@ struct ObjectDetectionView: View {
         .onChange(of: lidar.isAvailable) { newValue in
             if viewModel.useLiDAR, !newValue {
                 viewModel.setLiDAR(enabled: false)
-                showLiDARNotification("LiDAR not available in \(viewModel.isUltraWide ? "ultra-wide" : "this") mode")
+                viewModel.showLiDARNotification("LiDAR not available in \(viewModel.isUltraWide ? "ultra-wide" : "this") mode")
             }
         }
         .onChange(of: viewModel.isUltraWide) { _ in
             if viewModel.useLiDAR, lidar.isEnabled, !lidar.isAvailable {
                 viewModel.setLiDAR(enabled: false)
-                showLiDARNotification("LiDAR only works with 1x camera")
+                viewModel.showLiDARNotification("LiDAR only works with 1x camera")
             }
         }
         .onChange(of: viewModel.currentZoomLevel) { newValue in
             if viewModel.useLiDAR, lidar.isEnabled, lidar.isAvailable {
                 if newValue < 0.95 || newValue > 1.05 {
                     viewModel.setLiDAR(enabled: false)
-                    showLiDARNotification("LiDAR works best at 1x zoom")
+                    viewModel.showLiDARNotification("LiDAR works best at 1x zoom")
                 }
             }
-        }
-    }
-
-    private func showLiDARNotification(_ message: String) {
-        lidarNotificationMessage = message
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            lidarNotificationMessage = nil
         }
     }
 
@@ -374,7 +354,7 @@ struct ObjectDetectionView: View {
                             frameSize: buttonSize,
                             action: {
                                 guard buttonDebouncer.canPress() else { return }
-                                viewModel.flipCamera()
+                                viewModel.handleFlipCamera()
                             }
                         )
                         .accessibilityLabel("Switch Camera")
@@ -388,7 +368,7 @@ struct ObjectDetectionView: View {
                             frameSize: buttonSize,
                             action: {
                                 guard buttonDebouncer.canPress() else { return }
-                                viewModel.toggleCameraZoom()
+                                viewModel.handleToggleCameraZoom()
                             }
                         )
                         .opacity(viewModel.cameraPosition == .back ? 1.0 : 0.0)
@@ -414,9 +394,9 @@ struct ObjectDetectionView: View {
                                 let newState = !viewModel.useLiDAR
                                 viewModel.setLiDAR(enabled: newState)
                                 if newState {
-                                    showLiDARNotification("LiDAR distance enabled")
+                                    viewModel.showLiDARNotification("LiDAR distance enabled")
                                 } else {
-                                    showLiDARNotification("LiDAR distance disabled")
+                                    viewModel.showLiDARNotification("LiDAR distance disabled")
                                 }
                             }
                         )
@@ -425,12 +405,7 @@ struct ObjectDetectionView: View {
 
                         Button(action: {
                             guard buttonDebouncer.canPress() else { return }
-                            viewModel.isSpeechEnabled.toggle()
-                            if viewModel.isSpeechEnabled {
-                                viewModel.announceSpeechEnabled()
-                            } else {
-                                viewModel.stopSpeech()
-                            }
+                            viewModel.handleToggleSpeech()
                         }) {
                             Text("🗣️")
                                 .font(.system(size: isVerySmallScreen ? 18 : 20, weight: .medium))
@@ -495,10 +470,7 @@ struct ObjectDetectionView: View {
                 frameSize: 48,
                 action: {
                     guard buttonDebouncer.canPress() else { return }
-                    viewModel.flipCamera()
-                    if viewModel.cameraPosition == .front {
-                        // Torch handled inside TorchButton now
-                    }
+                    viewModel.handleFlipCamera()
                 }
             )
             .accessibilityLabel("Switch Camera")
@@ -513,7 +485,7 @@ struct ObjectDetectionView: View {
                 frameSize: 48,
                 action: {
                     guard buttonDebouncer.canPress() else { return }
-                    viewModel.toggleCameraZoom()
+                    viewModel.handleToggleCameraZoom()
                 }
             )
             .opacity(viewModel.cameraPosition == .back ? 1.0 : 0.0)
@@ -543,10 +515,10 @@ struct ObjectDetectionView: View {
                     let newState = !viewModel.useLiDAR
                     viewModel.setLiDAR(enabled: newState)
                     if newState {
-                        showLiDARNotification("LiDAR distance enabled")
+                        viewModel.showLiDARNotification("LiDAR distance enabled")
                         print("✅ LiDAR turned ON")
                     } else {
-                        showLiDARNotification("LiDAR distance disabled")
+                        viewModel.showLiDARNotification("LiDAR distance disabled")
                         print("❌ LiDAR turned OFF")
                     }
                 }
@@ -560,12 +532,7 @@ struct ObjectDetectionView: View {
 
             Button(action: {
                 guard buttonDebouncer.canPress() else { return }
-                viewModel.isSpeechEnabled.toggle()
-                if viewModel.isSpeechEnabled {
-                    viewModel.announceSpeechEnabled()
-                } else {
-                    viewModel.stopSpeech()
-                }
+                viewModel.handleToggleSpeech()
             }) {
                 Text("🗣️")
                     .font(.system(size: 22, weight: .medium))
@@ -697,5 +664,16 @@ struct ObjectDetectionView: View {
             .offset(y: isPortrait ? -90 : -60)
             .transition(.scale.combined(with: .opacity))
         }
+    }
+}
+
+private extension CameraViewModel {
+    func handleBackAction(onBack: () -> Void) {
+        stopSession()
+        clearDetections()
+        stopSpeech()
+        SpeechManager.shared.stopSpeech()
+        SpeechManager.shared.resetSpeechState()
+        onBack()
     }
 }

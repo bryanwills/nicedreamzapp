@@ -108,6 +108,9 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
     @Published var cameraPosition: AVCaptureDevice.Position = .back
     @Published var cameraPermissionAlert: CameraPermissionAlert?
 
+    // Added new published property for LiDAR notifications
+    @Published var lidarNotificationMessage: String?
+
     // LiDAR properties
     @Published var useLiDAR: Bool = false {
         didSet {
@@ -1099,6 +1102,41 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureVideoDataOutputSampl
             session.commitConfiguration()
         }
     }
+
+    // MARK: - New LiDAR Notification Method
+
+    /// Shows a LiDAR notification message for 2 seconds.
+    public func showLiDARNotification(_ message: String) {
+        DispatchQueue.main.async {
+            self.lidarNotificationMessage = message
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.lidarNotificationMessage = nil
+            }
+        }
+    }
+    
+    // MARK: - New Public Methods for UI interactions
+    
+    public func handleToggleCameraZoom() {
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+        toggleCameraZoom()
+    }
+    
+    public func handleFlipCamera() {
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+        flipCamera()
+    }
+    
+    public func handleToggleSpeech() {
+        isSpeechEnabled.toggle()
+        if isSpeechEnabled {
+            announceSpeechEnabled()
+        } else {
+            stopSpeech()
+        }
+    }
 }
 
 // MARK: - CameraViewModel Aggressive Thermal Management Extension
@@ -1182,3 +1220,4 @@ extension CameraViewModel {
         }
     }
 }
+

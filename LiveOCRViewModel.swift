@@ -39,6 +39,7 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
     @Published var cameraPosition: AVCaptureDevice.Position = .back
     @Published var isPinching: Bool = false
     @Published var isFrozen: Bool = false
+    @Published var torchLevel: Float = 0.0
 
     weak var cameraPreviewRef: CameraPreviewView?
     weak var cameraPreviewView: CameraPreviewView?
@@ -241,6 +242,25 @@ final class LiveOCRViewModel: NSObject, ObservableObject {
     }
 
     func setCameraPreview(_ preview: CameraPreviewView) { cameraPreviewView = preview }
+
+    // Added handler methods with haptic feedback and torch handling
+
+    func handleToggleCameraZoom() {
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+        toggleCameraZoom()
+    }
+
+    func handleFlipCamera() {
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+        flipCamera()
+    }
+
+    func handleToggleTorch(level: Float) {
+        torchLevel = level
+        // Optionally add feedback here if desired
+    }
 
     // MARK: - Session Management
 

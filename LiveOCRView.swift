@@ -206,7 +206,6 @@ struct LiveOCRView: View {
     @State private var isWideScreen = false
 
     @State private var showTorchPresets = false
-    @State private var torchLevel: Float = 0.0
 
     @StateObject private var buttonDebouncer = ButtonPressDebouncer() // Debouncer to avoid rapid multiple presses
 
@@ -397,23 +396,22 @@ struct LiveOCRView: View {
                         ZStack {
                             Button(action: {
                                 if buttonDebouncer.canPress() {
-                                    if torchLevel > 0 {
-                                        torchLevel = 0.0
-                                        cameraPreviewRef?.setTorchLevel(0.0)
+                                    if viewModel.torchLevel > 0 {
+                                        viewModel.handleToggleTorch(level: 0.0)
                                         showTorchPresets = false
                                     } else {
                                         showTorchPresets = true
                                     }
                                 }
                             }) {
-                                Image(systemName: torchLevel > 0 ? "flashlight.on.fill" : "flashlight.off.fill")
+                                Image(systemName: viewModel.torchLevel > 0 ? "flashlight.on.fill" : "flashlight.off.fill")
                                     .font(.system(size: 22))
                                     .frame(width: buttonSize, height: buttonSize)
                                     .background(
                                         Circle()
                                             .fill(.ultraThinMaterial.opacity(0.95))
                                     )
-                                    .foregroundStyle(torchLevel > 0 ? Color.yellow : Color.white)
+                                    .foregroundStyle(viewModel.torchLevel > 0 ? Color.yellow : Color.white)
                             }
                             .overlay(
                                 Group {
@@ -422,8 +420,7 @@ struct LiveOCRView: View {
                                             ForEach([100, 75, 50, 25], id: \.self) { percentage in
                                                 Button(action: {
                                                     let level = Float(percentage) / 100.0
-                                                    torchLevel = level
-                                                    cameraPreviewRef?.setTorchLevel(level)
+                                                    viewModel.handleToggleTorch(level: level)
                                                     showTorchPresets = false
                                                 }) {
                                                     Text("\(percentage)%")
@@ -432,11 +429,11 @@ struct LiveOCRView: View {
                                                         .frame(width: 60, height: 36)
                                                         .background(
                                                             RoundedRectangle(cornerRadius: 8)
-                                                                .fill(Int(torchLevel * 100) == percentage ? Color.yellow.opacity(0.4) : Color.white.opacity(0.2))
+                                                                .fill(Int(viewModel.torchLevel * 100) == percentage ? Color.yellow.opacity(0.4) : Color.white.opacity(0.2))
                                                         )
                                                         .overlay(
                                                             RoundedRectangle(cornerRadius: 8)
-                                                                .stroke(Int(torchLevel * 100) == percentage ? Color.yellow : Color.white.opacity(0.3), lineWidth: 1)
+                                                                .stroke(Int(viewModel.torchLevel * 100) == percentage ? Color.yellow : Color.white.opacity(0.3), lineWidth: 1)
                                                         )
                                                 }
                                             }
@@ -463,21 +460,7 @@ struct LiveOCRView: View {
                         // Wide Screen Toggle button with debouncer
                         Button(action: {
                             if buttonDebouncer.canPress() {
-                                let currentTorch = torchLevel
-                                isWideScreen.toggle()
-                                viewModel.isUltraWide = isWideScreen
-
-                                if currentTorch > 0 {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        cameraPreviewRef?.setTorchLevel(currentTorch)
-                                        torchLevel = currentTorch
-                                    }
-                                }
-
-                                if viewModel.cameraPosition == .front {
-                                    torchLevel = 0.0
-                                    cameraPreviewRef?.setTorchLevel(0.0)
-                                }
+                                viewModel.handleToggleCameraZoom()
                             }
                         }) {
                             Image(systemName: "rectangle.3.offgrid")
@@ -487,7 +470,24 @@ struct LiveOCRView: View {
                                     Circle()
                                         .fill(.ultraThinMaterial.opacity(0.95))
                                 )
-                                .foregroundStyle(isWideScreen ? Color.cyan : Color.white)
+                                .foregroundStyle(viewModel.isUltraWide ? Color.cyan : Color.white)
+                        }
+                        Spacer(minLength: 0)
+
+                        // Flip Camera button with debouncer
+                        Button(action: {
+                            if buttonDebouncer.canPress() {
+                                viewModel.handleFlipCamera()
+                            }
+                        }) {
+                            Image(systemName: "camera.rotate")
+                                .font(.system(size: 22))
+                                .frame(width: buttonSize, height: buttonSize)
+                                .background(
+                                    Circle()
+                                        .fill(.ultraThinMaterial.opacity(0.95))
+                                )
+                                .foregroundStyle(.white)
                         }
                         Spacer(minLength: 0)
 
@@ -645,7 +645,7 @@ struct LiveOCRView: View {
         .onAppear {
             viewModel.startSession()
             // Sync torchLevel to 0 initially
-            torchLevel = 0.0
+            // torchLevel is now managed by viewModel
         }
         .onDisappear {
             viewModel.stopSession()
@@ -653,7 +653,7 @@ struct LiveOCRView: View {
             viewModel.resetTranslation()
             isSpeaking = false
             // Turn off torch when leaving the view (matches user intent)
-            cameraPreviewRef?.setTorchLevel(0)
+            viewModel.handleToggleTorch(level: 0)
         }
         .preferredColorScheme(.dark)
     }
