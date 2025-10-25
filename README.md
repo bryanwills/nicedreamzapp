@@ -1,114 +1,85 @@
 <div align="center">
 
-# 👋 Hey, I'm Matt from Nice Dreamz LLC
+# ✨ RealTime AI Camera ✨
 
-### 🚀 Full-Stack Developer | AI Engineer | iOS Developer
+### 🚀 YOLOv8 with all 601 object classes on iPhone — runs at **average 10 FPS**
 
-<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=10B981&center=true&vCenter=true&width=600&lines=iOS+Developer+%7C+Swift+%2B+SwiftUI;AI+Engineer+%7C+Python+%2B+Machine+Learning;TypeScript+%7C+Real-Time+Trading+Platforms;Building+Robots+That+Protect+Chickens;Building+Tools+That+Actually+Matter" alt="Typing SVG" />
+<img src="./EA08B469-F8A2-435D-A3B3-44AEF833E38E.png" alt="RealTime AI Camera Banner" width="85%" style="border-radius: 20px; margin: 30px 0; box-shadow: 0 15px 40px rgba(0,0,0,0.4);">
 
-<br>
+**🔥 Real-time Object Detection • OCR • Offline Translation • LiDAR Distance 🔥**  
+Built specifically for **iPhone** • Works **100% offline** • Privacy-first design  
 
-**📍 Humboldt County, California** | **🏢 Nice Dreamz LLC** | **🌐 [nicedreamzwholesale.com](https://nicedreamzwholesale.com)**
+---
 
-*"Making robots to guard my chickens from common backyard predators."* 🐔🤖
+## 🎉 **NOW AVAILABLE ON APP STORE - FREE DOWNLOAD!** 🎉
+
+[![Download on App Store](https://img.shields.io/badge/Download-App%20Store-007AFF?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/realtime-ai-cam/id6751230739)
 
 </div>
 
 ---
 
-## 🚀 What I'm Building
+<div align="center">
+
+## 🌟 [🎨 Nice Dreamz Apps Product Page →](https://nicedreamzwholesale.com/github-realtime-ai-camera/)  
+*Brought to you by NiceDreamzApps*
+
+</div>
+
+---
+
+<div align="center">
+
+## 🏆 Project Status & Performance
+
+### 📱 **Platform & Compatibility**
+![Built for iPhone](https://img.shields.io/badge/Built%20for-iPhone-blue?style=for-the-badge&logo=apple)
+![iOS Version](https://img.shields.io/badge/iOS-15%2B-000000?style=for-the-badge&logo=ios)
+![iPhone Compatibility](https://img.shields.io/badge/iPhone-X%2B%20Compatible-black?style=for-the-badge&logo=apple)
+![Optimized for iPhone 12+](https://img.shields.io/badge/Optimized-iPhone%2012%2B-success?style=for-the-badge&logo=apple)
+
+### ⚡ **Performance & Features**
+![Frame Rate](https://img.shields.io/badge/Frame_Rate-Average%2010%20FPS-success?style=for-the-badge)
+![YOLOv8 Classes](https://img.shields.io/badge/YOLOv8-601_Classes-yellow?style=for-the-badge)
+![LiDAR Support](https://img.shields.io/badge/LiDAR-Supported-cyan?style=for-the-badge)
+![100% Free](https://img.shields.io/badge/100%25_Free-No_Ads-brightgreen?style=for-the-badge&logo=gift)
+
+### 🛠️ **Technology Stack**
+![SwiftUI](https://img.shields.io/badge/SwiftUI-5.0-orange?style=for-the-badge&logo=swift)
+![CoreML](https://img.shields.io/badge/CoreML-Powered-purple?style=for-the-badge&logo=apple)
+![Metal](https://img.shields.io/badge/Metal-Accelerated-silver?style=for-the-badge&logo=apple)
+![Neural Engine](https://img.shields.io/badge/Neural_Engine-Optimized-blue?style=for-the-badge&logo=apple)
+
+### 🔐 **Privacy & Licensing**
+![Works Offline](https://img.shields.io/badge/Works_Offline-100%25-brightgreen?style=for-the-badge)
+![Privacy Focused](https://img.shields.io/badge/Privacy-First-red?style=for-the-badge&logo=shield)
+![GPL-3.0 License](https://img.shields.io/badge/License-GPL--3.0-blue?style=for-the-badge)
+![On App Store Now](https://img.shields.io/badge/Status-Active_Development-brightgreen?style=for-the-badge)
+
+</div>
+
+---
+
+## ✨ Core Features
 
 <table>
 <tr>
 <td width="50%">
 
-### 🧬 **Parkinson's Vulnerability Predictor**
-**100% accurate** ML model predicting dopamine neuron vulnerability
-- 🎯 **Perfect accuracy** with 20-gene signature
-- 🔬 **65,484 neurons** analyzed
-- 📊 **Novel genes** discovered (KCNH8, DPP10)
-- 💊 **Drug screening** ready
-- ⏱️ **6 hours** from concept to complete
-
-**Tech:** Python, Scanpy, scikit-learn, Single-cell RNA-seq  
-[View on GitHub →](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor)
+### 🎯 **AI Computer Vision**
+- 🐶 **Object Detection** — YOLOv8 with **601 classes** from Open Images V7
+- 📝 **English OCR** — On-device printed text recognition  
+- 🌎 **Spanish → English Translation** — Offline, rule-based + dictionary  
+- 📏 **LiDAR Distance** — Per-object depth measurement on Pro models
 
 </td>
 <td width="50%">
 
-### 📱 **nicedreamzapp (RealTime AI Camera)**
-First iPhone app to run **YOLOv8 with ALL 601 object classes** at 10 FPS
-- 🧠 **CoreML + Neural Engine** maxing out Neural Engine
-- 📝 **Live OCR** + offline translation
-- 📏 **LiDAR distance** measurement
-- 🔒 **100% offline**, 38.4 MB total
-- ⭐ **12 stars** on GitHub
-- 🦅 Built for the blind to see how robots see
-
-**Tech:** Swift, SwiftUI, CoreML, Metal, ARKit, LiDAR  
-[View on GitHub →](https://github.com/nicedreamzapp/nicedreamzapp)
-
-</td>
-</tr>
-
-<tr>
-<td width="50%">
-
-### 🤖 **divine-tribe-chatbot**
-AI chatbot for www.ineedhemp.com - Mistral 7B powered customer support
-- 🦙 **Mistral 7B** via Ollama
-- 🧠 **RLHF learning system** self-improving
-- 📦 **134 product** smart search
-- ⚡ **2-3s** response time
-- 🏠 **Self-hosted** on Mac Mini M1
-
-**Tech:** Python, Flask, Mistral, Ollama, RLHF  
-[View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)
-
-</td>
-<td width="50%">
-
-### 📱 **Dreamz-Social-Media-Marketing-Hub**
-Business automation for social media - turns 20min tasks into 3-5 min
-- ⏱️ **20-minute tasks → 3-5 minutes**
-- 🤖 **Python automation**
-- 📊 **Marketing workflows**
-- 💼 **Built for my business**
-- 🎨 **Share automation**
-
-**Tech:** Python, Automation  
-[View on GitHub →](https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub)
-
-</td>
-</tr>
-
-<tr>
-<td width="50%">
-
-### 🛠️ **apiai-hub**
-1 click Tools For xcode Building - achieve complex 10 minute tasks in 1 minute
-- ⚡ **10-minute tasks → 1 minute**
-- 🤖 **Automated workflows**
-- 🏗️ **iOS development** optimization
-- 🎯 **Complex tasks** made simple
-- 📊 **Professional dashboard**
-
-**Tech:** Python, FastAPI, Xcode automation  
-[View on GitHub →](https://github.com/nicedreamzapp/apiai-hub)
-
-</td>
-<td width="50%">
-
-### 💰 **BitcoinPredictor**
-Real-time Bitcoin trading platform with AI
-- 📊 **Real-time data streaming**
-- 🤖 **AI-powered** predictions
-- 📈 **Live charts** and analytics
-- ⚡ **TypeScript** architecture
-- 🔄 **Data streaming** architectures
-
-**Tech:** TypeScript, WebSockets, AI/ML  
-[View on GitHub →](https://github.com/nicedreamzapp/BitcoinPredictor)
+### ⚡ **Performance & Privacy**
+- 🚀 **Average 10 FPS** — Real-time processing across iPhone models
+- 💝 **100% Free** — No ads, no in-app purchases, no subscriptions  
+- 🔒 **Privacy-First** — No tracking, no servers, airplane-mode ready  
+- 🍎 **iPhone Optimized** — CoreML + Metal + Neural Engine acceleration
 
 </td>
 </tr>
@@ -116,204 +87,236 @@ Real-time Bitcoin trading platform with AI
 
 ---
 
-## 💻 Tech Stack
+## ⚡ Performance Details
 
 <div align="center">
 
-### 🎯 **Languages**
+**🏎️ Real-time Performance:** Average **10 FPS** across supported iPhone models
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Swift](https://img.shields.io/badge/Swift-FA7343?style=for-the-badge&logo=swift&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-
-### 🤖 **AI & Machine Learning**
-
-![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge)
-![Mistral](https://img.shields.io/badge/Mistral_7B-FF6B6B?style=for-the-badge)
-![CoreML](https://img.shields.io/badge/CoreML-000000?style=for-the-badge&logo=apple&logoColor=white)
-![YOLOv8](https://img.shields.io/badge/YOLOv8-00FFFF?style=for-the-badge)
-![RLHF](https://img.shields.io/badge/RLHF-10B981?style=for-the-badge)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
-
-### 📱 **iOS Development**
-
-![SwiftUI](https://img.shields.io/badge/SwiftUI-0081CB?style=for-the-badge&logo=swift&logoColor=white)
-![Xcode](https://img.shields.io/badge/Xcode-1575F9?style=for-the-badge&logo=xcode&logoColor=white)
-![Metal](https://img.shields.io/badge/Metal-FA7343?style=for-the-badge&logo=apple&logoColor=white)
-![ARKit](https://img.shields.io/badge/ARKit-000000?style=for-the-badge&logo=apple&logoColor=white)
-
-### 🔧 **Backend & Tools**
-
-![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
-
-### 🤖 **Robotics & Hardware**
-
-![ESP32](https://img.shields.io/badge/ESP32-000000?style=for-the-badge&logo=espressif&logoColor=white)
-![Arduino](https://img.shields.io/badge/Arduino-00979D?style=for-the-badge&logo=arduino&logoColor=white)
+*Actual performance may vary based on scene complexity, device temperature, and background app activity*
 
 </div>
 
----
-
-## 📊 GitHub Stats
-
-<div align="center">
-
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=nicedreamzapp&show_icons=true&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d)
-
-![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=nicedreamzapp&layout=compact&theme=dark&bg_color=0d1117&title_color=10b981&text_color=c9d1d9&border_color=30363d)
-
-</div>
+**🚀 Optimization Features:**
+- CoreML framework with Metal acceleration
+- Neural Engine utilization on A12+ chips  
+- Smart thermal and battery management
+- Adaptive frame rate based on device capabilities
 
 ---
 
-## 🎯 What I Specialize In
+## 🛠️ Technology Stack
 
 <div align="center">
 
-| 🚀 **Area** | 💡 **Skills** |
-|---|---|
-| **📱 iOS Development** | Swift, SwiftUI, CoreML, Metal, ARKit, Vision Framework, LiDAR |
-| **🤖 AI/ML** | YOLOv8, Mistral, Ollama, RLHF, scikit-learn, Single-cell Analysis |
-| **🐍 Python** | Flask, FastAPI, Automation, AI/ML, Data Processing |
-| **🧬 Applied ML** | Single-cell RNA-seq, Gene Expression Analysis, Medical AI |
-| **💼 Business Automation** | Workflow optimization, 20min→3min tasks |
-| **🤖 Robotics** | ESP32, Computer Vision, Autonomous Systems, Motor Control |
-| **⚡ Real-time Systems** | Trading platforms, WebSockets, Data Streaming |
-
-</div>
-
----
-
-## 🌟 Featured Repositories
-
-<div align="center">
-
-<a href="https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=parkinsons-vulnerability-predictor&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
-</a>
-
-<a href="https://github.com/nicedreamzapp/nicedreamzapp">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=nicedreamzapp&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
-</a>
-
-<a href="https://github.com/nicedreamzapp/divine-tribe-chatbot">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=divine-tribe-chatbot&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
-</a>
-
-<a href="https://github.com/nicedreamzapp/apiai-hub">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=apiai-hub&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
-</a>
-
-<a href="https://github.com/nicedreamzapp/BitcoinPredictor">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=BitcoinPredictor&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
-</a>
-
-<a href="https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=Dreamz-Social-Media-Marketing-Hub&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
-</a>
-
-</div>
-
----
-
-## 💡 About Me
-
-<div align="center">
-
-```typescript
-const matt = {
-  location: "🌲 Humboldt County, California",
-  company: "Nice Dreamz LLC",
-  role: "Full-Stack Developer & AI Engineer",
-  currentFocus: [
-    "iOS AI Apps",
-    "Self-Learning Chatbots", 
-    "Autonomous Robotics",
-    "Business Automation"
-  ],
-  
-  recentWins: [
-    "100% accurate Parkinson's ML predictor in 6 hours",
-    "First iPhone app to run YOLOv8 with 601 classes at 10 FPS",
-    "Self-improving chatbot with RLHF learning system",
-    "Reduced 20-minute tasks to 3 minutes with Python automation"
-  ],
-  
-  philosophy: "Making robots to guard my chickens 🐔🤖",
-  alwaysLearning: true,
-  coffeeConsumed: "☕☕☕☕☕ (daily)"
-};
+```mermaid
+graph TB
+    A[📱 iPhone Camera] --> B[🎯 YOLOv8 CoreML Model]
+    B --> C[⚡ Metal Performance Shaders]
+    C --> D[🧠 Neural Engine]
+    D --> E[📊 SwiftUI Interface]
+    
+    F[📝 Vision Framework] --> G[🌎 Offline Translation]
+    H[📏 ARKit LiDAR] --> I[📐 Distance Calculation]
+    
+    B --> J[🔒 100% On-Device Processing]
 ```
 
 </div>
 
----
-
-## 🎨 Current Focus
-
-- 🚀 **Optimizing iOS AI** for real-time performance
-- 🧠 **Building self-improving systems** with RLHF
-- ⚡ **Business automation** that actually saves time
-- 📱 **Mobile-first AI applications**
-- 🤖 **Local LLM deployments** (Ollama + Mistral)
-- 🐔 **Chicken guardian robot** with 601-class detection
+| Component | Technology | Purpose |
+|---|---|---|
+| 🤖 **AI Model** | YOLOv8 (Ultralytics) | 601-class object detection |
+| 🏗️ **UI Framework** | SwiftUI | Native iOS interface |
+| ⚡ **Acceleration** | CoreML + Metal + Neural Engine | Hardware-optimized inference |
+| 📊 **Dataset** | Open Images V7 | Comprehensive training data |
+| 🍎 **Platform** | iOS 15+ Native APIs | Deep system integration |
+| 🔋 **Optimization** | Smart resource management | Battery & thermal aware |
 
 ---
 
-## 🛠️ The Origin Story
-
-It started with a problem: **predators attacking my chickens**. Instead of buying a solution, I built a robot guardian. This led me down a rabbit hole of AI, computer vision, and automation:
-
-**The Journey:**
-1. 🤖 Need to detect predators → Learn YOLOv8
-2. 📱 Build iOS app with 601-class detection → First to run full YOLOv8 on iPhone
-3. 🧬 Apply ML skills to biology → 100% accurate Parkinson's predictor in 6 hours  
-4. 💼 Automate my business → Save 17+ minutes per task
-5. 🦙 Build customer support → Self-learning chatbot with RLHF
-6. 🚀 Keep building → More projects, more impact
-
-**Everything connects.** The same AI that identifies raccoons also helps the blind understand their world. The automation that streamlines my business accelerates my iOS development. One chicken problem led to an entire AI ecosystem.
-
----
-
-## 📫 Let's Connect
+## 📱 Device Compatibility
 
 <div align="center">
 
-[![Website](https://img.shields.io/badge/Website-nicedreamzwholesale.com-10b981?style=for-the-badge&logo=safari&logoColor=white)](https://nicedreamzwholesale.com)
-[![Email](https://img.shields.io/badge/Email-info@nicedreamzwholesale.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:info@nicedreamzwholesale.com)
-[![GitHub](https://img.shields.io/badge/GitHub-nicedreamzapp-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/nicedreamzapp)
-[![Instagram](https://img.shields.io/badge/Instagram-@nicedreamzapp-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/nicedreamzapp)
+### ✅ **Supported iPhone Models**
+- iPhone X and newer (iOS 15+ required)
+- Optimized for all compatible devices
+- LiDAR features available on Pro models with depth sensor
+
+**💡 Note:** iPhone 12+ models may offer enhanced performance due to improved Neural Engine and thermal design, but the app runs well across all supported devices.
 
 </div>
 
 ---
 
-## 🏆 Achievements
+## 🔒 Privacy Guarantee
 
 <div align="center">
 
-![Profile Views](https://komarev.com/ghpvc/?username=nicedreamzapp&color=10b981&style=for-the-badge)
-![Followers](https://img.shields.io/github/followers/nicedreamzapp?style=for-the-badge&color=10b981)
-![Stars](https://img.shields.io/github/stars/nicedreamzapp?style=for-the-badge&color=10b981)
+### 🛡️ **Your Data Never Leaves Your Device**
+
+| Privacy Feature | Status | Description |
+|---|---|---|
+| 📊 **Data Collection** | ❌ **NONE** | Zero telemetry or analytics |
+| 🌐 **Internet Required** | ❌ **NO** | Works in airplane mode |
+| 📍 **Location Tracking** | ❌ **NEVER** | No GPS or location access |
+| 🏢 **Cloud Processing** | ❌ **NONE** | 100% on-device AI |
+| 🔐 **Data Encryption** | ✅ **Built-in** | iOS secure enclave protection |
+
+</div>
+
+**🔐 Your privacy is non-negotiable. Everything happens locally on your iPhone.**
+
+---
+
+## 📸 Live Screenshots
+
+<div align="center">
+
+### 🖼️ **See RealTime AI Camera in Action**
+
+| 🌎 **Translation** | 🐶 **Detection** | 🏠 **Home Screen** | 📱 **App Info** | 📏 **LiDAR Distance** |
+| --- | --- | --- | --- | --- |
+| <img src="./IMG_2169.png" width="140" style="border-radius: 10px;"> | <img src="./IMG_2208.png" width="140" style="border-radius: 10px;"> | <img src="./HomeSCreen1.png" width="140" style="border-radius: 10px;"> | <img src="./IMG_2224.jpeg" width="140" style="border-radius: 10px;"> | <img src="./IMG_2247.png" width="140" style="border-radius: 10px;"> |
+| *Offline Spanish→English* | *601 object classes* | *Clean, native UI* | *Lightweight install* | *Pro model depth sensing* |
+
+</div>
+
+---
+
+## 🚀 Getting Started
+
+### 📋 **Requirements**
+- **Development:** macOS with Xcode 16+  
+- **Device:** iPhone X+ with iOS 15+ (iPhone 12+ recommended for optimal performance)  
+- **Optional:** LiDAR-enabled iPhone for distance measurement features  
+
+### ⚙️ **Quick Setup**
+```bash
+# 1. Clone the repository
+git clone https://github.com/nicedreamzapp/nicedreamzapp.git
+
+# 2. Navigate to project
+cd nicedreamzapp
+
+# 3. Open in Xcode
+open "RealTime Ai Cam.xcodeproj"
+
+# 4. Connect your iPhone and build!
+```
+
+### 🔑 **Required Permissions**
+- 📷 **Camera** (required for object detection)  
+- 🎤 **Microphone** (optional, for voice features)  
+- 📐 **Motion/Depth** (optional, for LiDAR distance measurement)  
+
+---
+
+## 🔧 Advanced Customization
+
+<details>
+<summary>🤖 <strong>Custom Model Replacement</strong> (Click to expand)</summary>
+
+### 📦 **Replace YOLOv8 Model**
+
+Advanced users can swap the included YOLOv8 model with a custom CoreML model:
+
+1. **Replace Model File**
+   ```
+   /Models/YOLOv8.mlpackage  →  YourCustomModel.mlpackage
+   ```
+
+2. **Update Processor**
+   - Modify `YOLOv8Processor.swift` if input/output shapes differ
+   - Adjust class labels in the configuration
+
+3. **Large Models**
+   - Use **Git LFS** for models >100MB
+   - Consider model quantization for better performance
+
+### ⚡ **Performance Tuning**
+- Adjust inference frequency in `CameraViewController.swift`
+- Modify confidence thresholds for different use cases
+- Enable/disable features based on device capabilities
+
+</details>
+
+---
+
+## 🤝 Contributing
+
+<div align="center">
+
+### 🌟 **We Welcome Contributions!** 🌟
+
+</div>
+
+**📝 Before submitting a PR, please include:**
+- 📱 Device model + iOS version tested
+- 🔄 Steps to reproduce any issues  
+- 📋 Crash logs or error messages (if applicable)
+- 📸 Screenshots or video demonstration
+- 🧪 Test results on different device configurations
+
+**🎯 Areas where we'd love help:**
+- 🌍 Additional language support for translation
+- 🎨 UI/UX improvements
+- ⚡ Performance optimizations  
+- 🐛 Bug fixes and stability improvements
+- 📚 Documentation enhancements
+
+---
+
+## 📞 Support & Contact
+
+<div align="center">
+
+### 💬 **Need Help?**
+
+[![Email Support](https://img.shields.io/badge/Email-info@nicedreamzwholesale.com-red?style=for-the-badge&logo=gmail)](mailto:info@nicedreamzwholesale.com)
+[![Website](https://img.shields.io/badge/Website-nicedreamzwholesale.com-blue?style=for-the-badge&logo=safari)](https://nicedreamzwholesale.com/github-realtime-ai-camera/)
+
+</div>
+
+---
+
+## 📄 License & Credits
+
+### ⚖️ **Dual License**
+
+- **🔓 GPL-3.0** — For open source development and learning
+- **💼 Commercial License** — Required for App Store, TestFlight, or commercial distribution
+
+**📧 Commercial licensing:** [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com)
+
+### 🙏 **Acknowledgments**
+
+| Component | Creator | License |
+|---|---|---|
+| 🤖 **YOLOv8** | © Ultralytics | GPL-3.0 |
+| 📊 **Open Images V7** | © Google | CC BY 4.0 |
+| 🍎 **CoreML, Metal, SwiftUI** | © Apple Inc. | Apple Developer Agreement |
+| 🎨 **App Design & Development** | © NiceDreamzApps | GPL-3.0 |
+
+---
+
+<div align="center">
+
+## 🌟 **Show Your Support** 🌟
+
+### If this project helped you, please give it a star! ⭐
+
+[![Download on App Store](https://img.shields.io/badge/Download-App%20Store-007AFF?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/realtime-ai-cam/id6751230739)
+[![GitHub Stars](https://img.shields.io/github/stars/nicedreamzapp/nicedreamzapp?style=for-the-badge&logo=github)](https://github.com/nicedreamzapp/nicedreamzapp)
+[![GitHub Forks](https://img.shields.io/github/forks/nicedreamzapp/nicedreamzapp?style=for-the-badge&logo=github)](https://github.com/nicedreamzapp/nicedreamzapp/fork)
+
+### 🚀 **Made with ❤️ by NiceDreamzApps**
 
 </div>
 
 ---
 
 <div align="center">
-
-### 💭 *"If it takes more than 10 minutes, automate it. If it needs AI, build it from scratch."*
-
-### 🚀 **Making powerful AI accessible, one app at a time**
-
-<br>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=10b981&height=100&section=footer" />
-
+<sub>© 2025 RealTime AI Camera • Open Source • Privacy-First • iPhone Optimized</sub>
 </div>
