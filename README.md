@@ -60,7 +60,7 @@ AI chatbot for www.ineedhemp.com - Mistral 7B powered customer support
 - 🧠 **RLHF learning system** self-improving
 - 📦 **134 product** smart search
 - ⚡ **2-3s** response time
-- 🏠 **Self-hosted** on Mac Mini M1
+- 🏠 **Self-hosted** on Mac Mini Pro M4 65GB
 
 **Tech:** Python, Flask, Mistral, Ollama, RLHF  
 [View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)
