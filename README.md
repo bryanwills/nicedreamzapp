@@ -22,6 +22,24 @@
 <tr>
 <td width="50%">
 
+### 🤖 **Cemani Homestead Robot**
+**Autonomous tank platform** for homestead automation - 6 months from zero to mobile
+- 🚜 **4WD tank drive** pulling loaded carts
+- 🎮 **Xbox controller** via ESP32 + Teensy 4.1
+- 🔌 **Modbus RTU** motor control
+- 🦾 **Dual OpenArm** manipulators (planned)
+- 🐔 **Predator patrol** + chicken feeding
+
+**Tech:** Teensy 4.1, ESP32, Modbus, ZLAC drivers  
+[View on GitHub →](https://github.com/nicedreamzapp/CemaniHomesteadRobot)
+
+**Demo:**
+
+https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
+
+</td>
+<td width="50%">
+
 ### 🎬 **CogVideoX-Mac-Setup**
 **First comprehensive guide** to run CogVideoX-5B video generation on Apple Silicon
 - 🍎 **Mac M4 Pro** 64GB optimized
@@ -34,6 +52,9 @@
 [View Guide →](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup)
 
 </td>
+</tr>
+
+<tr>
 <td width="50%">
 
 ### 🧬 **Parkinson's Vulnerability Predictor**
@@ -48,9 +69,6 @@
 [View on GitHub →](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor)
 
 </td>
-</tr>
-
-<tr>
 <td width="50%">
 
 ### 📱 **RealTime AI Camera**
@@ -66,6 +84,9 @@ First iPhone app to run **YOLOv8 with ALL 601 object classes** at 10 FPS
 [View on GitHub →](https://github.com/nicedreamzapp/RealTimeAICam) | [Download →](https://apps.apple.com/us/app/realtime-ai-cam/id6751230739)
 
 </td>
+</tr>
+
+<tr>
 <td width="50%">
 
 ### 🤖 **divine-tribe-chatbot**
@@ -80,9 +101,6 @@ AI chatbot for www.ineedhemp.com - Mistral 7B powered customer support
 [View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)
 
 </td>
-</tr>
-
-<tr>
 <td width="50%">
 
 ### 📱 **Dreamz-Social-Media-Marketing-Hub**
@@ -97,6 +115,9 @@ Business automation for social media - turns 20min tasks into 3-5 min
 [View on GitHub →](https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub)
 
 </td>
+</tr>
+
+<tr>
 <td width="50%">
 
 ### 🛠️ **apiai-hub**
@@ -111,9 +132,6 @@ Business automation for social media - turns 20min tasks into 3-5 min
 [View on GitHub →](https://github.com/nicedreamzapp/apiai-hub)
 
 </td>
-</tr>
-
-<tr>
 <td width="50%">
 
 ### 💰 **BitcoinPredictor**
@@ -126,9 +144,6 @@ Real-time Bitcoin trading platform with AI
 
 **Tech:** TypeScript, WebSockets, AI/ML  
 [View on GitHub →](https://github.com/nicedreamzapp/BitcoinPredictor)
-
-</td>
-<td width="50%">
 
 </td>
 </tr>
@@ -146,6 +161,7 @@ Real-time Bitcoin trading platform with AI
 ![Swift](https://img.shields.io/badge/Swift-FA7343?style=for-the-badge&logo=swift&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
 
 ### 🤖 **AI & Machine Learning**
 
@@ -173,8 +189,10 @@ Real-time Bitcoin trading platform with AI
 
 ### 🤖 **Robotics & Hardware**
 
+![Teensy](https://img.shields.io/badge/Teensy_4.1-FF6B35?style=for-the-badge)
 ![ESP32](https://img.shields.io/badge/ESP32-000000?style=for-the-badge&logo=espressif&logoColor=white)
 ![Arduino](https://img.shields.io/badge/Arduino-00979D?style=for-the-badge&logo=arduino&logoColor=white)
+![Modbus](https://img.shields.io/badge/Modbus_RTU-4B8BBE?style=for-the-badge)
 
 </div>
 
@@ -204,7 +222,7 @@ Real-time Bitcoin trading platform with AI
 | **🎬 AI Video** | CogVideoX, ComfyUI workflows, MPS optimization, Local generation |
 | **🧬 Applied ML** | Single-cell RNA-seq, Gene Expression Analysis, Medical AI |
 | **💼 Business Automation** | Workflow optimization, 20min→3min tasks |
-| **🤖 Robotics** | ESP32, Computer Vision, Autonomous Systems, Motor Control |
+| **🤖 Robotics** | Teensy, ESP32, Modbus RTU, Tank Drive, Motor Control, Autonomous Systems |
 | **⚡ Real-time Systems** | Trading platforms, WebSockets, Data Streaming |
 
 </div>
@@ -214,6 +232,10 @@ Real-time Bitcoin trading platform with AI
 ## 🌟 Featured Repositories
 
 <div align="center">
+
+<a href="https://github.com/nicedreamzapp/CemaniHomesteadRobot">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=CemaniHomesteadRobot&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
+</a>
 
 <a href="https://github.com/nicedreamzapp/CogVideoX-Mac-Setup">
   <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=CogVideoX-Mac-Setup&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
@@ -235,10 +257,6 @@ Real-time Bitcoin trading platform with AI
   <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=apiai-hub&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
 </a>
 
-<a href="https://github.com/nicedreamzapp/BitcoinPredictor">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=BitcoinPredictor&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
-</a>
-
 </div>
 
 ---
@@ -250,13 +268,14 @@ Real-time Bitcoin trading platform with AI
 **Role:** Full-Stack Developer & AI Engineer
 
 ### 🎯 Current Focus
+- Autonomous homestead robotics with dual-arm manipulation
 - Local AI Video Generation on Apple Silicon
 - iOS AI Apps with CoreML optimization
 - Self-Learning Chatbots with RLHF
-- Autonomous Robotics for real-world problems
 - Business Automation tools
 
 ### 🏆 Recent Wins
+- ✅ Built autonomous tank robot from scratch in 6 months
 - ✅ First guide to run CogVideoX-5B on Mac with MPS fixes
 - ✅ 100% accurate Parkinson's ML predictor in 6 hours
 - ✅ First iPhone app with YOLOv8 601 classes at 10 FPS
@@ -278,7 +297,8 @@ It started with a problem: **predators attacking my chickens**. Instead of buyin
 4. 💼 Automate my business → Save 17+ minutes per task
 5. 🦙 Build customer support → Self-learning chatbot with RLHF
 6. 🎬 Debug CogVideoX on Mac → Create complete guide for community
-7. 🚀 Keep building → More projects, more impact
+7. 🚜 Build the robot → 6 months from zero to pulling loaded carts
+8. 🚀 Keep building → More projects, more impact
 
 **Everything connects.** The same AI that identifies raccoons also helps the blind understand their world. The automation that streamlines my business accelerates my iOS development. One chicken problem led to an entire AI ecosystem.
 
