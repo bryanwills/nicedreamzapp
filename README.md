@@ -245,47 +245,25 @@ Real-time Bitcoin trading platform with AI
 
 ## 💡 About Me
 
-<div align="center">
-```typescript
-const matt = {
-  location: "🌲 Humboldt County, California",
-  company: "Nice Dreamz LLC",
-  role: "Full-Stack Developer & AI Engineer",
-  currentFocus: [
-    "Local AI Video Generation",
-    "iOS AI Apps",
-    "Self-Learning Chatbots", 
-    "Autonomous Robotics",
-    "Business Automation"
-  ],
-  
-  recentWins: [
-    "First guide to run CogVideoX-5B on Mac with MPS fixes",
-    "100% accurate Parkinson's ML predictor in 6 hours",
-    "First iPhone app with YOLOv8 601 classes at 10 FPS",
-    "Self-improving chatbot with RLHF",
-    "20-minute tasks → 3 minutes with automation"
-  ],
-  
-  philosophy: "Making robots to guard my chickens 🐔🤖",
-  alwaysLearning: true,
-  coffeeConsumed: "☕☕☕☕☕ (daily)"
-};
-```
+**Location:** 🌲 Humboldt County, California  
+**Company:** Nice Dreamz LLC  
+**Role:** Full-Stack Developer & AI Engineer
 
-</div>
+### 🎯 Current Focus
+- Local AI Video Generation on Apple Silicon
+- iOS AI Apps with CoreML optimization
+- Self-Learning Chatbots with RLHF
+- Autonomous Robotics for real-world problems
+- Business Automation tools
 
----
+### 🏆 Recent Wins
+- ✅ First guide to run CogVideoX-5B on Mac with MPS fixes
+- ✅ 100% accurate Parkinson's ML predictor in 6 hours
+- ✅ First iPhone app with YOLOv8 601 classes at 10 FPS
+- ✅ Self-improving chatbot with RLHF learning
+- ✅ 20-minute tasks → 3 minutes with automation
 
-## 🎨 Current Focus
-
-- 🎬 **Local AI video generation** on Apple Silicon
-- 🚀 **Optimizing iOS AI** for real-time performance
-- 🧠 **Building self-improving systems** with RLHF
-- ⚡ **Business automation** that actually saves time
-- 📱 **Mobile-first AI applications**
-- 🤖 **Local LLM deployments** (Ollama + Mistral)
-- 🐔 **Chicken guardian robot** with 601-class detection
+**Philosophy:** *"Making robots to guard my chickens"* 🐔🤖
 
 ---
 
