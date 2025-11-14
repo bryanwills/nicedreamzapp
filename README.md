@@ -4,7 +4,7 @@
 
 ### 🚀 Full-Stack Developer | AI Engineer | iOS Developer
 
-<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=10B981&center=true&vCenter=true&width=600&lines=iOS+Developer+%7C+Swift+%2B+SwiftUI;AI+Engineer+%7C+Python+%2B+Machine+Learning;TypeScript+%7C+Real-Time+Trading+Platforms;Building+Robots+That+Protect+Chickens;Building+Tools+That+Actually+Matter" alt="Typing SVG" />
+<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=10B981&center=true&vCenter=true&width=600&lines=iOS+Developer+%7C+Swift+%2B+SwiftUI;AI+Engineer+%7C+Python+%2B+Machine+Learning;Local+AI+Video+Generation+on+Mac;Building+Robots+That+Protect+Chickens;Building+Tools+That+Actually+Matter" alt="Typing SVG" />
 
 <br>
 
@@ -22,6 +22,20 @@
 <tr>
 <td width="50%">
 
+### 🎬 **CogVideoX-Mac-Setup**
+**First comprehensive guide** to run CogVideoX-5B video generation on Apple Silicon
+- 🍎 **Mac M4 Pro** 64GB optimized
+- 🔧 **Fixed MPS bugs** blocking Mac users
+- ⚡ **4-sec videos** in 18 minutes
+- 🎯 **Discovered 30-frame limit**
+- 📝 **Complete workflows & fixes**
+
+**Tech:** Python, ComfyUI, CogVideoX, MPS  
+[View Guide →](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup)
+
+</td>
+<td width="50%">
+
 ### 🧬 **Parkinson's Vulnerability Predictor**
 **100% accurate** ML model predicting dopamine neuron vulnerability
 - 🎯 **Perfect accuracy** with 20-gene signature
@@ -34,24 +48,24 @@
 [View on GitHub →](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor)
 
 </td>
-<td width="50%">
-
-### 📱 **nicedreamzapp (RealTime AI Camera)**
-First iPhone app to run **YOLOv8 with ALL 601 object classes** at 10 FPS
-- 🧠 **CoreML + Neural Engine** maxing out Neural Engine
-- 📝 **Live OCR** + offline translation
-- 📏 **LiDAR distance** measurement
-- 🔒 **100% offline**, 38.4 MB total
-- ⭐ **12 stars** on GitHub
-- 🦅 Built for the blind to see how robots see
-
-**Tech:** Swift, SwiftUI, CoreML, Metal, ARKit, LiDAR  
-[View on GitHub →](https://github.com/nicedreamzapp/nicedreamzapp)
-
-</td>
 </tr>
 
 <tr>
+<td width="50%">
+
+### 📱 **RealTime AI Camera**
+First iPhone app to run **YOLOv8 with ALL 601 object classes** at 10 FPS
+- 🧠 **CoreML + Neural Engine** optimization
+- 📝 **Live OCR** + offline translation
+- 📏 **LiDAR distance** measurement
+- 🔒 **100% offline**, 38.4 MB total
+- ⭐ **13 stars** on GitHub
+- 📱 **Available on App Store**
+
+**Tech:** Swift, SwiftUI, CoreML, Metal, ARKit, LiDAR  
+[View on GitHub →](https://github.com/nicedreamzapp/RealTimeAICam) | [Download →](https://apps.apple.com/us/app/realtime-ai-cam/id6751230739)
+
+</td>
 <td width="50%">
 
 ### 🤖 **divine-tribe-chatbot**
@@ -60,12 +74,15 @@ AI chatbot for www.ineedhemp.com - Mistral 7B powered customer support
 - 🧠 **RLHF learning system** self-improving
 - 📦 **134 product** smart search
 - ⚡ **2-3s** response time
-- 🏠 **Self-hosted** on Mac Mini Pro M4 65GB
+- 🏠 **Self-hosted** on Mac Mini Pro M4 64GB
 
 **Tech:** Python, Flask, Mistral, Ollama, RLHF  
 [View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)
 
 </td>
+</tr>
+
+<tr>
 <td width="50%">
 
 ### 📱 **Dreamz-Social-Media-Marketing-Hub**
@@ -80,9 +97,6 @@ Business automation for social media - turns 20min tasks into 3-5 min
 [View on GitHub →](https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub)
 
 </td>
-</tr>
-
-<tr>
 <td width="50%">
 
 ### 🛠️ **apiai-hub**
@@ -97,6 +111,9 @@ Business automation for social media - turns 20min tasks into 3-5 min
 [View on GitHub →](https://github.com/nicedreamzapp/apiai-hub)
 
 </td>
+</tr>
+
+<tr>
 <td width="50%">
 
 ### 💰 **BitcoinPredictor**
@@ -109,6 +126,9 @@ Real-time Bitcoin trading platform with AI
 
 **Tech:** TypeScript, WebSockets, AI/ML  
 [View on GitHub →](https://github.com/nicedreamzapp/BitcoinPredictor)
+
+</td>
+<td width="50%">
 
 </td>
 </tr>
@@ -129,6 +149,7 @@ Real-time Bitcoin trading platform with AI
 
 ### 🤖 **AI & Machine Learning**
 
+![CogVideoX](https://img.shields.io/badge/CogVideoX-5B-blue?style=for-the-badge)
 ![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge)
 ![Mistral](https://img.shields.io/badge/Mistral_7B-FF6B6B?style=for-the-badge)
 ![CoreML](https://img.shields.io/badge/CoreML-000000?style=for-the-badge&logo=apple&logoColor=white)
@@ -145,10 +166,10 @@ Real-time Bitcoin trading platform with AI
 
 ### 🔧 **Backend & Tools**
 
+![ComfyUI](https://img.shields.io/badge/ComfyUI-00C853?style=for-the-badge)
 ![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 
 ### 🤖 **Robotics & Hardware**
 
@@ -178,8 +199,9 @@ Real-time Bitcoin trading platform with AI
 | 🚀 **Area** | 💡 **Skills** |
 |---|---|
 | **📱 iOS Development** | Swift, SwiftUI, CoreML, Metal, ARKit, Vision Framework, LiDAR |
-| **🤖 AI/ML** | YOLOv8, Mistral, Ollama, RLHF, scikit-learn, Single-cell Analysis |
-| **🐍 Python** | Flask, FastAPI, Automation, AI/ML, Data Processing |
+| **🤖 AI/ML** | YOLOv8, CogVideoX, Mistral, Ollama, RLHF, scikit-learn, Single-cell Analysis |
+| **🐍 Python** | Flask, FastAPI, ComfyUI, Automation, AI/ML, Data Processing |
+| **🎬 AI Video** | CogVideoX, ComfyUI workflows, MPS optimization, Local generation |
 | **🧬 Applied ML** | Single-cell RNA-seq, Gene Expression Analysis, Medical AI |
 | **💼 Business Automation** | Workflow optimization, 20min→3min tasks |
 | **🤖 Robotics** | ESP32, Computer Vision, Autonomous Systems, Motor Control |
@@ -193,12 +215,16 @@ Real-time Bitcoin trading platform with AI
 
 <div align="center">
 
-<a href="https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=parkinsons-vulnerability-predictor&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
+<a href="https://github.com/nicedreamzapp/CogVideoX-Mac-Setup">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=CogVideoX-Mac-Setup&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
 </a>
 
-<a href="https://github.com/nicedreamzapp/nicedreamzapp">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=nicedreamzapp&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
+<a href="https://github.com/nicedreamzapp/RealTimeAICam">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=RealTimeAICam&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
+</a>
+
+<a href="https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor">
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=parkinsons-vulnerability-predictor&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
 </a>
 
 <a href="https://github.com/nicedreamzapp/divine-tribe-chatbot">
@@ -213,10 +239,6 @@ Real-time Bitcoin trading platform with AI
   <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=BitcoinPredictor&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
 </a>
 
-<a href="https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=nicedreamzapp&repo=Dreamz-Social-Media-Marketing-Hub&theme=dark&bg_color=0d1117&title_color=10b981&icon_color=10b981&text_color=c9d1d9&border_color=30363d" />
-</a>
-
 </div>
 
 ---
@@ -224,13 +246,13 @@ Real-time Bitcoin trading platform with AI
 ## 💡 About Me
 
 <div align="center">
-
 ```typescript
 const matt = {
   location: "🌲 Humboldt County, California",
   company: "Nice Dreamz LLC",
   role: "Full-Stack Developer & AI Engineer",
   currentFocus: [
+    "Local AI Video Generation",
     "iOS AI Apps",
     "Self-Learning Chatbots", 
     "Autonomous Robotics",
@@ -238,10 +260,11 @@ const matt = {
   ],
   
   recentWins: [
+    "First guide to run CogVideoX-5B on Mac with MPS fixes",
     "100% accurate Parkinson's ML predictor in 6 hours",
-    "First iPhone app to run YOLOv8 with 601 classes at 10 FPS",
-    "Self-improving chatbot with RLHF learning system",
-    "Reduced 20-minute tasks to 3 minutes with Python automation"
+    "First iPhone app with YOLOv8 601 classes at 10 FPS",
+    "Self-improving chatbot with RLHF",
+    "20-minute tasks → 3 minutes with automation"
   ],
   
   philosophy: "Making robots to guard my chickens 🐔🤖",
@@ -256,6 +279,7 @@ const matt = {
 
 ## 🎨 Current Focus
 
+- 🎬 **Local AI video generation** on Apple Silicon
 - 🚀 **Optimizing iOS AI** for real-time performance
 - 🧠 **Building self-improving systems** with RLHF
 - ⚡ **Business automation** that actually saves time
@@ -275,7 +299,8 @@ It started with a problem: **predators attacking my chickens**. Instead of buyin
 3. 🧬 Apply ML skills to biology → 100% accurate Parkinson's predictor in 6 hours  
 4. 💼 Automate my business → Save 17+ minutes per task
 5. 🦙 Build customer support → Self-learning chatbot with RLHF
-6. 🚀 Keep building → More projects, more impact
+6. 🎬 Debug CogVideoX on Mac → Create complete guide for community
+7. 🚀 Keep building → More projects, more impact
 
 **Everything connects.** The same AI that identifies raccoons also helps the blind understand their world. The automation that streamlines my business accelerates my iOS development. One chicken problem led to an entire AI ecosystem.
 
