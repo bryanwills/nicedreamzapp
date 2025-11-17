@@ -16,10 +16,9 @@
 ### 🤖 Cemani Homestead Robot
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║  A robot that guards chickens - built from scratch in 6 months
-║  • Drives like a tank with 4 wheels
-║  • Controlled with an Xbox controller  
-║  • Can pull heavy carts around the farm
+║  Robot that guards chickens - built in 6 months              ║
+║  • Tank drive with 4 wheels                                  ║
+║  • Xbox controller                                           ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 **[View on GitHub →](https://github.com/nicedreamzapp/CemaniHomesteadRobot)**
@@ -31,10 +30,9 @@ https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 ### 🎬 CogVideoX-Mac-Setup
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║  Made AI video generation work on Mac computers
-║  • Creates 4-second videos using AI
-║  • Fixed bugs that stopped it from working
-║  • Takes about 18 minutes to make one video
+║  AI video generation on Mac                                  ║
+║  • 4-second videos in 18 minutes                             ║
+║  • Fixed Mac bugs                                            ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 **[View Guide →](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup)**
@@ -46,36 +44,34 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 ### 🧬 Parkinson's Vulnerability Predictor
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║  AI that predicts which brain cells get damaged by disease
-║  • Analyzed over 65,000 cells
-║  • Could help find cures
-║  • Built in 6 hours
+║  AI predicts damaged brain cells                             ║
+║  • 65,000+ cells analyzed                                    ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 **[View on GitHub →](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor)**
+
+![Parkinson's Analysis](https://raw.githubusercontent.com/nicedreamzapp/parkinsons-vulnerability-predictor/main/figures/validation/cross_dataset_vulnerability_comparison.png)
 
 ---
 
 ### 📱 RealTime AI Camera
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║  iPhone app that recognizes 601 different objects
-║  • Works completely offline
-║  • Free on the App Store
-║  • Can identify dogs, cars, phones, etc.
+║  iPhone app - recognizes 601 objects                         ║
+║  • Works offline                                             ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 **[GitHub →](https://github.com/nicedreamzapp/RealTimeAICam)** | **[Download →](https://apps.apple.com/us/app/realtime-ai-cam/id6751230739)**
+
+![RealTime AI Camera](https://raw.githubusercontent.com/nicedreamzapp/RealTimeAICam/main/EA08B469-F8A2-435D-A3B3-44AEF833E38E.png)
 
 ---
 
 ### 🤖 divine-tribe-chatbot
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║  Chatbot that answers customer questions on my website
-║  • Answers questions automatically 24/7
-║  • Knows about 134 different products
-║  • Learns from conversations
+║  Customer support chatbot                                    ║
+║  • 134 products, 24/7                                        ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 **[View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)**
@@ -85,39 +81,39 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 ### 📱 Social Media Marketing Hub
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║  Tool that automates social media posts
-║  • Creates posts automatically
-║  • Saves me hours every week
-║  • Built for my business
+║  Automates social media posts                                ║
+║  • Saves hours weekly                                        ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 **[View on GitHub →](https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub)**
+
+![Marketing Hub](https://raw.githubusercontent.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub/refs/heads/main/MArketingHubHomepage.png)
 
 ---
 
 ### 🛠️ apiai-hub
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║  Tools that speed up iPhone app development
-║  • Makes building apps faster
-║  • One-click tools for complex tasks
-║  • Saves a lot of time
+║  iPhone dev tools                                            ║
+║  • 10 min tasks → 1 min                                      ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 **[View on GitHub →](https://github.com/nicedreamzapp/apiai-hub)**
+
+![API AI Hub](https://raw.githubusercontent.com/nicedreamzapp/apiai-hub/main/assets/preview.webp)
 
 ---
 
 ### 💰 BitcoinPredictor
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║  Bitcoin price tracker with AI predictions
-║  • Shows live Bitcoin prices
-║  • AI helps predict movements
-║  • Charts and graphs
+║  Bitcoin tracker with AI                                     ║
+║  • Live prices & predictions                                 ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 **[View on GitHub →](https://github.com/nicedreamzapp/BitcoinPredictor)**
+
+![Bitcoin Predictor](https://raw.githubusercontent.com/nicedreamzapp/BitcoinPredictor/refs/heads/main/BitTraderUiScreen.png)
 
 ---
 
