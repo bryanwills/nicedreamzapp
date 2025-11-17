@@ -179,16 +179,16 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
 ## ▓▒░ GET IN TOUCH ░▒▓
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║                                                               ║
-║  🌐 Website:   [Visit Site](https://nicedreamzwholesale.com) ║
-║  📧 Email:     [Send Email](mailto:info@nicedreamzwholesale.com) ║
-║  💻 GitHub:    [View Profile](https://github.com/nicedreamzapp) ║
-║  📸 Instagram: [Follow @nicedreamzwholesale](https://instagram.com/nicedreamzwholesale) ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
-```
+<div align="center">
+
+| | |
+|---|---|
+| 🌐 **Website** | [Visit Site](https://nicedreamzwholesale.com) |
+| 📧 **Email** | [Send Email](mailto:info@nicedreamzwholesale.com) |
+| 💻 **GitHub** | [View Profile](https://github.com/nicedreamzapp) |
+| 📸 **Instagram** | [Follow @nicedreamzwholesale](https://instagram.com/nicedreamzwholesale) |
+
+</div>
 
 ---
 
