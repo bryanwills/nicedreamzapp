@@ -19,7 +19,7 @@
 
 <table>
 <tr>
-<td width="50%" align="center">
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🤖 Cemani Homestead Robot
 
@@ -28,10 +28,10 @@ Tank drive • Xbox controller • Object detection
 
 [View on GitHub →](https://github.com/nicedreamzapp/CemaniHomesteadRobot)
 
-<img src="https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe" width="400">
+https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 
 </td>
-<td width="50%" align="center">
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 📱 RealTimeAICam
 
@@ -50,7 +50,7 @@ Tank drive • Xbox controller • Object detection
 
 <table>
 <tr>
-<td width="50%" align="center">
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🎬 CogVideoX-Mac-Setup
 
@@ -59,10 +59,10 @@ CogVideoX-5B • M4 Pro • 4-sec videos in 18 min
 
 [View Guide →](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup)
 
-<img src="https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a" width="400">
+https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
 </td>
-<td width="50%" align="center">
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🧬 Parkinson's Vulnerability Predictor
 
@@ -81,7 +81,7 @@ CogVideoX-5B • M4 Pro • 4-sec videos in 18 min
 
 <table>
 <tr>
-<td width="50%" align="center">
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 📱 Social Media Marketing Hub
 
@@ -93,7 +93,7 @@ CogVideoX-5B • M4 Pro • 4-sec videos in 18 min
 <img src="https://raw.githubusercontent.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub/refs/heads/main/MArketingHubHomepage.png" width="400">
 
 </td>
-<td width="50%" align="center">
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🛠️ apiai-hub
 
@@ -112,7 +112,7 @@ CogVideoX-5B • M4 Pro • 4-sec videos in 18 min
 
 <table>
 <tr>
-<td width="50%" align="center">
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 💰 BitcoinPredictor
 
@@ -124,7 +124,7 @@ Live prices & predictions • Data streaming
 <img src="https://raw.githubusercontent.com/nicedreamzapp/BitcoinPredictor/refs/heads/main/BitTraderUiScreen.png" width="400">
 
 </td>
-<td width="50%" valign="top" align="center">
+<td width="50%" valign="top" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🤖 divine-tribe-chatbot
 
