@@ -1,3 +1,5 @@
+<div align="center">
+
 # ░▒▓█ MATT FROM NICE DREAMZ LLC █▓▒░
 
 ```
@@ -9,11 +11,20 @@
 └────────────────────────────────────────────────────────────────┘
 ```
 
+</div>
+
 ---
+
+<div align="center">
 
 ## ▓▒░ WHAT I'M WORKING ON ░▒▓
 
+</div>
+
+<div align="center">
+
 ### 🤖 Cemani Homestead Robot
+
 ```
 ╔═══════════════════════════════════════════════════════════════╗
 ║  Robot that guards chickens - built in 6 months              ║
@@ -22,13 +33,19 @@
 ║  • Solid chassis for object detection                        ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
+
 **[View on GitHub →](https://github.com/nicedreamzapp/CemaniHomesteadRobot)**
 
 https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 
+</div>
+
 ---
 
+<div align="center">
+
 ### 🗣️ SpeakAnywhere
+
 ```
 ╔═══════════════════════════════════════════════════════════════╗
 ║  Voice control for your computer                             ║
@@ -36,11 +53,17 @@ https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 ║  • Let your computer do the reading and writing              ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
+
 **[View on GitHub →](https://github.com/nicedreamzapp/SpeakAnywhere)**
+
+</div>
 
 ---
 
+<div align="center">
+
 ### 🤖 divine-tribe-chatbot
+
 ```
 ╔═══════════════════════════════════════════════════════════════╗
 ║  AI chatbot for www.ineedhemp.com                            ║
@@ -49,11 +72,17 @@ https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 ║  • 134 products, 24/7 support                                ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
+
 **⭐ 7 Stars** | **[View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)**
+
+</div>
 
 ---
 
+<div align="center">
+
 ### 📱 RealTimeAICam
+
 ```
 ╔═══════════════════════════════════════════════════════════════╗
 ║  Largest object detection app on iPhone - FREE               ║
@@ -63,13 +92,19 @@ https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 ║  • OCR, LiDAR, language translation                          ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
+
 **⭐ 13 Stars** | **[GitHub →](https://github.com/nicedreamzapp/RealTimeAICam)** | **[Download →](https://apps.apple.com/us/app/realtime-ai-cam/id6751230739)**
 
 ![RealTime AI Camera](https://raw.githubusercontent.com/nicedreamzapp/RealTimeAICam/main/EA08B469-F8A2-435D-A3B3-44AEF833E38E.png)
 
+</div>
+
 ---
 
+<div align="center">
+
 ### 🎬 CogVideoX-Mac-Setup
+
 ```
 ╔═══════════════════════════════════════════════════════════════╗
 ║  AI video generation on Mac                                  ║
@@ -78,13 +113,19 @@ https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 ║  • Fixed Mac compatibility bugs                              ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
+
 **[View Guide →](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup)**
 
 https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
+</div>
+
 ---
 
+<div align="center">
+
 ### 🧬 Parkinson's Vulnerability Predictor
+
 ```
 ╔═══════════════════════════════════════════════════════════════╗
 ║  Machine learning for Parkinson's disease research           ║
@@ -93,13 +134,19 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 ║  • 65,000+ cells analyzed                                    ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
+
 **[View on GitHub →](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor)**
 
 ![Parkinson's Analysis](https://raw.githubusercontent.com/nicedreamzapp/parkinsons-vulnerability-predictor/main/figures/validation/cross_dataset_vulnerability_comparison.png)
 
+</div>
+
 ---
 
+<div align="center">
+
 ### 👁️ VisionBuilder
+
 ```
 ╔═══════════════════════════════════════════════════════════════╗
 ║  Vision development tools for iOS                            ║
@@ -107,11 +154,17 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 ║  • MIT License                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
+
 **[View on GitHub →](https://github.com/nicedreamzapp/VisionBuilder)**
+
+</div>
 
 ---
 
+<div align="center">
+
 ### 📱 Social Media Marketing Hub
+
 ```
 ╔═══════════════════════════════════════════════════════════════╗
 ║  Automates social media posts for my business                ║
@@ -119,13 +172,19 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 ║  • Saves hours weekly                                        ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
+
 **[View on GitHub →](https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub)**
 
 ![Marketing Hub](https://raw.githubusercontent.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub/refs/heads/main/MArketingHubHomepage.png)
 
+</div>
+
 ---
 
+<div align="center">
+
 ### 🛠️ apiai-hub
+
 ```
 ╔═══════════════════════════════════════════════════════════════╗
 ║  1-click tools for Xcode building                            ║
@@ -133,13 +192,19 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 ║  • iPhone dev tools                                          ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
+
 **[View on GitHub →](https://github.com/nicedreamzapp/apiai-hub)**
 
 ![API AI Hub](https://raw.githubusercontent.com/nicedreamzapp/apiai-hub/main/assets/preview.webp)
 
+</div>
+
 ---
 
+<div align="center">
+
 ### 💰 BitcoinPredictor
+
 ```
 ╔═══════════════════════════════════════════════════════════════╗
 ║  Real-time Bitcoin trading platform with AI                  ║
@@ -147,11 +212,16 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 ║  • Data streaming architecture                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
+
 **[View on GitHub →](https://github.com/nicedreamzapp/BitcoinPredictor)**
 
 ![Bitcoin Predictor](https://raw.githubusercontent.com/nicedreamzapp/BitcoinPredictor/refs/heads/main/BitTraderUiScreen.png)
 
+</div>
+
 ---
+
+<div align="center">
 
 ## ▓▒░ WHAT I USE ░▒▓
 
@@ -184,7 +254,11 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 └──────────────────────────────────────────────────────────────┘
 ```
 
+</div>
+
 ---
+
+<div align="center">
 
 ## ▓▒░ HOW IT STARTED ░▒▓
 
@@ -215,7 +289,11 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 └──────────────────────────────────────────────────────────────┘
 ```
 
+</div>
+
 ---
+
+<div align="center">
 
 ## ▓▒░ BY THE NUMBERS ░▒▓
 
@@ -231,11 +309,13 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 └──────────────────────────────────────────────────────────────┘
 ```
 
+</div>
+
 ---
 
-## ▓▒░ GET IN TOUCH ░▒▓
-
 <div align="center">
+
+## ▓▒░ GET IN TOUCH ░▒▓
 
 | | |
 |---|---|
@@ -248,6 +328,8 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
 ---
 
+<div align="center">
+
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                                                              │
@@ -258,6 +340,8 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 │                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+</div>
 
 ---
 
