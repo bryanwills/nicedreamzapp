@@ -11,32 +11,17 @@
 └────────────────────────────────────────────────────────────────┘
 </pre>
 
-</div>
-
----
-
-<div align="center">
-
-## ▓▒░ WHAT I'M WORKING ON ░▒▓
+## ▓▒░ FEATURED PROJECTS ░▒▓
 
 </div>
 
 ---
-
-<div align="center">
 
 ### 🤖 Cemani Homestead Robot
+<div align="center">
 
-<pre>
-╔═══════════════════════════════════════════════════════════════╗
-║  Robot that guards chickens - built in 6 months              ║
-║  • Tank drive with 4 wheels                                  ║
-║  • Xbox controller                                           ║
-║  • Solid chassis for object detection                        ║
-╚═══════════════════════════════════════════════════════════════╝
-</pre>
-
-**[View on GitHub →](https://github.com/nicedreamzapp/CemaniHomesteadRobot)**
+**Robot that guards chickens - Tank drive • Xbox controller • Object detection**  
+⭐ [View on GitHub →](https://github.com/nicedreamzapp/CemaniHomesteadRobot)
 
 https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 
@@ -44,79 +29,23 @@ https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 
 ---
 
-<div align="center">
-
-### 🗣️ SpeakAnywhere
-
-<pre>
-╔═══════════════════════════════════════════════════════════════╗
-║  Voice control for your computer                             ║
-║  • Tired of typing? Just speak                               ║
-║  • Let your computer do the reading and writing              ║
-╚═══════════════════════════════════════════════════════════════╝
-</pre>
-
-**[View on GitHub →](https://github.com/nicedreamzapp/SpeakAnywhere)**
-
-</div>
-
----
-
-<div align="center">
-
-### 🤖 divine-tribe-chatbot
-
-<pre>
-╔═══════════════════════════════════════════════════════════════╗
-║  AI chatbot for www.ineedhemp.com                            ║
-║  • Mistral 7B powered customer support                       ║
-║  • RLHF learning system                                      ║
-║  • 134 products, 24/7 support                                ║
-╚═══════════════════════════════════════════════════════════════╝
-</pre>
-
-**⭐ 7 Stars** | **[View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)**
-
-</div>
-
----
-
-<div align="center">
-
 ### 📱 RealTimeAICam
+<div align="center">
 
-<pre>
-╔═══════════════════════════════════════════════════════════════╗
-║  Largest object detection app on iPhone - FREE               ║
-║  • Recognizes 601 objects                                    ║
-║  • Real-time processing                                      ║
-║  • Works offline                                             ║
-║  • OCR, LiDAR, language translation                          ║
-╚═══════════════════════════════════════════════════════════════╝
-</pre>
+**Largest object detection app on iPhone - FREE • 601 objects • Works offline • OCR/LiDAR**  
+⭐ **13 Stars** | [GitHub](https://github.com/nicedreamzapp/RealTimeAICam) | [Download](https://apps.apple.com/us/app/realtime-ai-cam/id6751230739)
 
-**⭐ 13 Stars** | **[GitHub →](https://github.com/nicedreamzapp/RealTimeAICam)** | **[Download →](https://apps.apple.com/us/app/realtime-ai-cam/id6751230739)**
-
-![RealTime AI Camera](https://raw.githubusercontent.com/nicedreamzapp/RealTimeAICam/main/EA08B469-F8A2-435D-A3B3-44AEF833E38E.png)
+<img src="https://raw.githubusercontent.com/nicedreamzapp/RealTimeAICam/main/EA08B469-F8A2-435D-A3B3-44AEF833E38E.png" width="600">
 
 </div>
 
 ---
-
-<div align="center">
 
 ### 🎬 CogVideoX-Mac-Setup
+<div align="center">
 
-<pre>
-╔═══════════════════════════════════════════════════════════════╗
-║  AI video generation on Mac                                  ║
-║  • CogVideoX-5B on Apple Silicon M4 Pro                      ║
-║  • 4-second videos in 18 minutes                             ║
-║  • Fixed Mac compatibility bugs                              ║
-╚═══════════════════════════════════════════════════════════════╝
-</pre>
-
-**[View Guide →](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup)**
+**AI video generation on Mac • CogVideoX-5B on M4 Pro • 4-sec videos in 18 min**  
+[View Guide →](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup)
 
 https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
@@ -124,100 +53,94 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
 ---
 
+### 🧬 Parkinson's Vulnerability Predictor
 <div align="center">
 
-### 🧬 Parkinson's Vulnerability Predictor
+**ML for Parkinson's research • 100% accuracy • 65,000+ cells analyzed**  
+[View on GitHub →](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor)
 
-<pre>
-╔═══════════════════════════════════════════════════════════════╗
-║  Machine learning for Parkinson's disease research           ║
-║  • Predicts dopamine neuron vulnerability                    ║
-║  • 100% accuracy on 20-gene signature                        ║
-║  • 65,000+ cells analyzed                                    ║
-╚═══════════════════════════════════════════════════════════════╝
-</pre>
-
-**[View on GitHub →](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor)**
-
-![Parkinson's Analysis](https://raw.githubusercontent.com/nicedreamzapp/parkinsons-vulnerability-predictor/main/figures/validation/cross_dataset_vulnerability_comparison.png)
+<img src="https://raw.githubusercontent.com/nicedreamzapp/parkinsons-vulnerability-predictor/main/figures/validation/cross_dataset_vulnerability_comparison.png" width="600">
 
 </div>
 
 ---
 
 <div align="center">
+
+## ▓▒░ ALL PROJECTS ░▒▓
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🤖 divine-tribe-chatbot
+**AI chatbot for ineedhemp.com**
+- Mistral 7B powered
+- RLHF learning system
+- 134 products, 24/7
+
+⭐ **7 Stars**  
+[View →](https://github.com/nicedreamzapp/divine-tribe-chatbot)
+
+</td>
+<td width="50%" valign="top">
+
+### 🗣️ SpeakAnywhere
+**Voice control for computer**
+- Tired of typing? Just speak
+- Computer reads and writes
+
+[View →](https://github.com/nicedreamzapp/SpeakAnywhere)
+
+</td>
+</tr>
+
+<tr>
+<td width="50%" valign="top">
 
 ### 👁️ VisionBuilder
+**Vision tools for iOS**
+- Built with Swift
+- MIT License
 
-<pre>
-╔═══════════════════════════════════════════════════════════════╗
-║  Vision development tools for iOS                            ║
-║  • Built with Swift                                          ║
-║  • MIT License                                               ║
-╚═══════════════════════════════════════════════════════════════╝
-</pre>
+[View →](https://github.com/nicedreamzapp/VisionBuilder)
 
-**[View on GitHub →](https://github.com/nicedreamzapp/VisionBuilder)**
+</td>
+<td width="50%" valign="top">
 
-</div>
+### 📱 Marketing Hub
+**Social media automation**
+- 20 min → 3-5 min tasks
+- Saves hours weekly
 
----
+[View →](https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub)
 
-<div align="center">
+</td>
+</tr>
 
-### 📱 Social Media Marketing Hub
-
-<pre>
-╔═══════════════════════════════════════════════════════════════╗
-║  Automates social media posts for my business                ║
-║  • 20 minute tasks → 3-5 minutes                             ║
-║  • Saves hours weekly                                        ║
-╚═══════════════════════════════════════════════════════════════╝
-</pre>
-
-**[View on GitHub →](https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub)**
-
-![Marketing Hub](https://raw.githubusercontent.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub/refs/heads/main/MArketingHubHomepage.png)
-
-</div>
-
----
-
-<div align="center">
+<tr>
+<td width="50%" valign="top">
 
 ### 🛠️ apiai-hub
+**Xcode dev tools**
+- 10 min → 1 min tasks
+- 1-click automation
 
-<pre>
-╔═══════════════════════════════════════════════════════════════╗
-║  1-click tools for Xcode building                            ║
-║  • 10 minute tasks → 1 minute                                ║
-║  • iPhone dev tools                                          ║
-╚═══════════════════════════════════════════════════════════════╝
-</pre>
+[View →](https://github.com/nicedreamzapp/apiai-hub)
 
-**[View on GitHub →](https://github.com/nicedreamzapp/apiai-hub)**
-
-![API AI Hub](https://raw.githubusercontent.com/nicedreamzapp/apiai-hub/main/assets/preview.webp)
-
-</div>
-
----
-
-<div align="center">
+</td>
+<td width="50%" valign="top">
 
 ### 💰 BitcoinPredictor
+**Bitcoin trading with AI**
+- Live prices & predictions
+- Data streaming
 
-<pre>
-╔═══════════════════════════════════════════════════════════════╗
-║  Real-time Bitcoin trading platform with AI                  ║
-║  • Live prices & predictions                                 ║
-║  • Data streaming architecture                               ║
-╚═══════════════════════════════════════════════════════════════╝
-</pre>
+[View →](https://github.com/nicedreamzapp/BitcoinPredictor)
 
-**[View on GitHub →](https://github.com/nicedreamzapp/BitcoinPredictor)**
-
-![Bitcoin Predictor](https://raw.githubusercontent.com/nicedreamzapp/BitcoinPredictor/refs/heads/main/BitTraderUiScreen.png)
+</td>
+</tr>
+</table>
 
 </div>
 
@@ -225,36 +148,14 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
 <div align="center">
 
-## ▓▒░ WHAT I USE ░▒▓
+## ▓▒░ TECH STACK ░▒▓
 
-<pre>
-┌──────────────────────────────────────────────────────────────┐
-│ LANGUAGES                                                    │
-├──────────────────────────────────────────────────────────────┤
-│ Python | Swift | TypeScript | JavaScript | C | C++          │
-└──────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────┐
-│ AI & MACHINE LEARNING                                        │
-├──────────────────────────────────────────────────────────────┤
-│ Mistral 7B | YOLOv8 | CogVideoX | Custom ML models          │
-│ RLHF | Video AI | Computer Vision | Medical ML              │
-└──────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────┐
-│ MOBILE & PLATFORMS                                           │
-├──────────────────────────────────────────────────────────────┤
-│ iOS Development | Xcode | Metal | Apple Silicon             │
-│ Real-time Processing | LiDAR | OCR                           │
-└──────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────┐
-│ ROBOTICS & ELECTRONICS                                       │
-├──────────────────────────────────────────────────────────────┤
-│ Arduino-style computers | Motors | Wireless controllers      │
-│ Embedded C | Object Detection | Hardware Integration         │
-└──────────────────────────────────────────────────────────────┘
-</pre>
+| Category | Technologies |
+|----------|-------------|
+| **Languages** | Python • Swift • TypeScript • JavaScript • C • C++ |
+| **AI/ML** | Mistral 7B • YOLOv8 • CogVideoX • RLHF • Custom Models |
+| **Mobile** | iOS • Xcode • Metal • Apple Silicon • LiDAR • OCR |
+| **Robotics** | Arduino • Motors • Modbus • Object Detection |
 
 </div>
 
@@ -262,34 +163,19 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
 <div align="center">
 
-## ▓▒░ HOW IT STARTED ░▒▓
+## ▓▒░ THE STORY ░▒▓
 
-<pre>
-┌──────────────────────────────────────────────────────────────┐
-│                                                              │
-│  It started with a simple problem: animals were attacking   │
-│  my chickens. Instead of buying something, I tried to       │
-│  build a robot to protect them.                             │
-│                                                              │
-│  That one project led to everything else:                   │
-│                                                              │
-│  1. Built a robot to protect chickens                       │
-│  2. Made an iPhone app that recognizes objects              │
-│  3. Created AI for medical research                         │
-│  4. Automated my business tasks                             │
-│  5. Built a chatbot to help customers                       │
-│  6. Fixed video AI to work on Mac                           │
-│  7. Created voice control software                          │
-│  8. Built trading platforms with AI                         │
-│  9. Developed iOS vision tools                              │
-│  10. And kept building more stuff                           │
-│                                                              │
-│  One problem led to learning AI, which led to helping       │
-│  people, which led to building a business. It all started   │
-│  with trying to protect some chickens.                      │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
-</pre>
+**Started with chickens, ended up building AI**
+
+One problem (protecting chickens) → learned robotics → built iPhone apps → created medical AI → automated business → kept building
+
+| Stats | |
+|-------|---|
+| 📦 **Projects** | 11 Public Repos |
+| ⭐ **Stars** | 20+ |
+| 🗣️ **Languages** | 5 |
+| 📱 **Apps** | Published on App Store |
+| 🧬 **Research** | Medical ML Tools |
 
 </div>
 
@@ -297,57 +183,18 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
 <div align="center">
 
-## ▓▒░ BY THE NUMBERS ░▒▓
+## ▓▒░ CONNECT ░▒▓
 
-<pre>
-┌──────────────────────────────────────────────────────────────┐
-│  📦 11 Public Repositories                                   │
-│  ⭐ 20+ GitHub Stars                                         │
-│  🗣️ 5 Programming Languages                                 │
-│  🤖 Multiple AI/ML Projects                                  │
-│  📱 Published iOS App                                        │
-│  🧬 Medical Research Tools                                   │
-│  👥 2 Followers | 2 Following                                │
-└──────────────────────────────────────────────────────────────┘
-</pre>
-
-</div>
+🌐 [nicedreamzwholesale.com](https://nicedreamzwholesale.com) • 📧 [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com)  
+💻 [GitHub](https://github.com/nicedreamzapp) • 📸 [Instagram @nicedreamzwholesale](https://instagram.com/nicedreamzwholesale)
 
 ---
 
-<div align="center">
+*"If it takes more than 10 minutes, I try to automate it. If it needs AI, I try to build it from scratch."*
 
-## ▓▒░ GET IN TOUCH ░▒▓
-
-| | |
-|---|---|
-| 🌐 **Website** | [Visit Site](https://nicedreamzwholesale.com) |
-| 📧 **Email** | [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com) |
-| 💻 **GitHub** | [View Profile](https://github.com/nicedreamzapp) |
-| 📸 **Instagram** | [Follow @nicedreamzwholesale](https://instagram.com/nicedreamzwholesale) |
-
-</div>
+**Building things that hopefully help people**
 
 ---
-
-<div align="center">
-
-<pre>
-┌──────────────────────────────────────────────────────────────┐
-│                                                              │
-│  "If it takes more than 10 minutes, I try to automate it.   │
-│   If it needs AI, I try to build it from scratch."          │
-│                                                              │
-│  >> Building things that hopefully help people              │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
-</pre>
-
-</div>
-
----
-
-<div align="center">
 
 [![GitHub followers](https://img.shields.io/github/followers/nicedreamzapp?style=social)](https://github.com/nicedreamzapp)
 [![GitHub stars](https://img.shields.io/github/stars/nicedreamzapp?style=social)](https://github.com/nicedreamzapp)
