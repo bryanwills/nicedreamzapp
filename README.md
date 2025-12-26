@@ -21,6 +21,18 @@
 <tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
+### 📅 Family Planner Dashboard
+
+**Skylight-inspired family command center**
+Voice control • OCR scanning • AI assistant • Seasonal themes
+
+[View on GitHub →](https://github.com/nicedreamzapp/Family-Planner)
+
+<img src="https://raw.githubusercontent.com/nicedreamzapp/Family-Planner/main/screenshot.png" width="400">
+
+</td>
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
+
 ### 🤖 Cemani Homestead Robot
 
 **Robot that guards chickens**
@@ -31,6 +43,13 @@ Tank drive • Xbox controller • Object detection
 https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 
 </td>
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 📱 RealTimeAICam
@@ -43,13 +62,6 @@ https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 <img src="https://raw.githubusercontent.com/nicedreamzapp/RealTimeAICam/main/EA08B469-F8A2-435D-A3B3-44AEF833E38E.png" width="400">
 
 </td>
-</tr>
-</table>
-
----
-
-<table>
-<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🎬 CogVideoX-Mac-Setup
@@ -62,6 +74,13 @@ CogVideoX-5B • M4 Pro • 4-sec videos in 18 min
 https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
 </td>
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🧬 Parkinson's Vulnerability Predictor
@@ -74,13 +93,6 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 <img src="https://raw.githubusercontent.com/nicedreamzapp/parkinsons-vulnerability-predictor/main/figures/validation/cross_dataset_vulnerability_comparison.png" width="400">
 
 </td>
-</tr>
-</table>
-
----
-
-<table>
-<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 👁️ Disclosure Day Fan Hub
@@ -93,6 +105,13 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 [![Disclosure Day](https://img.youtube.com/vi/UFe6NRgoXCM/maxresdefault.jpg)](https://disclosureday.nicedreamzwholesale.com)
 
 </td>
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 📱 Social Media Marketing Hub
@@ -105,13 +124,6 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 <img src="https://raw.githubusercontent.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub/refs/heads/main/MArketingHubHomepage.png" width="400">
 
 </td>
-</tr>
-</table>
-
----
-
-<table>
-<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 💰 BitcoinPredictor
@@ -124,6 +136,13 @@ Live prices & predictions • Data streaming
 <img src="https://raw.githubusercontent.com/nicedreamzapp/BitcoinPredictor/refs/heads/main/BitTraderUiScreen.png" width="400">
 
 </td>
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🛠️ apiai-hub
@@ -136,13 +155,6 @@ Live prices & predictions • Data streaming
 <img src="https://raw.githubusercontent.com/nicedreamzapp/apiai-hub/main/assets/preview.webp" width="400">
 
 </td>
-</tr>
-</table>
-
----
-
-<table>
-<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🤖 divine-tribe-chatbot
@@ -154,7 +166,14 @@ Mistral 7B • RLHF • 134 products, 24/7
 [View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)
 
 </td>
-<td width="50%" valign="top" align="center" style="border: 2px solid #444; padding: 20px;">
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🗣️ SpeakAnywhere
 
@@ -163,7 +182,8 @@ Tired of typing? Just speak
 
 [View on GitHub →](https://github.com/nicedreamzapp/SpeakAnywhere)
 
----
+</td>
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 👁️ VisionBuilder
 
@@ -185,7 +205,7 @@ Swift • MIT License
 | Category | Technologies |
 |----------|-------------|
 | **Languages** | Python • Swift • TypeScript • JavaScript • C • C++ • PHP |
-| **AI/ML** | Mistral 7B • YOLOv8 • CogVideoX • RLHF • OpenAI • Custom Models |
+| **AI/ML** | Claude • Mistral 7B • YOLOv8 • CogVideoX • RLHF • OpenAI • Whisper |
 | **Mobile** | iOS • Xcode • Metal • Apple Silicon • LiDAR • OCR |
 | **Web** | HTML5 • CSS3 • JavaScript • PHP • Nginx |
 | **Robotics** | Arduino • Motors • Modbus • Object Detection |
@@ -199,7 +219,7 @@ One problem (protecting chickens) → learned robotics → built iPhone apps
 
 | Stats | |
 |-------|---|
-| 📦 **Projects** | 12 Public Repos |
+| 📦 **Projects** | 13 Public Repos |
 | ⭐ **Stars** | 20+ |
 | 🗣️ **Languages** | 6 |
 | 📱 **Apps** | Published on App Store |
