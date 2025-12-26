@@ -21,6 +21,18 @@
 <tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
+### 🎨 MattPaint
+
+**MS Paint for the Web**
+Pixel-perfect Windows 10 Paint clone • Zero dependencies • Pure vanilla JS
+
+[View on GitHub →](https://github.com/nicedreamzapp/MattPaint)
+
+<img src="https://raw.githubusercontent.com/nicedreamzapp/MattPaint/main/screenshot.png" width="400">
+
+</td>
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
+
 ### 📅 Family Planner Dashboard
 
 **Skylight-inspired family command center**
@@ -31,6 +43,13 @@ Voice control • OCR scanning • AI assistant • Seasonal themes
 <img src="https://raw.githubusercontent.com/nicedreamzapp/Family-Planner/main/screenshot.png" width="400">
 
 </td>
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🤖 Cemani Homestead Robot
@@ -43,13 +62,6 @@ Tank drive • Xbox controller • Object detection
 https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 
 </td>
-</tr>
-</table>
-
----
-
-<table>
-<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 📱 RealTimeAICam
@@ -62,6 +74,13 @@ https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 <img src="https://raw.githubusercontent.com/nicedreamzapp/RealTimeAICam/main/EA08B469-F8A2-435D-A3B3-44AEF833E38E.png" width="400">
 
 </td>
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🎬 CogVideoX-Mac-Setup
@@ -74,13 +93,6 @@ CogVideoX-5B • M4 Pro • 4-sec videos in 18 min
 https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
 </td>
-</tr>
-</table>
-
----
-
-<table>
-<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🧬 Parkinson's Vulnerability Predictor
@@ -93,6 +105,13 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 <img src="https://raw.githubusercontent.com/nicedreamzapp/parkinsons-vulnerability-predictor/main/figures/validation/cross_dataset_vulnerability_comparison.png" width="400">
 
 </td>
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 👁️ Disclosure Day Fan Hub
@@ -105,13 +124,6 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 [![Disclosure Day](https://img.youtube.com/vi/UFe6NRgoXCM/maxresdefault.jpg)](https://disclosureday.nicedreamzwholesale.com)
 
 </td>
-</tr>
-</table>
-
----
-
-<table>
-<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 📱 Social Media Marketing Hub
@@ -124,6 +136,13 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 <img src="https://raw.githubusercontent.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub/refs/heads/main/MArketingHubHomepage.png" width="400">
 
 </td>
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 💰 BitcoinPredictor
@@ -136,13 +155,6 @@ Live prices & predictions • Data streaming
 <img src="https://raw.githubusercontent.com/nicedreamzapp/BitcoinPredictor/refs/heads/main/BitTraderUiScreen.png" width="400">
 
 </td>
-</tr>
-</table>
-
----
-
-<table>
-<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🛠️ apiai-hub
@@ -155,6 +167,13 @@ Live prices & predictions • Data streaming
 <img src="https://raw.githubusercontent.com/nicedreamzapp/apiai-hub/main/assets/preview.webp" width="400">
 
 </td>
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🤖 divine-tribe-chatbot
@@ -166,13 +185,6 @@ Mistral 7B • RLHF • 134 products, 24/7
 [View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)
 
 </td>
-</tr>
-</table>
-
----
-
-<table>
-<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🗣️ SpeakAnywhere
@@ -183,6 +195,13 @@ Tired of typing? Just speak
 [View on GitHub →](https://github.com/nicedreamzapp/SpeakAnywhere)
 
 </td>
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 👁️ VisionBuilder
@@ -191,6 +210,15 @@ Tired of typing? Just speak
 Swift • MIT License
 
 [View on GitHub →](https://github.com/nicedreamzapp/VisionBuilder)
+
+</td>
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
+
+### 🔧 More Coming Soon...
+
+**Always building something new**
+
+[Follow for updates →](https://github.com/nicedreamzapp)
 
 </td>
 </tr>
@@ -219,7 +247,7 @@ One problem (protecting chickens) → learned robotics → built iPhone apps
 
 | Stats | |
 |-------|---|
-| 📦 **Projects** | 12 Public Repos |
+| 📦 **Projects** | 13 Public Repos |
 | ⭐ **Stars** | 20+ |
 | 🗣️ **Languages** | 6 |
 | 📱 **Apps** | Published on App Store |
