@@ -219,7 +219,7 @@ One problem (protecting chickens) → learned robotics → built iPhone apps
 
 | Stats | |
 |-------|---|
-| 📦 **Projects** | 13 Public Repos |
+| 📦 **Projects** | 12 Public Repos |
 | ⭐ **Stars** | 20+ |
 | 🗣️ **Languages** | 6 |
 | 📱 **Apps** | Published on App Store |
