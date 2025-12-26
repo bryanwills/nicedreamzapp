@@ -23,7 +23,7 @@
 
 ### 🤖 Cemani Homestead Robot
 
-**Robot that guards chickens**  
+**Robot that guards chickens**
 Tank drive • Xbox controller • Object detection
 
 [View on GitHub →](https://github.com/nicedreamzapp/CemaniHomesteadRobot)
@@ -35,7 +35,7 @@ https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 
 ### 📱 RealTimeAICam
 
-**Largest iPhone object detection - FREE**  
+**Largest iPhone object detection - FREE**
 601 objects • Works offline • OCR/LiDAR
 
 ⭐ **13 Stars** | [GitHub](https://github.com/nicedreamzapp/RealTimeAICam) | [Download](https://apps.apple.com/us/app/realtime-ai-cam/id6751230739)
@@ -54,7 +54,7 @@ https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 
 ### 🎬 CogVideoX-Mac-Setup
 
-**AI video generation on Mac**  
+**AI video generation on Mac**
 CogVideoX-5B • M4 Pro • 4-sec videos in 18 min
 
 [View Guide →](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup)
@@ -66,7 +66,7 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 
 ### 🧬 Parkinson's Vulnerability Predictor
 
-**ML for Parkinson's research**  
+**ML for Parkinson's research**
 100% accuracy • 65,000+ cells analyzed
 
 [View on GitHub →](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor)
@@ -83,9 +83,21 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 <tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
+### 👁️ Disclosure Day Fan Hub
+
+**AI-powered movie fan site**
+48 SEO pages • THE SIGNAL chatbot • Live countdown
+
+🔴 **LIVE** | [Visit Site](https://disclosureday.nicedreamzwholesale.com) | [GitHub](https://github.com/nicedreamzapp/DisclosureDay)
+
+[![Disclosure Day](https://img.youtube.com/vi/UFe6NRgoXCM/maxresdefault.jpg)](https://disclosureday.nicedreamzwholesale.com)
+
+</td>
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
+
 ### 📱 Social Media Marketing Hub
 
-**Automates social media posts**  
+**Automates social media posts**
 20 min → 3-5 min tasks • Saves hours weekly
 
 [View on GitHub →](https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub)
@@ -93,11 +105,30 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 <img src="https://raw.githubusercontent.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub/refs/heads/main/MArketingHubHomepage.png" width="400">
 
 </td>
+</tr>
+</table>
+
+---
+
+<table>
+<tr>
+<td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
+
+### 💰 BitcoinPredictor
+
+**Real-time Bitcoin trading with AI**
+Live prices & predictions • Data streaming
+
+[View on GitHub →](https://github.com/nicedreamzapp/BitcoinPredictor)
+
+<img src="https://raw.githubusercontent.com/nicedreamzapp/BitcoinPredictor/refs/heads/main/BitTraderUiScreen.png" width="400">
+
+</td>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
 ### 🛠️ apiai-hub
 
-**1-click Xcode dev tools**  
+**1-click Xcode dev tools**
 10 min → 1 min tasks • iPhone automation
 
 [View on GitHub →](https://github.com/nicedreamzapp/apiai-hub)
@@ -114,31 +145,20 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 <tr>
 <td width="50%" align="center" style="border: 2px solid #444; padding: 20px;">
 
-### 💰 BitcoinPredictor
+### 🤖 divine-tribe-chatbot
 
-**Real-time Bitcoin trading with AI**  
-Live prices & predictions • Data streaming
+**AI chatbot for ineedhemp.com**
+Mistral 7B • RLHF • 134 products, 24/7
 
-[View on GitHub →](https://github.com/nicedreamzapp/BitcoinPredictor)
-
-<img src="https://raw.githubusercontent.com/nicedreamzapp/BitcoinPredictor/refs/heads/main/BitTraderUiScreen.png" width="400">
+⭐ **7 Stars**
+[View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)
 
 </td>
 <td width="50%" valign="top" align="center" style="border: 2px solid #444; padding: 20px;">
 
-### 🤖 divine-tribe-chatbot
-
-**AI chatbot for ineedhemp.com**  
-Mistral 7B • RLHF • 134 products, 24/7
-
-⭐ **7 Stars**  
-[View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)
-
----
-
 ### 🗣️ SpeakAnywhere
 
-**Voice control for your computer**  
+**Voice control for your computer**
 Tired of typing? Just speak
 
 [View on GitHub →](https://github.com/nicedreamzapp/SpeakAnywhere)
@@ -147,7 +167,7 @@ Tired of typing? Just speak
 
 ### 👁️ VisionBuilder
 
-**Vision development tools for iOS**  
+**Vision development tools for iOS**
 Swift • MIT License
 
 [View on GitHub →](https://github.com/nicedreamzapp/VisionBuilder)
@@ -164,29 +184,39 @@ Swift • MIT License
 
 | Category | Technologies |
 |----------|-------------|
-| **Languages** | Python • Swift • TypeScript • JavaScript • C • C++ |
-| **AI/ML** | Mistral 7B • YOLOv8 • CogVideoX • RLHF • Custom Models |
+| **Languages** | Python • Swift • TypeScript • JavaScript • C • C++ • PHP |
+| **AI/ML** | Mistral 7B • YOLOv8 • CogVideoX • RLHF • OpenAI • Custom Models |
 | **Mobile** | iOS • Xcode • Metal • Apple Silicon • LiDAR • OCR |
+| **Web** | HTML5 • CSS3 • JavaScript • PHP • Nginx |
 | **Robotics** | Arduino • Motors • Modbus • Object Detection |
 
 ## ▓▒░ THE STORY ░▒▓
 
 **Started with chickens, ended up building AI**
 
-One problem (protecting chickens) → learned robotics → built iPhone apps  
+One problem (protecting chickens) → learned robotics → built iPhone apps
 → created medical AI → automated business → kept building
 
 | Stats | |
 |-------|---|
-| 📦 **Projects** | 11 Public Repos |
+| 📦 **Projects** | 12 Public Repos |
 | ⭐ **Stars** | 20+ |
-| 🗣️ **Languages** | 5 |
+| 🗣️ **Languages** | 6 |
 | 📱 **Apps** | Published on App Store |
 | 🧬 **Research** | Medical ML Tools |
+| 🌐 **Websites** | Multiple Live Sites |
+
+## ▓▒░ LIVE SITES ░▒▓
+
+| Site | Description |
+|------|-------------|
+| 🌐 [nicedreamzwholesale.com](https://nicedreamzwholesale.com) | Main business site |
+| 🌿 [ineedhemp.com](https://ineedhemp.com) | Divine Tribe vaporizers + AI chatbot |
+| 🎬 [disclosureday.nicedreamzwholesale.com](https://disclosureday.nicedreamzwholesale.com) | Disclosure Day movie fan hub |
 
 ## ▓▒░ CONNECT ░▒▓
 
-🌐 [nicedreamzwholesale.com](https://nicedreamzwholesale.com) • 📧 [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com)  
+🌐 [nicedreamzwholesale.com](https://nicedreamzwholesale.com) • 📧 [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com)
 💻 [GitHub](https://github.com/nicedreamzapp) • 📸 [Instagram @nicedreamzwholesale](https://instagram.com/nicedreamzwholesale)
 
 ---
