@@ -1,3 +1,5 @@
+
+```markdown
 <div align="center">
 
 # ░▒▓█ MATT FROM NICE DREAMZ LLC █▓▒░
@@ -13,7 +15,7 @@
 
 [![GitHub followers](https://img.shields.io/github/followers/nicedreamzapp?style=for-the-badge)](https://github.com/nicedreamzapp)
 [![Total Stars](https://img.shields.io/badge/Total%20Stars-24+-yellow?style=for-the-badge)]()
-[![Repos](https://img.shields.io/badge/Public%20Repos-17-blue?style=for-the-badge)]()
+[![Repos](https://img.shields.io/badge/Public%20Repos-16-blue?style=for-the-badge)]()
 
 ## ▓▒░ FEATURED PROJECTS ░▒▓
 
@@ -21,23 +23,10 @@
 
 ---
 
-## 🦞 AI AUTOMATION
+## 🤖 AI AUTOMATION
 
 <table>
 <tr>
-<td width="50%" align="center">
-
-### 🦞 ClawdBot
-
-**24/7 AI Business Automation**
-
-Moltbot-powered assistant for e-commerce • WooCommerce integration • Auto order monitoring • Social media drafts • Runs on Mac mini M4
-
-⭐ **NEW** | [View on GitHub →](https://github.com/nicedreamzapp/ClawdBot)
-
-`moltbot` `claude-ai` `automation` `woocommerce`
-
-</td>
 <td width="50%" align="center">
 
 ### 🤖 divine-tribe-chatbot
@@ -49,6 +38,21 @@ Mistral 7B • RLHF fine-tuned • Hybrid RAG/CAG • Claude-powered • 134 pro
 ⭐ **8 Stars** | [View on GitHub →](https://github.com/nicedreamzapp/divine-tribe-chatbot)
 
 `mistral-7b` `rlhf` `chatbot` `e-commerce`
+
+</td>
+<td width="50%" align="center">
+
+### 📱 Social Media Marketing Hub
+
+**Automates Social Media Posts**
+
+20 min → 3-5 min tasks • Reddit, Facebook, Instagram, Twitter, Craigslist • Saves hours weekly
+
+[View on GitHub →](https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub)
+
+<img src="https://raw.githubusercontent.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub/refs/heads/main/MArketingHubHomepage.png" width="350">
+
+`marketing` `automation` `social-media` `flask`
 
 </td>
 </tr>
@@ -212,21 +216,6 @@ https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
 <tr>
 <td width="50%" align="center">
 
-### 📱 Social Media Marketing Hub
-
-**Automates Social Media Posts**
-
-20 min → 3-5 min tasks • Reddit, Facebook, Instagram, Twitter, Craigslist • Saves hours weekly
-
-[View on GitHub →](https://github.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub)
-
-<img src="https://raw.githubusercontent.com/nicedreamzapp/Dreamz-Social-Media-Marketing-Hub/refs/heads/main/MArketingHubHomepage.png" width="350">
-
-`marketing` `automation` `social-media` `flask`
-
-</td>
-<td width="50%" align="center">
-
 ### 💰 BitcoinPredictor
 
 **Real-time Bitcoin Trading with AI**
@@ -323,11 +312,10 @@ Built for a friend • E-commerce ready • Clean design
 
 <div align="center">
 
-## ▓▒░ ALL 17 REPOSITORIES ░▒▓
+## ▓▒░ ALL 16 REPOSITORIES ░▒▓
 
 | Project | Description | Stars |
 |---------|-------------|-------|
-| 🦞 [ClawdBot](https://github.com/nicedreamzapp/ClawdBot) | 24/7 AI business automation for Mac mini M4 | ⭐ NEW |
 | 🔥 [Heat-N-Clean-Glass-Oven](https://github.com/nicedreamzapp/Heat-N-Clean-Glass-Oven) | Automated glass cleaning kiln | ⭐ NEW |
 | 📅 [Family-Planner](https://github.com/nicedreamzapp/Family-Planner) | Skylight-inspired family dashboard | - |
 | 🎨 [Stickers-You-Love](https://github.com/nicedreamzapp/Stickers-You-Love) | Custom sticker business site | - |
@@ -352,7 +340,7 @@ Built for a friend • E-commerce ready • Clean design
 | Category | Technologies |
 |----------|-------------|
 | **Languages** | Python • Swift • TypeScript • JavaScript • C • C++ • PHP |
-| **AI/ML** | Claude • Mistral 7B • YOLOv8 • CogVideoX • RLHF • OpenAI • Whisper • Moltbot |
+| **AI/ML** | Claude • Mistral 7B • YOLOv8 • CogVideoX • RLHF • OpenAI • Whisper |
 | **Mobile** | iOS • Xcode • Metal • Apple Silicon • LiDAR • OCR • CoreML |
 | **Web** | Flask • HTML5 • CSS3 • JavaScript • PHP • Nginx |
 | **Robotics** | Arduino • Motors • Modbus • Object Detection • Tank Drive |
@@ -392,19 +380,4 @@ One problem (protecting chickens)
 
 🌐 [nicedreamzwholesale.com](https://nicedreamzwholesale.com) • 📧 [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com)
 
-💻 [GitHub](https://github.com/nicedreamzapp) • 📸 [Instagram @nicedreamzwholesale](https://instagram.com/nicedreamzwholesale)
-
----
-
-[![GitHub followers](https://img.shields.io/github/followers/nicedreamzapp?style=social)](https://github.com/nicedreamzapp)
-[![GitHub stars](https://img.shields.io/github/stars/nicedreamzapp?style=social)](https://github.com/nicedreamzapp)
-
----
-
-░▒▓█ NICE DREAMZ LLC █▓▒░
-
-*Building things that hopefully help people*
-
-**Humboldt County, California** 🌲
-
-</div>
+💻 [GitHub](https://github.com/nicedreamzapp) • 📸 [Instagram @nicedreamzwholes
