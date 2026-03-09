@@ -342,10 +342,11 @@ You're looking at it right now 😎
 
 | | Site | What It Is |
 |:-:|------|-----------|
-| 🌿 | [**ineedhemp.com**](https://ineedhemp.com) | Divine Tribe vaporizers + AI chatbot · *est. 2001* |
+| 🌿 | [**ineedhemp.com**](https://ineedhemp.com) | Divine Tribe vaporizers + AI chatbot · *American-owned since 2013* |
 | 🌐 | [**nicedreamzwholesale.com**](https://nicedreamzwholesale.com) | Main business site |
 | 🎬 | [**disclosureday.nicedreamzwholesale.com**](https://disclosureday.nicedreamzwholesale.com) | Disclosure Day movie fan hub |
 | 🛠️ | [**tools.marijuanaunion.com**](https://tools.marijuanaunion.com) | Marketing Hub tools |
+| 🏢 | [**github.com/iNeedHemp**](https://github.com/iNeedHemp) | Divine Tribe company org on GitHub |
 
 ---
 
@@ -362,14 +363,14 @@ One problem (protecting chickens)
           → kept building
 ```
 
-Running [Divine Tribe](https://ineedhemp.com) solo since 2001. Every employee replaced with automation.  
+Running [Divine Tribe](https://ineedhemp.com) since 2013. Every employee replaced with automation.  
 Every repetitive task turned into a script. Every problem turned into a repo.
 
 ---
 
 ## ▓▒░ CONNECT ░▒▓
 
-🌐 [nicedreamzwholesale.com](https://nicedreamzwholesale.com) · 📧 [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com) · 💻 [GitHub](https://github.com/nicedreamzapp)
+🌐 [nicedreamzwholesale.com](https://nicedreamzwholesale.com) · 📧 [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com) · 💻 [GitHub](https://github.com/nicedreamzapp) · 💼 [LinkedIn](https://www.linkedin.com/company/divine-tribe/) · 🏢 [Divine Tribe Org](https://github.com/iNeedHemp)
 
 ---
 
