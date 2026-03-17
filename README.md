@@ -5,8 +5,8 @@
 <pre>
 ┌──────────────────────────────────────────────────────────────────┐
 │  Humboldt County, California  ·  Nice Dreamz LLC                │
-│  One person running 4 stores, 6 AI agents, and a robot.         │
-│  No employees. Just code and the right tools.                   │
+│  Building AI tools, automation, and robots.         │
+│  Code, curiosity, and the right tools.                   │
 └──────────────────────────────────────────────────────────────────┘
 </pre>
 
@@ -220,7 +220,7 @@ One problem (protecting chickens from predators)
 ```
 
 Running [Divine Tribe](https://ineedhemp.com) since 2013.
-No employees since January 2026. Every task automated or AI-assisted.
+Every task automated or AI-assisted.
 120+ scripts. 6 AI agents. 4 stores. 1 robot. 0 investors.
 
 ---
