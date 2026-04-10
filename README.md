@@ -23,6 +23,18 @@
 
 ## WHAT I BUILT (AND USE EVERY DAY)
 
+### [Claude Code Local](https://github.com/nicedreamzapp/claude-code-local) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/claude-code-local/stargazers) [![Forks](https://img.shields.io/github/forks/nicedreamzapp/claude-code-local?style=flat-square&color=58a6ff)](https://github.com/nicedreamzapp/claude-code-local/network/members)
+Run Claude Code 100% on-device with local AI on Apple Silicon. No cloud, no API fees.
+- 3 models to choose from: Gemma 4 31B (fast), Llama 3.3 70B (smartest), Qwen 3.5 122B (biggest)
+- 4 modes: Code, Browser Agent, Narrative (voice), and Phone (iMessage remote control)
+- Custom MLX server with Anthropic-compatible API — swap models with one env var
+- setup.sh auto-detects your RAM, picks the right model, and creates a desktop launcher
+- Your code never leaves your Mac — not for inference, not for telemetry, not for anything
+
+`MLX` `Apple Silicon` `Claude Code` `Gemma` `Llama` `Qwen` `Python`
+
+---
+
 ### HQ Business Dashboard
 Central command center for all Divine Tribe operations. Accessible from any device.
 - Email triage across 4 Gmail accounts — one-click reply, archive, delete
@@ -199,7 +211,7 @@ Whisper-powered · Works anywhere on desktop · Just speak
 | Category | Technologies |
 |:---------|:------------|
 | **Languages** | `Python` `Swift` `TypeScript` `JavaScript` `C++` `PHP` |
-| **AI / ML** | `Claude (Opus + Haiku)` `Mistral 7B` `YOLOv8` `CogVideoX` `Whisper` `CoreML` |
+| **AI / ML** | `Claude (Opus + Haiku)` `MLX` `Mistral 7B` `YOLOv8` `CogVideoX` `Whisper` `CoreML` |
 | **APIs** | `WooCommerce` `EasyPost` `Gmail` `Google Search Console` `Coinbase CDP` `Kalshi` `eBay` `Reddit` `LinkedIn` |
 | **Infrastructure** | `nginx` `gunicorn` `PM2` `Let's Encrypt` `UFW` `SSH` |
 | **Mobile** | `iOS` `Xcode` `Metal` `Apple Silicon` `LiDAR` |
@@ -216,7 +228,8 @@ One problem (protecting chickens from predators)
       → created medical ML for Parkinson's research
         → automated an entire e-commerce business
           → built AI trading agents that learn from their mistakes
-            → still building
+            → made Claude Code run 100% local on Apple Silicon (300+ stars)
+              → still building
 ```
 
 Running [Divine Tribe](https://ineedhemp.com) since 2013.
