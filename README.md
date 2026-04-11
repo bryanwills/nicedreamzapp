@@ -11,7 +11,7 @@
 </pre>
 
 [![GitHub followers](https://img.shields.io/github/followers/nicedreamzapp?style=for-the-badge&color=236ad3&labelColor=1155ba)](https://github.com/nicedreamzapp)
-[![Repos](https://img.shields.io/badge/Public%20Repos-16-blue?style=for-the-badge&color=58a6ff&labelColor=388bfd)](https://github.com/nicedreamzapp?tab=repositories)
+[![Repos](https://img.shields.io/badge/dynamic/json?label=Public%20Repos&query=%24.public_repos&url=https%3A%2F%2Fapi.github.com%2Fusers%2Fnicedreamzapp&style=for-the-badge&color=58a6ff&labelColor=388bfd)](https://github.com/nicedreamzapp?tab=repositories)
 
 ---
 
@@ -229,7 +229,7 @@ One problem (protecting chickens from predators)
       → created medical ML for Parkinson's research
         → automated an entire e-commerce business
           → built AI trading agents that learn from their mistakes
-            → made Claude Code run 100% local on Apple Silicon (300+ stars)
+            → made Claude Code run 100% local on Apple Silicon (600+ stars)
               → still building
 ```
 
