@@ -69,16 +69,17 @@ Customer support chatbot trained on the full Divine Tribe product lineup.
 
 ---
 
-### Autonomous Homestead Robot
-Started with a simple problem: protecting my chickens from predators. Built a robot.
-- Tank drive chassis with Xbox controller + autonomous modes
-- YOLOv8 object detection on Jetson Nano
-- ONVIF camera integration for perimeter monitoring
-- Predator deterrent system
+### [Cemani Homestead Robot](https://github.com/nicedreamzapp/CemaniHomesteadRobot) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/CemaniHomesteadRobot?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/CemaniHomesteadRobot/stargazers)
+Started with a simple problem: protecting my chickens from predators. Built a 1 kW autonomous tank robot that you text from your phone.
+- Tank drive chassis with Xbox controller override + text-command autonomous modes
+- YOLOv8 601-class object detection on Jetson Orin Nano
+- Dual PTZ ONVIF cameras with depth overlay + 3D LIDAR mapping
+- Full hardware postmortem after a real-world testing injury — Xbox-controller-first safety architecture, 20 failure points documented and fixed
+- Pulls a cart of firewood. Actually.
 
 https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 
-`Arduino` `YOLOv8` `Jetson Nano` `OpenCV` `Robotics`
+`Teensy` `ESP32` `Jetson Orin Nano` `YOLOv8` `TensorRT` `RPLidar` `Modbus` `PTZ ONVIF` `Robotics` `Python` `Node.js`
 
 ---
 
