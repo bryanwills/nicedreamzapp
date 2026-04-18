@@ -90,7 +90,7 @@ https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
 | Site | What It Is |
 |------|-----------|
 | [ineedhemp.com](https://ineedhemp.com) | Divine Tribe vaporizers — American-owned since 2013 |
-| [nicedreamzwholesale.com](https://nicedreamzwholesale.com) | Wholesale distribution |
+| [nicedreamzwholesale.com/software](https://nicedreamzwholesale.com/software/) | Software projects — open-source tools, AI agents, builds |
 | [tribeseedbank.com](https://tribeseedbank.com) | Seed bank |
 | [marijuanaunion.com](https://marijuanaunion.com) | Community & marketing hub |
 
