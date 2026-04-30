@@ -38,12 +38,11 @@ Run Claude Code 100% on-device with local AI on Apple Silicon. No cloud, no API 
 ### [NarrateClaude + Ohm — voice-first AI](https://github.com/nicedreamzapp/NarrateClaude) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/NarrateClaude?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/NarrateClaude/stargazers)
 Talk to your Mac, hear it reply in your own cloned voice. Now also accessible from any browser, anywhere.
 - **NarrateClaude** — on-device wake-word + cloned voice + local LLM, 100% private, works on a plane
-- **Ohm** — same voice loop wrapped in a web chat at `hq.nicedreamzwholesale.com/ohm` — type from any browser, hear the reply in your own voice
+- **Ohm** — same voice loop wrapped in a private web chat I host on my own infrastructure — type from any browser, hear the reply in my own voice
 - VPS proxies the chat to a self-hosted bridge on a Mac mini at home, claude on the Max plan answers, audio pipes back to the browser
 - Zero cloud-AI cost, zero paid API calls per message
-- 🎬 [53-second demo](https://cdsi.click/ohm-demo.mp4)
 
-`Pocket TTS` `Apple Silicon` `Claude Code Max plan` `FiaOS bridge` `Flask` `nginx` `Python`
+`Pocket TTS` `Apple Silicon` `Claude Code Max plan` `Flask` `nginx` `Python`
 
 ---
 
