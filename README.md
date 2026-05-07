@@ -23,6 +23,20 @@
 
 ## WHAT I BUILT (AND USE EVERY DAY)
 
+### 🌊 [Dan Close · Aquatic Ecology & Restoration](https://github.com/nicedreamzapp/dan-aquatic-ecology) &nbsp; · &nbsp; [Live site ↗](https://nicedreamzapp.github.io/dan-aquatic-ecology/) &nbsp; · &nbsp; [▶ 1-min video](https://youtu.be/clXORLW3_1I)
+**An HSU Master's Thesis project at Cal Poly Humboldt Marine Sciences.** Four single-page features on aquatic ecology, restoration ecology, and scientific diving — built end-to-end with Claude Code in one sitting.
+- **Scale of the Sea** — eleven orders of magnitude on one screen, from a water molecule to a 30-meter blue whale, with click-to-learn modals on every depth zone
+- **Marine restoration** thesis-quality slide deck: coral fragmentation, mangrove EMR, oyster reefs, seagrass, kelp, salt marsh, MPAs
+- **Freshwater restoration**: beavers, dam removal, BDAs, urban green infrastructure
+- **Scientific diving** 13-chapter narrative — the credentialed divers who actually do restoration work underwater
+- Every page is a single self-contained HTML file with hand-coded inline SVG animations
+- Each page reads itself aloud in a free Microsoft neural voice (Ava) via a tiny local edge-tts service
+- The 1-minute YouTube video was assembled by Claude Code too — Playwright headless recording + ffmpeg
+
+`HTML` `SVG` `edge-tts` `Playwright` `ffmpeg` `Claude Code`
+
+---
+
 ### [Claude Code Local](https://github.com/nicedreamzapp/claude-code-local) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/claude-code-local/stargazers) [![Forks](https://img.shields.io/github/forks/nicedreamzapp/claude-code-local?style=flat-square&color=58a6ff)](https://github.com/nicedreamzapp/claude-code-local/network/members)
 Run Claude Code 100% on-device with local AI on Apple Silicon. No cloud, no API fees.
 - 3 models to choose from: Gemma 4 31B (fast), Llama 3.3 70B (smartest), Qwen 3.5 122B (biggest)
