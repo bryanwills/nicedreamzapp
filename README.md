@@ -60,6 +60,59 @@ Talk to your Mac, hear it reply in your own cloned voice. Now also accessible fr
 
 ---
 
+### [FiaOS — your Mac mini, in a browser tab](https://github.com/nicedreamzapp/FiaOS) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/FiaOS?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/FiaOS/stargazers)
+Open any browser. You're now driving the Mac mini at home — screen, keyboard, mouse, voice.
+- Live remote desktop + a real PTY shell (Claude Code, vim, top — anything you'd run in Terminal)
+- On-device voice loop with a cloned warm voice for the responses
+- Self-hosted via Cloudflare Tunnel — public URL, zero VPS cost, all the compute on Apple Silicon
+- Auto-starts on boot, auto-restarts on crash, runs as a permanent service
+
+`Python` `WebSockets` `Cloudflare Tunnel` `PTY` `Apple Silicon`
+
+---
+
+### [Browser Agent — Apple Silicon browser control with no cloud](https://github.com/nicedreamzapp/browser-agent) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/browser-agent?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/browser-agent/stargazers)
+A local browser-control agent powered by MLX + Chrome DevTools Protocol.
+- Handles the cases other agents can't: cross-origin iframes, Shadow DOM, ProseMirror editors
+- Inference via local MLX models — zero cloud calls, no rate limits, no API keys
+- Pairs with Claude Code Local for fully on-device automation pipelines
+
+`MLX` `Apple Silicon` `Chrome DevTools Protocol` `Python` `Local AI`
+
+---
+
+### [JaneOS / Bloom — adaptive learning for one little kid](https://github.com/nicedreamzapp/JaneOS) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/JaneOS?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/JaneOS/stargazers)
+A FREE 1st-grade adaptive learning tutor I built for my daughter — and gave away.
+- Voice-driven and theme-rotating (unicorns, dinosaurs, space, cats, Bluey)
+- Covers reading, phonics, sight words, addition, subtraction, place value, science, social-emotional learning, letter tracing
+- Every question generated fresh by AI — never sees the same one twice
+- Difficulty climbs as she masters skills, gently drops if she struggles
+- Click-only safe interface — no microphone, no typing, no chat — built parent-first
+
+`Claude API` `Piper TTS` `Flask` `Anthropic` `Adaptive Learning`
+
+---
+
+### [Claude → Phone (iMessage remote)](https://github.com/nicedreamzapp/claude-screen-to-phone) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-screen-to-phone?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/claude-screen-to-phone/stargazers)
+Control Claude Code from your iPhone via iMessage. Driver-friendly. Doctor-friendly. Walking-the-dog-friendly.
+- Send commands by text, get back screenshots, screen recordings, and produced videos automatically
+- Hooks into Claude Code on the Mac, returns multimodal output to your phone
+- Approve/deny prompts arrive as YES / NO / YES_TO_ALL message buttons
+
+`iMessage` `AppleScript` `Claude Code` `macOS Automation` `Python`
+
+---
+
+### [studio-record — screen+facecam with a local HTTP API](https://github.com/nicedreamzapp/studio-record) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/studio-record?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/studio-record/stargazers)
+macOS screen + facecam recorder with virtual backgrounds and a local HTTP API.
+- Pairs with Claude Code via the API on `localhost:17494` — Claude can record itself working
+- Virtual backgrounds without OBS or third-party plugins
+- Outputs ready-to-edit MP4 / WebM, no transcoding step
+
+`Swift` `AVFoundation` `macOS` `HTTP API` `Claude Code`
+
+---
+
 ### HQ Business Dashboard
 Central command center for all Divine Tribe operations. Accessible from any device.
 - Email triage across 4 Gmail accounts — one-click reply, archive, delete
