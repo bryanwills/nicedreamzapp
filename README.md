@@ -279,6 +279,50 @@ Whisper-powered · Works anywhere on desktop · Just speak
 
 </td>
 </tr>
+<tr>
+<td width="50%" align="center">
+
+### [song-forge](https://github.com/nicedreamzapp/song-forge)
+**Local AI Music Generator**
+
+ACE-Step + Gemma + seed-vc voice swap · Fully on-device · No cloud APIs
+
+`AI Music` `Apple Silicon` `MLX` `seed-vc`
+
+</td>
+<td width="50%" align="center">
+
+### [The Farmstand 3D](https://github.com/nicedreamzapp/the-farmstand-3d)
+**Immersive WebXR Cannabis Marketplace**
+
+A-Frame · Live at marijuanaunion.com/marketplace · Walk around in your browser
+
+`WebXR` `A-Frame` `Three.js` `WooCommerce`
+
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+
+### [Cinch](https://github.com/nicedreamzapp/cinch)
+**One-Page WooCommerce Shipping Dashboard**
+
+No clicks · Auto-rates · Thermal print · USPS / UPS / FedEx
+
+`WooCommerce` `EasyPost` `Flask` `Python`
+
+</td>
+<td width="50%" align="center">
+
+### 🌊 [Dan Close · Aquatic Ecology](https://github.com/nicedreamzapp/dan-aquatic-ecology)
+**HSU Master's Thesis · Cal Poly Humboldt**
+
+[▶ Video](https://youtu.be/clXORLW3_1I) · [Live site](https://nicedreamzapp.github.io/dan-aquatic-ecology/) · 4 single-page features, hand-coded SVG, neural narration
+
+`HTML` `SVG` `edge-tts` `Claude Code`
+
+</td>
+</tr>
 </table>
 
 ---
