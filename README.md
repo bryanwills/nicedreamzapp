@@ -5,7 +5,7 @@
 <pre>
 ┌──────────────────────────────────────────────────────────────────┐
 │  Humboldt County, California  ·  Nice Dreamz LLC                │
-│  A local-first AI computing stack, built on Apple Silicon.      │
+│  A three-node ambient-computing mesh, built on Apple Silicon.   │
 │  Code, curiosity, and the right tools.                          │
 └──────────────────────────────────────────────────────────────────┘
 </pre>
@@ -23,11 +23,67 @@
 
 ## WHAT I'M ACTUALLY BUILDING
 
-Most of these repos look standalone. They're not. They're parts of one system I've been building on a single M5 Max MacBook Pro with 128 GB of RAM.
+Most of these repos look standalone. They're not. They're parts of one system spread across three machines that talk to each other 24/7:
 
-The idea: Apple Silicon is finally fast enough that I don't need a cloud subscription to do the things I want to do every day. So I'm building a local-first AI stack — code by voice, drive by text, see through my phone camera, ship orders through a dashboard, and stay useful when the internet goes down. The same stack is airgap-ready, which matters to the law / medical / compliance-sensitive firms I work with through Nice Dreamz LLC.
+- **M5 Max MacBook Pro · 128 GB** — heavy compute on demand: model inference, video generation, image generation, training.
+- **M4 Mac mini · 64 GB** — the always-on workhorse. Sits in the closet, runs autonomous agents, hosts the FiaOS web shell, answers Claude prompts on the Max plan for the rest of the mesh to use for free.
+- **Hostinger VPS** — public gateway. Hosts the HQ Dashboard, the Ohm chat agent, marketing sites, MediaMTX streaming, and the cron jobs that pull everything together.
 
-The pieces hang together like this:
+The idea: Apple Silicon is finally fast enough that I don't need a cloud subscription for the things I want to do every day. Build a local-first AI stack — code by voice, drive by text, see through my phone camera, ship orders through a dashboard, run autonomous agents in the closet — and stay useful when the internet goes down. The same stack is airgap-ready, which matters to the law / medical / compliance-sensitive firms I work with through Nice Dreamz LLC.
+
+---
+
+## THE MESH
+
+### 📡 Always-on agents running across all three nodes
+
+```
+                          ┌─────────────────────────────┐
+                          │   iPhone (iMessage bridge)  │
+                          │   ask · send · image · vid  │
+                          └────────────┬────────────────┘
+                                       │
+       ┌───────────────────────────────┼───────────────────────────────┐
+       │                               │                               │
+┌──────▼──────────┐         ┌──────────▼──────────────┐     ┌──────────▼────────┐
+│  M5 Max         │         │   Mac mini (always-on)  │     │  VPS (Hostinger)  │
+│  workstation    │◀──SSH──▶│   the workhorse         │◀───▶│   gateway         │
+├─────────────────┤         ├─────────────────────────┤     ├───────────────────┤
+│ • ComfyUI       │         │ • FiaOS web shell       │     │ • HQ Dashboard    │
+│ • MLX server    │         │ • gh-watcher (5m)       │     │ • Ohm chat agent  │
+│ • MakeVideo     │         │ • gh-mail-watcher (10m) │     │ • Marketing Hub   │
+│ • Browser Agent │         │ • lead-watcher (5m)     │     │ • Family Planner  │
+│ • NarrateClaude │         │ • Morning briefing (9a) │     │ • MediaMTX        │
+│ • on-demand     │         │ • mini_claude bridge    │     │ • reddit-agent    │
+│   workloads     │         │   (free Opus for VPS)   │     │ • daily-brain     │
+└─────────────────┘         └─────────────────────────┘     │ • email-triage    │
+                                                            │ • vps-selfreport  │
+                                                            └───────────────────┘
+```
+
+### What each agent actually does
+
+| Where | Agent | Job |
+|-------|-------|-----|
+| mini | **FiaOS** | Public web shell at [fia.nicedreamzwholesale.com](https://fia.nicedreamzwholesale.com) — PTY terminal + screen + voice through a Cloudflare tunnel. |
+| mini | **gh-watcher** | Auto-discovers all my repos every 5 min. Watches issues, PRs, star milestones, HN mentions. Drafts replies to new issues with local `claude -p` and iMessages me the draft. |
+| mini | **gh-mail-watcher** | Reads GitHub-sender emails, classifies (PAT expiry / security / vuln / repo comment / CI fail / noise), handles autonomously, only pings me when a human is required. |
+| mini | **lead-watcher** | Watches claude-code-local Discussions/Issues for AirGap consulting leads. |
+| mini | **Morning briefing** | 9am daily — pulls HQ state, posts an iMessage business briefing. |
+| mini | **mini_claude bridge** | Lets the VPS call Claude on my Max plan (Opus) for $0 by routing through FiaOS. This is the trick. |
+| VPS | **Ohm** | The only fully LLM-driven agent. Sonnet 4.6 chat at [hq.nicedreamzwholesale.com/ohm](https://hq.nicedreamzwholesale.com/ohm); offloads heavy work to mini via `mini_claude`. |
+| VPS | **HQ Dashboard** | Gunicorn at `:9001` — central command for orders, email, shipping, agents, and Ohm. |
+| VPS | **reddit-agent** | Watches Reddit for brand mentions every 15 min. |
+| VPS | **daily-brain** | 3:30am — reviews all trading systems, generates a 10-question report via mini_claude (free Opus). |
+| VPS | **email-triage** | 6× daily — auto-marks system emails as read, leaves humans for me. |
+| M5 | **agent-rollcall** | Monday 9am — audits all three machines, iMessages me the health summary. |
+| M5/mini | **hq-state pusher** | Every 30s — pushes node state to the VPS dashboard. |
+
+Cost discipline rule across the mesh: if an agent uses paid API, swap it to `mini_claude` (Max plan, $0/call) unless it explicitly needs a non-Claude model.
+
+---
+
+## THE TOOLBELT — repos by role in the stack
 
 | Role | Repo | What it does |
 |------|------|--------------|
@@ -40,7 +96,22 @@ The pieces hang together like this:
 | 🤖 Body | [CemaniHomesteadRobot](https://github.com/nicedreamzapp/CemaniHomesteadRobot) | The long-arc bet: a Lego-clip-in robot platform that uses the same vision pipeline. |
 | 👨‍👧 Family | [JaneOS](https://github.com/nicedreamzapp/JaneOS) | An adaptive 1st-grade tutor I built for my daughter and gave away. |
 
-This isn't a portfolio. It's the toolkit I use every day to run Divine Tribe (since 2013), build for Nice Dreamz consulting clients, and chip away at the robotics work that's the actual point.
+This isn't a portfolio. It's the toolkit the mesh actually uses every day to run Divine Tribe (since 2013), serve Nice Dreamz consulting clients, and chip away at the robotics work that's the actual point.
+
+---
+
+## LIVE ON THE INTERNET RIGHT NOW
+
+Public surfaces of the mesh you can hit from any browser:
+
+| URL | What |
+|-----|------|
+| [hq.nicedreamzwholesale.com](https://hq.nicedreamzwholesale.com) | HQ Dashboard — orders, email, shipping, Ohm chat |
+| [fia.nicedreamzwholesale.com](https://fia.nicedreamzwholesale.com) | FiaOS — full Mac mini in a browser tab |
+| [nicedreamzwholesale.com/airgap](https://nicedreamzwholesale.com/airgap) | AirGap AI — private-AI consulting pilot offer |
+| [cdsi.click](https://cdsi.click) | Cannabis Device Safety Institute — standards body site (launch video embedded) |
+| [marijuanaunion.com/marketplace](https://marijuanaunion.com/marketplace) | The Farmstand 3D — WebXR cannabis marketplace |
+| [disclosureday.nicedreamzwholesale.com](https://disclosureday.nicedreamzwholesale.com) | Disclosure Day — SEO + AI chatbot ("D.I.S.C.O.") site |
 
 ---
 
@@ -103,7 +174,7 @@ Control Claude Code from your iPhone via iMessage. Driver-friendly. Doctor-frien
 
 ## THE DAILY DRIVERS
 
-These aren't the top of the star chart, but they're the ones I actually run every day.
+These aren't the top of the star chart, but they're the ones the mesh actually runs every day.
 
 ### [Cinch — one-page WooCommerce shipping dashboard](https://github.com/nicedreamzapp/cinch)
 The tool that pays for everything else. Built it for myself after ten years of fighting WordPress, and my partner watched me use it and asked "why aren't you selling that?"
@@ -126,6 +197,7 @@ Open any browser. You're now driving the Mac mini at home — screen, keyboard, 
 - On-device voice loop with a cloned warm voice for the responses
 - Self-hosted via Cloudflare Tunnel — public URL, zero VPS cost, all the compute on Apple Silicon
 - Auto-starts on boot, auto-restarts on crash, runs as a permanent service
+- It's the bridge the VPS uses to call `mini_claude` — the trick that gives every other agent free Opus access
 
 `Python` `WebSockets` `Cloudflare Tunnel` `PTY` `Apple Silicon`
 
@@ -200,9 +272,11 @@ Companion to [claude-code-local](https://github.com/nicedreamzapp/claude-code-lo
 
 ## INTERNAL BUILDS (NO PUBLIC REPO)
 
-**HQ Business Dashboard** — Central command center for Divine Tribe. Email triage across 4 Gmail accounts, real-time WooCommerce order monitoring, full shipping system with USPS/UPS/FedEx rates + one-click label purchase + thermal printing, eBay listing management, 2FA / rate-limited / WSGI hardened. `Python` `Flask` `Gunicorn` `EasyPost API` `WooCommerce API` `Gmail API` `nginx`
+**HQ Dashboard** — Central command center at [hq.nicedreamzwholesale.com](https://hq.nicedreamzwholesale.com). Email triage across 4 Gmail accounts, real-time WooCommerce order monitoring, full shipping system with USPS/UPS/FedEx rates + one-click label purchase + thermal printing, eBay listing management, 2FA / rate-limited / WSGI hardened. Hosts Ohm, the LLM-driven chat agent. `Python` `Flask` `Gunicorn` `EasyPost API` `WooCommerce API` `Gmail API` `Anthropic Sonnet` `nginx`
 
-**AI Trading System** — Multi-agent autonomous trading with self-improving feedback loop. 6 named agents (Sentinel, Scout, Arb Scanner, Postmortem, Kalshi Sniper, Trade Gate). Opus reviews every trade, writes lessons learned, feeds them back into the next decision. `Python` `Node.js` `Anthropic Claude` `Coinbase CDP` `Kalshi API`
+**Ohm — the chat agent that bridges the mesh** — Sonnet 4.6 web chat at hq/ohm. When Ohm needs heavy work done, it tools out to `mini_claude(prompt)` → POST to FiaOS `/api/command` → runs `claude -p` on the mini under my keychain → uses Max plan Opus at zero API cost. Tools available: `bash_vps`, `read_file`, `list_dir`, `wc_orders`, `imessage_to_matt`, `add_to_ohm_inbox`, `now_iso`, `mini_claude`. `Python` `Anthropic API` `SSH` `Flask`
+
+**AI Trading System** — Multi-agent autonomous trading with self-improving feedback loop. 6 named agents (Sentinel, Scout, Arb Scanner, Postmortem, Kalshi Sniper, Trade Gate). `daily-brain` on the VPS runs at 3:30am, reviews every trade through Opus (free, via mini_claude), writes lessons learned, feeds them back into the next decision. `Python` `Node.js` `Anthropic Claude` `Coinbase CDP` `Kalshi API`
 
 **AI Customer Chatbot** — Customer support trained on the full Divine Tribe product lineup. Mistral 7B fine-tuned with RLHF + Claude-powered hybrid RAG/CAG. Knows 134 products, recommends by use case. `Mistral 7B` `RLHF` `Claude` `Flask` `WooCommerce`
 
@@ -381,10 +455,10 @@ Custom built · Temperature controlled · Product design + CAD files
 | Category | Technologies |
 |:---------|:------------|
 | **Languages** | `Python` `Swift` `TypeScript` `JavaScript` `C++` `PHP` |
-| **AI / ML** | `Claude (Opus + Haiku)` `MLX` `Gemma 4 31B` `Llama 3.3 70B` `Qwen 3.5 122B` `Mistral 7B` `YOLOv8` `SAM 2.1` `MobileCLIP 2` `CogVideoX` `Whisper` `CoreML` |
+| **AI / ML** | `Claude (Opus + Sonnet + Haiku)` `MLX` `Gemma 4 31B` `Llama 3.3 70B` `Qwen 3.5 122B` `Mistral 7B` `YOLOv8` `SAM 2.1` `MobileCLIP 2` `CogVideoX` `Whisper` `CoreML` `Piper TTS` |
 | **APIs** | `WooCommerce` `EasyPost` `Gmail` `Google Search Console` `Coinbase CDP` `Kalshi` `eBay` `Reddit` `LinkedIn` |
-| **Infrastructure** | `nginx` `gunicorn` `PM2` `Let's Encrypt` `UFW` `SSH` `Cloudflare Tunnel` |
-| **Mobile** | `iOS` `Xcode` `Metal` `Apple Silicon` `LiDAR` |
+| **Infrastructure** | `nginx` `gunicorn` `PM2` `Let's Encrypt` `UFW` `SSH` `Cloudflare Tunnel` `LaunchAgents` `systemd` `cron` |
+| **Mobile** | `iOS` `Xcode` `Metal` `Apple Silicon` `LiDAR` `iMessage bridge` |
 | **Robotics** | `Arduino` `Teensy` `ESP32` `Jetson Orin Nano` `ONVIF` `RPLidar` `Tank Drive` |
 
 ---
@@ -393,9 +467,11 @@ Custom built · Temperature controlled · Product design + CAD files
 
 I run [Divine Tribe](https://ineedhemp.com) — vaporizer hardware, since 2013. Cinch ships those orders. Everything else is downstream of paying the bills.
 
-Nice Dreamz LLC is the consulting umbrella on top, focused on Private AI / Fractional AI work for law, medical, and compliance-sensitive firms — the kind of clients who can't put their data into a cloud chatbot. Every tool above is something I either use on a real engagement or built to find out whether the local-AI approach holds up under real workload.
+**Nice Dreamz LLC** is the consulting umbrella on top. The public surface is [AirGap AI](https://nicedreamzwholesale.com/airgap) — Private AI / Fractional AI work for law, medical, and compliance-sensitive firms — the kind of clients who can't put their data into a cloud chatbot. Every tool above is either something I use on a real engagement or something I built to find out whether the local-AI approach holds up under real workload. The three-node mesh is the demo: it's been my daily driver for a year and a half.
 
-The long arc is the robot. Modular, Lego-clip-in, runs the same local AI stack as my laptop. That's why the vision pipeline shows up in three places (RealTimeAICam, VisionBuilder, CemaniHomesteadRobot) — same eyes, different bodies.
+I'm also building out the **[Cannabis Device Safety Institute](https://cdsi.click)** in parallel — a standards body for cannabis-consumption hardware, aiming to be first-in-line when federal research funding lands.
+
+The long arc is the robot. Modular, Lego-clip-in, runs the same local AI stack as my laptop and the mini. That's why the vision pipeline shows up in three places (RealTimeAICam, VisionBuilder, CemaniHomesteadRobot) — same eyes, different bodies.
 
 Still figuring it out. No investors. No team. One MacBook, one Mac mini, one VPS, and a lot of late nights.
 
