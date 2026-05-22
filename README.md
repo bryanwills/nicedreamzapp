@@ -94,7 +94,7 @@ Cost discipline rule across the mesh: if an agent uses paid API, swap it to `min
 | 📱 Remote | [claude-screen-to-phone](https://github.com/nicedreamzapp/claude-screen-to-phone) + [FiaOS](https://github.com/nicedreamzapp/FiaOS) | Drive the Mac from my iPhone via iMessage; or open any browser and remote into the mini at home. |
 | 🌐 Browser | [browser-agent](https://github.com/nicedreamzapp/browser-agent) | Local AI driving Chrome — Shadow DOM, ProseMirror, the whole stack. |
 | 🤖 Body | [CemaniHomesteadRobot](https://github.com/nicedreamzapp/CemaniHomesteadRobot) | The long-arc bet: a Lego-clip-in robot platform that uses the same vision pipeline. |
-| 👨‍👧 Family | [JaneOS](https://github.com/nicedreamzapp/JaneOS) | An adaptive 1st-grade tutor I built for my daughter and gave away. |
+| 👨‍👧 Family | [JaneOS / Bloom](https://github.com/nicedreamzapp/JaneOS) | An adaptive 1st-grade tutor I built for my daughter. **Live at [jane.nicedreamzwholesale.com](https://jane.nicedreamzwholesale.com)**. |
 
 This isn't a portfolio. It's the toolkit the mesh actually uses every day to run Divine Tribe (since 2013), serve Nice Dreamz consulting clients, and chip away at the robotics work that's the actual point.
 
@@ -149,6 +149,8 @@ A local browser-control agent powered by MLX + Chrome DevTools Protocol.
 - Pairs with Claude Code Local for fully on-device automation pipelines
 
 `MLX` `Apple Silicon` `Chrome DevTools Protocol` `Python` `Local AI`
+
+<a href="https://youtu.be/SIuMNa2k6Wc"><img src="https://img.youtube.com/vi/SIuMNa2k6Wc/maxresdefault.jpg" width="480" alt="▶ Watch the 56-second demo"></a>
 
 ---
 
@@ -226,6 +228,8 @@ Started with a simple problem: protecting my chickens from predators. Built a 1 
 The honest goal: turn this into a Lego-clip-in modular robotics kit where the same vision + voice + local-AI brain I've built for the desk runs on the robot too.
 
 https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
+
+<a href="https://youtu.be/NWnGvvdvRik"><img src="https://img.youtube.com/vi/NWnGvvdvRik/maxresdefault.jpg" width="480" alt="▶ Watch the 53-second demo"></a>
 
 `Teensy` `ESP32` `Jetson Orin Nano` `YOLOv8` `TensorRT` `RPLidar` `Modbus` `PTZ ONVIF` `Robotics` `Python` `Node.js`
 
@@ -347,6 +351,8 @@ Whisper-powered · Works anywhere on desktop · Just speak
 100% accuracy on test set · 65,000+ cells · 20-gene signature
 
 <img src="https://raw.githubusercontent.com/nicedreamzapp/parkinsons-vulnerability-predictor/main/figures/validation/cross_dataset_vulnerability_comparison.png" width="300">
+
+<a href="https://youtu.be/bC4hgeHS9cg"><img src="https://img.youtube.com/vi/bC4hgeHS9cg/maxresdefault.jpg" width="480" alt="▶ Watch the 64-second demo — narrated walkthrough of the meta-analysis"></a>
 
 `Machine Learning` `Medical` `Research`
 
