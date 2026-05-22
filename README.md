@@ -33,6 +33,20 @@ The idea: Apple Silicon is finally fast enough that I don't need a cloud subscri
 
 ---
 
+## NOW SHIPPING — AIRGAP
+
+The commercial side of the local-first stack. Three rungs for three buyers, all running the same open-source `claude-code-local` engine underneath.
+
+| | What it is | Price |
+|---|---|---|
+| 🖥️ **[AirGap Box](https://nicedreamzwholesale.com/airgap-box/)** | Pre-configured Mac mini delivered to your office with the stack + 3 agents installed. 90-min Zoom setup. 30 days support. | **$2,995-$3,995** one-time · waitlist open |
+| ⚡ **[AirGap Agents](https://nicedreamzwholesale.com/product/airgap-agents/)** | Three working agents (folder watcher, daily briefing, local Q&A) that drop on top of `claude-code-local`. DIY install in 60 seconds. | **$19** one-time |
+| 🔒 **[AirGap Foundation](https://nicedreamzwholesale.com/airgap/)** | 14-day fixed-scope deployment for law / medical / compliance-sensitive firms. Custom workflows + written compliance memo. | scoped per firm |
+
+Reading material on why this exists now: ["The Heppner Ruling, Warner v. Gilbarco, and What Confidential AI Actually Has to Mean"](https://nicedreamzwholesale.com/2026/05/22/the-heppner-ruling-warner-v-gilbarco-and-what-confidential-ai-actually-has-to-mean/) — a federal court just ruled that public-AI work is not privileged. On-device just stopped being optional for privileged work.
+
+---
+
 ## THE MESH
 
 ### 📡 Always-on agents running across all three nodes
