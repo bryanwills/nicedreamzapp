@@ -132,7 +132,7 @@ Public surfaces of the mesh you can hit from any browser:
 
 > _Sorted by GitHub stars — the most-loved at the top._
 
-### ⭐ 2.6k · [Claude Code Local](https://github.com/nicedreamzapp/claude-code-local) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/claude-code-local/stargazers) [![Forks](https://img.shields.io/github/forks/nicedreamzapp/claude-code-local?style=flat-square&color=58a6ff)](https://github.com/nicedreamzapp/claude-code-local/network/members)
+### [Claude Code Local](https://github.com/nicedreamzapp/claude-code-local) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/claude-code-local/stargazers) [![Forks](https://img.shields.io/github/forks/nicedreamzapp/claude-code-local?style=flat-square&color=58a6ff)](https://github.com/nicedreamzapp/claude-code-local/network/members)
 Run Claude Code 100% on-device with local AI on Apple Silicon. No cloud, no API fees.
 - 3 models to choose from: Gemma 4 31B (fast), Llama 3.3 70B (smartest), Qwen 3.5 122B (biggest)
 - 4 modes: Code, Browser Agent, Narrative (voice), and Phone (iMessage remote control)
@@ -144,7 +144,7 @@ Run Claude Code 100% on-device with local AI on Apple Silicon. No cloud, no API 
 
 ---
 
-### ⭐ 40 · [NarrateClaude + Ohm — voice-first AI](https://github.com/nicedreamzapp/NarrateClaude) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/NarrateClaude?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/NarrateClaude/stargazers)
+### [NarrateClaude + Ohm — voice-first AI](https://github.com/nicedreamzapp/NarrateClaude) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/NarrateClaude?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/NarrateClaude/stargazers)
 Talk to your Mac, hear it reply in your own cloned voice. Now also accessible from any browser, anywhere.
 - NarrateClaude — on-device wake-word + cloned voice + local LLM, 100% private, works on a plane
 - Ohm — the same voice loop wrapped in a private web chat I host on my own infrastructure — type from any browser, hear the reply in my own voice
@@ -155,7 +155,7 @@ Talk to your Mac, hear it reply in your own cloned voice. Now also accessible fr
 
 ---
 
-### ⭐ 19 · [Browser Agent — Apple Silicon browser control with no cloud](https://github.com/nicedreamzapp/browser-agent) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/browser-agent?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/browser-agent/stargazers)
+### [Browser Agent — Apple Silicon browser control with no cloud](https://github.com/nicedreamzapp/browser-agent) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/browser-agent?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/browser-agent/stargazers)
 A local browser-control agent powered by MLX + Chrome DevTools Protocol.
 - Handles the cases other agents can't: cross-origin iframes, Shadow DOM, ProseMirror editors
 - Inference via local MLX models — zero cloud calls, no rate limits, no API keys
@@ -167,7 +167,7 @@ A local browser-control agent powered by MLX + Chrome DevTools Protocol.
 
 ---
 
-### ⭐ 6 · [RealTimeAICam — 601 objects on your phone, fully offline](https://github.com/nicedreamzapp/RealTimeAICam) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/RealTimeAICam?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/RealTimeAICam/stargazers)
+### [RealTimeAICam — 601 objects on your phone, fully offline](https://github.com/nicedreamzapp/RealTimeAICam) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/RealTimeAICam?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/RealTimeAICam/stargazers)
 The biggest free open-vocabulary detector I could fit on an iPhone — 601 classes, OCR, and LiDAR depth, all running on-device.
 - Open YOLOv8 weights converted to CoreML, no subscription, no telemetry
 - Pairs with the camera and LiDAR sensors directly — depth-aware bounding boxes
@@ -177,7 +177,7 @@ The biggest free open-vocabulary detector I could fit on an iPhone — 601 class
 
 ---
 
-### ⭐ 6 · [Claude → Phone (iMessage remote)](https://github.com/nicedreamzapp/claude-screen-to-phone) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-screen-to-phone?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/claude-screen-to-phone/stargazers)
+### [Claude → Phone (iMessage remote)](https://github.com/nicedreamzapp/claude-screen-to-phone) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-screen-to-phone?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/claude-screen-to-phone/stargazers)
 Control Claude Code from your iPhone via iMessage. Driver-friendly. Doctor-friendly. Walking-the-dog-friendly.
 - Send commands by text, get back screenshots, screen recordings, and produced videos automatically
 - Hooks into Claude Code on the Mac, returns multimodal output to your phone
@@ -230,7 +230,7 @@ macOS screen + facecam recorder with virtual backgrounds and a local HTTP API.
 
 ## THE LONG-ARC BET
 
-### ⭐ 2 · [Cemani Homestead Robot](https://github.com/nicedreamzapp/CemaniHomesteadRobot) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/CemaniHomesteadRobot?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/CemaniHomesteadRobot/stargazers)
+### [Cemani Homestead Robot](https://github.com/nicedreamzapp/CemaniHomesteadRobot) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/CemaniHomesteadRobot?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/CemaniHomesteadRobot/stargazers)
 Started with a simple problem: protecting my chickens from predators. Built a 1 kW autonomous tank robot that you text from your phone.
 - Tank drive chassis with Xbox controller override + text-command autonomous modes
 - YOLOv8 601-class object detection on Jetson Orin Nano (same vision base as RealTimeAICam)
@@ -322,7 +322,7 @@ Every store has: SEO-optimized product pages, structured data schema, automated 
 <tr>
 <td width="50%" align="center">
 
-### ⭐ 7 · [BitcoinPredictor](https://github.com/nicedreamzapp/BitcoinPredictor)
+### [BitcoinPredictor](https://github.com/nicedreamzapp/BitcoinPredictor)
 **Real-time Bitcoin Trading with AI**
 
 Live prices · ML predictions · Trading signals · Web dashboard
@@ -334,7 +334,7 @@ Live prices · ML predictions · Trading signals · Web dashboard
 </td>
 <td width="50%" align="center">
 
-### ⭐ 3 · [Family Planner](https://github.com/nicedreamzapp/Family-Planner)
+### [Family Planner](https://github.com/nicedreamzapp/Family-Planner)
 **Skylight-Inspired Family Dashboard**
 
 Voice control · OCR scanning · AI assistant · Runs on old tablets
@@ -348,7 +348,7 @@ Voice control · OCR scanning · AI assistant · Runs on old tablets
 <tr>
 <td width="50%" align="center">
 
-### ⭐ 2 · [SpeakAnywhere](https://github.com/nicedreamzapp/SpeakAnywhere)
+### [SpeakAnywhere](https://github.com/nicedreamzapp/SpeakAnywhere)
 **Voice Control for Your Computer**
 
 Whisper-powered · Works anywhere on desktop · Just speak
@@ -358,7 +358,7 @@ Whisper-powered · Works anywhere on desktop · Just speak
 </td>
 <td width="50%" align="center">
 
-### ⭐ 1 · [Parkinson's Vulnerability Predictor](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor)
+### [Parkinson's Vulnerability Predictor](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor)
 **ML for Parkinson's Disease Research**
 
 100% accuracy on test set · 65,000+ cells · 20-gene signature
@@ -374,7 +374,7 @@ Whisper-powered · Works anywhere on desktop · Just speak
 <tr>
 <td width="50%" align="center">
 
-### ⭐ 1 · [CogVideoX-Mac-Setup](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup)
+### [CogVideoX-Mac-Setup](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup)
 **AI Video Generation on Apple Silicon**
 
 CogVideoX-5B · M4 Pro · 4-second videos in 18 minutes
@@ -460,6 +460,50 @@ Pixel-perfect clone · Zero dependencies · Pure vanilla JS
 Custom built · Temperature controlled · Product design + CAD files
 
 `Hardware` `3D Design` `Automation`
+
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+
+### [claude-failover](https://github.com/nicedreamzapp/claude-failover)
+**Backup Brain for Claude Code**
+
+One command and your `claude -p` agents keep running on a local MLX model when Max hits its limit. Default Claude, local only when needed.
+
+`MLX` `Claude Code` `Failover` `Python`
+
+</td>
+<td width="50%" align="center">
+
+### [story-forge](https://github.com/nicedreamzapp/story-forge)
+**Local Generative Cinema**
+
+A 4-minute animated film, end to end, on one laptop. Flux + Wan + Piper + ACE-Step + ffmpeg. No cloud.
+
+`Flux` `Wan` `Piper` `ACE-Step` `ffmpeg`
+
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+
+### [x-cleanup-agent](https://github.com/nicedreamzapp/x-cleanup-agent)
+**X Follow-List Cleanup Agent**
+
+395 dormant unfollows in 40 minutes, driven through your own logged-in browser. No scraper, no API key, no stored credentials.
+
+`Claude Code` `AppleScript` `Brave` `Automation`
+
+</td>
+<td width="50%" align="center">
+
+### [job-search-agent](https://github.com/nicedreamzapp/job-search-agent)
+**Daily AI Job-Scoring Agent**
+
+Scores roles across 50+ companies via Ashby, Greenhouse, and Lever, then drafts a 200-word pitch for the top matches. Windows build too.
+
+`Python` `Local AI` `Ashby` `Greenhouse` `Lever`
 
 </td>
 </tr>
