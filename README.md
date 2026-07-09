@@ -33,6 +33,21 @@ The idea: Apple Silicon is finally fast enough that I don't need a cloud subscri
 
 ---
 
+## 📱 ON THE APP STORE
+
+The newest chapter: real iPhone apps, built start-to-finish on this stack. One is live; three more went to Apple this week.
+
+| App | What it is | Status |
+|---|---|---|
+| **[RealTime AI Cam](https://github.com/nicedreamzapp/RealTimeAICam)** | Point your camera, it names 601 objects — fully offline, free | ✅ **Live on the App Store** |
+| **[Song Forge](https://github.com/nicedreamzapp/song-forge)** | Describe a song, get a finished original track in under a minute — 10-second jingles to 4-minute songs, rendered on my Macs at home, never stored. 10 free songs, no subscription, no account, no email | 🔜 In review pipeline |
+| **[Brainforest](https://github.com/nicedreamzapp/brainforest)** | 2,000+ K-4 lessons, works fully offline, one-time $0.99 — no ads, no tracking, no internet needed | 🍎 Submitted for review |
+| **[RealTime Space](https://github.com/nicedreamzapp/RealTime-Space)** | Photoreal real-time solar system explorer — NASA Blue Marble textures, real ring systems, ACES filmic tonemapping | 🍎 Submitted for review |
+
+Same philosophy as everything else here: on-device where possible, private by default, pay once (or nothing) instead of subscribing forever.
+
+---
+
 ## NOW SHIPPING — AIRGAP
 
 The commercial side of the local-first stack. Three rungs for three buyers, all running the same open-source `claude-code-local` engine underneath.
