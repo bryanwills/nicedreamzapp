@@ -40,9 +40,9 @@ The newest chapter: real iPhone apps, built start-to-finish on this stack. One i
 | App | What it is | Status |
 |---|---|---|
 | **[RealTime AI Cam](https://github.com/nicedreamzapp/RealTimeAICam)** | Point your camera, it names 601 objects — fully offline, free | ✅ **Live on the App Store** |
-| **[Song Forge](https://github.com/nicedreamzapp/song-forge)** | Describe a song, get a finished original track in under a minute — 10-second jingles to 4-minute songs, rendered on my Macs at home, never stored. 10 free songs, no subscription, no account, no email | 🔜 In review pipeline |
-| **[Brainforest](https://github.com/nicedreamzapp/brainforest)** | 2,000+ K-4 lessons, works fully offline, one-time $0.99 — no ads, no tracking, no internet needed | 🍎 Submitted for review |
-| **[RealTime Space](https://github.com/nicedreamzapp/RealTime-Space)** | Photoreal real-time solar system explorer — NASA Blue Marble textures, real ring systems, ACES filmic tonemapping | 🍎 Submitted for review |
+| **[Song Forge](https://nicedreamzwholesale.com/software/song-forge/)** | Describe a song, get a finished original track in minutes — any genre, sung in any of 19 languages, 10-second jingles to 4-minute songs, rendered on my Macs at home, never stored. 10 free songs, no subscription, no account, no email · [engine repo](https://github.com/nicedreamzapp/song-forge) | 🍎 In App Review |
+| **[Brainforest](https://nicedreamzwholesale.com/software/brainforest/)** | 2,000+ K-4 lessons with a friendly narrator that reads everything aloud, works fully offline, one-time $0.99 — no ads, no tracking, no internet needed | 🍎 In App Review |
+| **[RealTime Space](https://nicedreamzwholesale.com/software/realtime-space/)** | Fly a real-physics starship through the whole solar system and 8,920 real stars — photoreal, 100× warp, free for 60 days then $0.99 once · [repo](https://github.com/nicedreamzapp/RealTime-Space) | 🍎 In App Review |
 
 Same philosophy as everything else here: on-device where possible, private by default, pay once (or nothing) instead of subscribing forever.
 
