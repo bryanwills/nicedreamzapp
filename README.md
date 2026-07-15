@@ -35,14 +35,22 @@ The idea: Apple Silicon is finally fast enough that I don't need a cloud subscri
 
 ## 📱 ON THE APP STORE
 
-The newest chapter: real iPhone apps, built start-to-finish on this stack. One is live; three more went to Apple this week.
+The newest chapter: real iPhone apps, built start-to-finish on this stack. **Three are live on the App Store**; the fourth is with Apple.
+
+<div align="center">
+
+[![Song Forge on the App Store](https://img.shields.io/badge/Song_Forge-Download_on_the_App_Store-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929)
+[![RealTime Space on the App Store](https://img.shields.io/badge/RealTime_Space-Download_on_the_App_Store-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788646103)
+[![RealTime AI Cam on the App Store](https://img.shields.io/badge/RealTime_AI_Cam-Download_on_the_App_Store-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6751230739)
+
+</div>
 
 | App | What it is | Status |
 |---|---|---|
-| **[RealTime AI Cam](https://github.com/nicedreamzapp/RealTimeAICam)** | Point your camera, it names 601 objects — fully offline, free | ✅ **Live on the App Store** |
-| **[Song Forge](https://nicedreamzwholesale.com/software/song-forge/)** | Describe a song, get a finished original track in minutes — any genre, sung in any of 19 languages, 10-second jingles to 4-minute songs, rendered on my Macs at home, never stored. 10 free songs, no subscription, no account, no email · [engine repo](https://github.com/nicedreamzapp/song-forge) | 🍎 In App Review |
-| **[Brainforest](https://nicedreamzwholesale.com/software/brainforest/)** | 2,000+ K-4 lessons with a friendly narrator that reads everything aloud, works fully offline, one-time $0.99 — no ads, no tracking, no internet needed | 🍎 In App Review |
-| **[RealTime Space](https://nicedreamzwholesale.com/software/realtime-space/)** | Fly a real-physics starship through the whole solar system and 8,920 real stars — photoreal, 100× warp, free for 60 days then $0.99 once · [repo](https://github.com/nicedreamzapp/RealTime-Space) | 🍎 In App Review |
+| **[RealTime AI Cam](https://github.com/nicedreamzapp/RealTimeAICam)** | Point your camera, it names 601 objects — fully offline, free | ✅ **[Live on the App Store](https://apps.apple.com/us/app/id6751230739)** · Free |
+| **[Song Forge](https://nicedreamzwholesale.com/software/song-forge/)** | Describe a song, get a finished original track in minutes — any genre, sung in any of 19 languages, 10-second jingles to 4-minute songs, rendered on my Macs at home, never stored. No subscription, no account, no email · [engine repo](https://github.com/nicedreamzapp/song-forge) | ✅ **[Live on the App Store](https://apps.apple.com/us/app/id6788616929)** · $2.99 |
+| **[RealTime Space](https://nicedreamzwholesale.com/software/realtime-space/)** | Fly a real-physics starship through the whole solar system and 8,920 real stars — photoreal, 100× warp · [repo](https://github.com/nicedreamzapp/RealTime-Space) | ✅ **[Live on the App Store](https://apps.apple.com/us/app/id6788646103)** · $0.99 |
+| **[Brainforest](https://nicedreamzwholesale.com/software/brainforest/)** | 2,000+ K-4 lessons with a friendly narrator that reads everything aloud, works fully offline, one-time $0.99 — no ads, no tracking, no internet needed | 🔜 **Coming soon** |
 
 Same philosophy as everything else here: on-device where possible, private by default, pay once (or nothing) instead of subscribing forever.
 
