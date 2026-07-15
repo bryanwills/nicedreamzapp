@@ -15,6 +15,16 @@
 
 ---
 
+## 📱 Three apps, live on the App Store — free to download
+
+[![Song Forge on the App Store](https://img.shields.io/badge/Song_Forge-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929)
+[![RealTime Space on the App Store](https://img.shields.io/badge/RealTime_Space-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788646103)
+[![RealTime AI Cam on the App Store](https://img.shields.io/badge/RealTime_AI_Cam-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6751230739)
+
+**[Song Forge](https://apps.apple.com/us/app/id6788616929)** — describe a song, get a finished original · **[RealTime Space](https://apps.apple.com/us/app/id6788646103)** — fly the whole solar system · **[RealTime AI Cam](https://apps.apple.com/us/app/id6751230739)** — point your camera, it names 601 things
+
+---
+
 ### *"If it takes more than 10 minutes, I automate it. If it needs AI, I build it from scratch."*
 
 ---
@@ -36,14 +46,6 @@ The idea: Apple Silicon is finally fast enough that I don't need a cloud subscri
 ## 📱 ON THE APP STORE
 
 The newest chapter: real iPhone apps, built start-to-finish on this stack. **Three are live on the App Store**; the fourth is with Apple.
-
-<div align="center">
-
-[![Song Forge on the App Store](https://img.shields.io/badge/Song_Forge-Download_on_the_App_Store-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929)
-[![RealTime Space on the App Store](https://img.shields.io/badge/RealTime_Space-Download_on_the_App_Store-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788646103)
-[![RealTime AI Cam on the App Store](https://img.shields.io/badge/RealTime_AI_Cam-Download_on_the_App_Store-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6751230739)
-
-</div>
 
 | App | What it is | Status |
 |---|---|---|
