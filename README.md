@@ -31,6 +31,17 @@
 
 </div>
 
+## 🆕 JUST SHIPPED — NVIDIA's omni model, running on a Mac
+
+NVIDIA's [Nemotron-3-Nano-Omni 30B](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16) sees, hears, and reasons — but only its text backbone ran on Apple Silicon. The vision and audio towers had no open MLX runtime. So I wrote one.
+
+**[nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx)** — pure MLX, MIT, verified against NVIDIA's PyTorch reference instead of by eye: **23/23 parity tests**, vision graph-exact on MLX's CPU stream (cos 1.00000000), audio cos 0.99999130, processor token ids exact. 67.7 tok/s with an image, 147 tok/s with audio, ~22 GB peak on an M5 Max. Wi-Fi off.
+
+Credit where it's due: NVIDIA released the weights *and* the reference code openly, and [yayr](https://huggingface.co/mlx-community/NVIDIA-Nemotron-3-Nano-Omni-30B-A3B-4bit) at mlx-community did the 4-bit conversion it runs on.
+
+---
+
+
 ## WHAT I'M ACTUALLY BUILDING
 
 Most of these repos look standalone. They're not. They're parts of one system spread across three machines that talk to each other 24/7:
