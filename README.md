@@ -1,93 +1,53 @@
 <div align="center">
 
-# MATT MACOSKO — Nice Dreamz LLC
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:3fb950,50:2563eb,100:8b5cf6&height=180&section=header&text=MATT%20MACOSKO&fontSize=52&fontColor=ffffff&animation=fadeIn&desc=Nice%20Dreamz%20LLC%20%C2%B7%20Humboldt%20County%2C%20CA&descSize=18&descAlignY=75" width="100%">
 
-<pre>
-┌──────────────────────────────────────────────────────────────────┐
-│  Humboldt County, California  ·  Nice Dreamz LLC                │
-│  A three-node ambient-computing mesh, built on Apple Silicon.   │
-│  Code, curiosity, and the right tools.                          │
-└──────────────────────────────────────────────────────────────────┘
-</pre>
+**A three-node ambient-computing mesh, built on Apple Silicon. Code, curiosity, and the right tools.**
 
 [![GitHub followers](https://img.shields.io/github/followers/nicedreamzapp?style=for-the-badge&color=236ad3&labelColor=1155ba)](https://github.com/nicedreamzapp)
 [![Repos](https://img.shields.io/badge/dynamic/json?label=Public%20Repos&query=%24.public_repos&url=https%3A%2F%2Fapi.github.com%2Fusers%2Fnicedreamzapp&style=for-the-badge&color=58a6ff&labelColor=388bfd)](https://github.com/nicedreamzapp?tab=repositories)
-
----
-
-## 📱 Three apps, live on the App Store — free to download
-
-[![Song Forge on the App Store](https://img.shields.io/badge/Song_Forge-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929)
-[![RealTime Space on the App Store](https://img.shields.io/badge/RealTime_Space-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788646103)
-[![RealTime AI Cam on the App Store](https://img.shields.io/badge/RealTime_AI_Cam-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6751230739)
-
-**[Song Forge](https://apps.apple.com/us/app/id6788616929)** — describe a song, get a finished original · **[RealTime Space](https://apps.apple.com/us/app/id6788646103)** — fly the whole solar system · **[RealTime AI Cam](https://apps.apple.com/us/app/id6751230739)** — point your camera, it names 601 things
-
----
+[![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=for-the-badge&label=claude-code-local&color=f5c542&labelColor=b8860b)](https://github.com/nicedreamzapp/claude-code-local)
 
 ### *"If it takes more than 10 minutes, I automate it. If it needs AI, I build it from scratch."*
 
----
-
 </div>
-
-## 🆕 JUST SHIPPED — NVIDIA's omni model, running on a Mac
-
-NVIDIA's [Nemotron-3-Nano-Omni 30B](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16) sees, hears, and reasons — but only its text backbone ran on Apple Silicon. The vision and audio towers had no open MLX runtime. So I wrote one.
-
-**[nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx)** — pure MLX, MIT, verified against NVIDIA's PyTorch reference instead of by eye: **23/23 parity tests**, vision graph-exact on MLX's CPU stream (cos 1.00000000), audio cos 0.99999130, processor token ids exact. 67.7 tok/s with an image, 147 tok/s with audio, ~22 GB peak on an M5 Max. Wi-Fi off.
-
-Credit where it's due: NVIDIA released the weights *and* the reference code openly, and [yayr](https://huggingface.co/mlx-community/NVIDIA-Nemotron-3-Nano-Omni-30B-A3B-4bit) at mlx-community did the 4-bit conversion it runs on.
-
----
-
-
-## WHAT I'M ACTUALLY BUILDING
-
-Most of these repos look standalone. They're not. They're parts of one system spread across three machines that talk to each other 24/7:
-
-- **M5 Max MacBook Pro · 128 GB** — heavy compute on demand: model inference, video generation, image generation, training.
-- **M4 Mac mini · 64 GB** — the always-on workhorse. Sits in the closet, runs autonomous agents, hosts the FiaOS web shell, answers Claude prompts on the Max plan for the rest of the mesh to use for free.
-- **Hostinger VPS** — public gateway. Hosts the HQ Dashboard, the Ohm chat agent, marketing sites, MediaMTX streaming, and the cron jobs that pull everything together.
-
-The idea: Apple Silicon is finally fast enough that I don't need a cloud subscription for the things I want to do every day. Build a local-first AI stack — code by voice, drive by text, see through my phone camera, ship orders through a dashboard, run autonomous agents in the closet — and stay useful when the internet goes down. The same stack is airgap-ready, which matters to the law / medical / compliance-sensitive firms I work with through Nice Dreamz LLC.
 
 ---
 
 ## 📱 iPHONE APPS — ON THE APP STORE
 
-The newest chapter: real iPhone apps, built start-to-finish on this stack. **Three are live on the App Store**; the fourth is with Apple.
+[![Song Forge on the App Store](https://img.shields.io/badge/Song_Forge-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929)
+[![RealTime Space on the App Store](https://img.shields.io/badge/RealTime_Space-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788646103)
+[![RealTime AI Cam on the App Store](https://img.shields.io/badge/RealTime_AI_Cam-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6751230739)
 
 | App | What it is | Status |
 |---|---|---|
-| **[RealTime AI Cam](https://github.com/nicedreamzapp/RealTimeAICam)** | Point your camera, it names 601 objects — fully offline, free | ✅ **[Live on the App Store](https://apps.apple.com/us/app/id6751230739)** · Free |
-| **[Song Forge](https://nicedreamzwholesale.com/software/song-forge/)** | Describe a song, get a finished original track in minutes — any genre, sung in any of 19 languages, 10-second jingles to 4-minute songs, rendered on my Macs at home, never stored. 10 free songs, no subscription, no account, no email · [engine repo](https://github.com/nicedreamzapp/song-forge) | ✅ **[Live on the App Store](https://apps.apple.com/us/app/id6788616929)** · Free |
-| **[RealTime Space](https://nicedreamzwholesale.com/software/realtime-space/)** | Fly a real-physics starship through the whole solar system and 8,920 real stars — photoreal, 100× warp, free for 60 days then $0.99 once · [repo](https://github.com/nicedreamzapp/RealTime-Space) | ✅ **[Live on the App Store](https://apps.apple.com/us/app/id6788646103)** · Free |
-| **[Brainforest](https://nicedreamzwholesale.com/software/brainforest/)** | 2,000+ K-4 lessons with a friendly narrator that reads everything aloud, works fully offline, one-time $0.99 — no ads, no tracking, no internet needed | 🔜 **Coming soon** |
-
-Same philosophy as everything else here: on-device where possible, private by default, pay once (or nothing) instead of subscribing forever.
-
----
+| **[Song Forge](https://apps.apple.com/us/app/id6788616929)** | Describe a song, get a finished original. Any genre, 19 languages, rendered on my Macs at home, never stored. 10 free songs, no account, no email. | ✅ Live · Free |
+| **[RealTime AI Cam](https://apps.apple.com/us/app/id6751230739)** | Point your camera, it names 601 objects. Fully offline. | ✅ Live · Free |
+| **[RealTime Space](https://apps.apple.com/us/app/id6788646103)** | Fly a real-physics starship through the solar system and 8,920 real stars. | ✅ Live · Free |
+| **[Brainforest](https://nicedreamzwholesale.com/software/brainforest/)** | 2,000+ K-4 lessons, reads everything aloud, fully offline, one-time $0.99. No ads, no tracking. Built for my daughter. | 🔜 In review with Apple |
 
 ## 🤖 ANDROID APPS — IN REVIEW AT GOOGLE PLAY
 
-The Android side is built and submitted, starting with **Song Forge**. Links land here the day they clear review. Same deal as iPhone: private by default, pay once (or nothing), no subscriptions.
+The Android side is built and submitted, starting with **Song Forge**. Links land here the day they clear review. Same deal: private by default, pay once (or nothing), no subscriptions.
 
 ---
 
-## AIRGAP — A SKILL, NOT A PRODUCT
+## 🆕 JUST SHIPPED
 
-AirGap is my name for the full private-AI build: a complete AI workstation on one Mac, wifi off, nothing leaving the building. It started as a packaged offering; these days I treat it as a capability I keep sharp rather than something I sell. Everything it needs is open source in the repos on this page, so any competent IT person can stand one up without me. That's the point.
-
-If your firm handles data that can't touch the cloud and you want one built and your team trained on it, email [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com). One conversation, no waitlist. [What it looks like →](https://nicedreamzwholesale.com/airgap/)
-
-Reading material on why this matters now: ["The Heppner Ruling, Warner v. Gilbarco, and What Confidential AI Actually Has to Mean"](https://nicedreamzwholesale.com/2026/05/22/the-heppner-ruling-warner-v-gilbarco-and-what-confidential-ai-actually-has-to-mean/) — a federal court just ruled that public-AI work is not privileged.
+**[nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx)** — NVIDIA's [Nemotron Omni](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16) sees, hears, and reasons, but its vision and audio towers had no open runtime for Apple Silicon. So I wrote one. Pure MLX, MIT, **23/23 parity tests** against NVIDIA's PyTorch reference. 67.7 tok/s with an image, 147 tok/s with audio, wifi off. Credit to NVIDIA for the open weights and [yayr](https://huggingface.co/mlx-community/NVIDIA-Nemotron-3-Nano-Omni-30B-A3B-4bit) for the 4-bit conversion.
 
 ---
 
-## THE MESH
+## 🧭 WHAT I'M ACTUALLY BUILDING
 
-### 📡 Always-on agents running across all three nodes
+Most of these repos look standalone. They're not. They're one system spread across three machines that talk to each other 24/7:
+
+- 💻 **M5 Max MacBook Pro · 128 GB** — heavy compute: model inference, video, image, training
+- 🖥️ **M4 Mac mini · 64 GB** — always-on workhorse: autonomous agents, FiaOS web shell, free Claude for the whole mesh
+- ☁️ **Hostinger VPS** — public gateway: HQ Dashboard, the Ohm chat agent, sites, cron
+
+The idea: Apple Silicon is fast enough now that the everyday AI I want doesn't need a cloud subscription. Build local-first, stay useful when the internet goes down. The same stack is airgap-ready, which matters to the law / medical / compliance-sensitive firms I work with through Nice Dreamz LLC.
 
 ```
                           ┌─────────────────────────────┐
@@ -100,488 +60,170 @@ Reading material on why this matters now: ["The Heppner Ruling, Warner v. Gilbar
 ┌──────▼──────────┐         ┌──────────▼──────────────┐     ┌──────────▼────────┐
 │  M5 Max         │         │   Mac mini (always-on)  │     │  VPS (Hostinger)  │
 │  workstation    │◀──SSH──▶│   the workhorse         │◀───▶│   gateway         │
-├─────────────────┤         ├─────────────────────────┤     ├───────────────────┤
-│ • ComfyUI       │         │ • FiaOS web shell       │     │ • HQ Dashboard    │
-│ • MLX server    │         │ • gh-watcher (5m)       │     │ • Ohm chat agent  │
-│ • MakeVideo     │         │ • gh-mail-watcher (10m) │     │ • Marketing Hub   │
-│ • Browser Agent │         │ • lead-watcher (5m)     │     │ • Family Planner  │
-│ • NarrateClaude │         │ • Morning briefing (9a) │     │ • MediaMTX        │
-│ • on-demand     │         │ • mini_claude bridge    │     │ • reddit-agent    │
-│   workloads     │         │   (free Opus for VPS)   │     │ • daily-brain     │
-└─────────────────┘         └─────────────────────────┘     │ • email-triage    │
-                                                            │ • vps-selfreport  │
-                                                            └───────────────────┘
+└─────────────────┘         └─────────────────────────┘     └───────────────────┘
 ```
 
-### What each agent actually does
-
-| Where | Agent | Job |
-|-------|-------|-----|
-| mini | **FiaOS** | Public web shell at [fia.nicedreamzwholesale.com](https://fia.nicedreamzwholesale.com) — PTY terminal + screen + voice through a Cloudflare tunnel. |
-| mini | **gh-watcher** | Auto-discovers all my repos every 5 min. Watches issues, PRs, star milestones, HN mentions. Drafts replies to new issues with local `claude -p` and iMessages me the draft. |
-| mini | **gh-mail-watcher** | Reads GitHub-sender emails, classifies (PAT expiry / security / vuln / repo comment / CI fail / noise), handles autonomously, only pings me when a human is required. |
-| mini | **lead-watcher** | Watches claude-code-local Discussions/Issues for AirGap consulting leads. |
-| mini | **Morning briefing** | 9am daily — pulls HQ state, posts an iMessage business briefing. |
-| mini | **mini_claude bridge** | Lets the VPS call Claude on my Max plan (Opus) for $0 by routing through FiaOS. This is the trick. |
-| VPS | **Ohm** | The only fully LLM-driven agent. Sonnet 4.6 chat at [hq.nicedreamzwholesale.com/ohm](https://hq.nicedreamzwholesale.com/ohm); offloads heavy work to mini via `mini_claude`. |
-| VPS | **HQ Dashboard** | Gunicorn at `:9001` — central command for orders, email, shipping, agents, and Ohm. |
-| VPS | **reddit-agent** | Watches Reddit for brand mentions every 15 min. |
-| VPS | **daily-brain** | 3:30am — reviews all trading systems, generates a 10-question report via mini_claude (free Opus). |
-| VPS | **email-triage** | 6× daily — auto-marks system emails as read, leaves humans for me. |
-| M5 | **agent-rollcall** | Monday 9am — audits all three machines, iMessages me the health summary. |
-| M5/mini | **hq-state pusher** | Every 30s — pushes node state to the VPS dashboard. |
-
-Cost discipline rule across the mesh: if an agent uses paid API, swap it to `mini_claude` (Max plan, $0/call) unless it explicitly needs a non-Claude model.
+Thirteen always-on agents run across those nodes: a GitHub watcher that drafts issue replies with local AI and texts me the draft, a 9am iMessage business briefing, email triage, a Reddit brand watcher, and the trick that powers it all — `mini_claude`, which lets every agent use my Claude Max plan for $0 per call.
 
 ---
 
-## THE TOOLBELT — repos by role in the stack
+## 🔒 AIRGAP — A SKILL, NOT A PRODUCT
 
-| Role | Repo | What it does |
-|------|------|--------------|
-| 🧠 Brain | [claude-code-local](https://github.com/nicedreamzapp/claude-code-local) | Claude Code, 100% on-device. The center of everything. |
-| 🎙️ Voice | [NarrateClaude](https://github.com/nicedreamzapp/NarrateClaude) + Ohm | I talk to it; it answers in my own cloned voice. |
-| 👁️ Eyes | [RealTimeAICam](https://github.com/nicedreamzapp/RealTimeAICam) + [VisionBuilder](https://github.com/nicedreamzapp/VisionBuilder) | iPhone camera that sees 601 objects offline; train new ones from photos I already took. |
-| ✋ Hands | [cinch](https://github.com/nicedreamzapp/cinch) + [studio-record](https://github.com/nicedreamzapp/studio-record) | Real work — shipping orders, recording the screen. |
-| 📱 Remote | [claude-screen-to-phone](https://github.com/nicedreamzapp/claude-screen-to-phone) + [FiaOS](https://github.com/nicedreamzapp/FiaOS) | Drive the Mac from my iPhone via iMessage; or open any browser and remote into the mini at home. |
-| 🌐 Browser | [browser-agent](https://github.com/nicedreamzapp/browser-agent) | Local AI driving Chrome — Shadow DOM, ProseMirror, the whole stack. |
-| 🤖 Body | [CemaniHomesteadRobot](https://github.com/nicedreamzapp/CemaniHomesteadRobot) | The long-arc bet: a Lego-clip-in robot platform that uses the same vision pipeline. |
-| 👨‍👧 Family | [JaneOS / Bloom](https://github.com/nicedreamzapp/JaneOS) | An adaptive 1st-grade tutor I built for my daughter. **Live at [jane.nicedreamzwholesale.com](https://jane.nicedreamzwholesale.com)**. |
+AirGap is my name for the full private-AI build: a complete AI workstation on one Mac, wifi off, nothing leaving the building. It started as a packaged offering; these days I treat it as a capability I keep sharp rather than something I sell. Everything it needs is open source on this page, so any competent IT person can stand one up without me. That's the point.
 
-This isn't a portfolio. It's the toolkit the mesh actually uses every day to run Divine Tribe (since 2013), serve Nice Dreamz consulting clients, and chip away at the robotics work that's the actual point.
+If your firm handles data that can't touch the cloud and you want one built and your team trained on it, email [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com). [What it looks like →](https://nicedreamzwholesale.com/airgap/) · [Why it matters now →](https://nicedreamzwholesale.com/2026/05/22/the-heppner-ruling-warner-v-gilbarco-and-what-confidential-ai-actually-has-to-mean/)
 
 ---
 
-## LIVE ON THE INTERNET RIGHT NOW
+## ⭐ THE FRONT FIVE
 
-Public surfaces of the mesh you can hit from any browser:
-
-| URL | What |
-|-----|------|
-| [hq.nicedreamzwholesale.com](https://hq.nicedreamzwholesale.com) | HQ Dashboard — orders, email, shipping, Ohm chat |
-| [fia.nicedreamzwholesale.com](https://fia.nicedreamzwholesale.com) | FiaOS — full Mac mini in a browser tab |
-| [nicedreamzwholesale.com/airgap](https://nicedreamzwholesale.com/airgap) | AirGap AI — what a full private-AI build looks like |
-| [cdsi.click](https://cdsi.click) | Cannabis Device Safety Institute — standards body site (launch video embedded) |
-| [marijuanaunion.com/marketplace](https://marijuanaunion.com/marketplace) | The Farmstand 3D — WebXR cannabis marketplace |
-| [disclosureday.nicedreamzwholesale.com](https://disclosureday.nicedreamzwholesale.com) | Disclosure Day — SEO + AI chatbot ("D.I.S.C.O.") site |
-
----
-
-## THE FRONT FIVE
-
-> _Sorted by GitHub stars — the most-loved at the top._
+> _Sorted by GitHub stars._
 
 ### [Claude Code Local](https://github.com/nicedreamzapp/claude-code-local) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/claude-code-local/stargazers) [![Forks](https://img.shields.io/github/forks/nicedreamzapp/claude-code-local?style=flat-square&color=58a6ff)](https://github.com/nicedreamzapp/claude-code-local/network/members)
-Run Claude Code 100% on-device with local AI on Apple Silicon. No cloud, no API fees.
-- 3 models to choose from: Gemma 4 31B (fast), Llama 3.3 70B (smartest), Qwen 3.5 122B (biggest)
-- 4 modes: Code, Browser Agent, Narrative (voice), and Phone (iMessage remote control)
-- Custom MLX server with Anthropic-compatible API — swap models with one env var
-- `setup.sh` auto-detects your RAM, picks the right model, and creates a desktop launcher
-- Your code never leaves your Mac — not for inference, not for telemetry, not for anything
+Run Claude Code 100% on-device on Apple Silicon. Three models (Gemma 4 31B / Llama 3.3 70B / Qwen 3.5 122B), four modes (code, browser, voice, phone), Anthropic-compatible MLX server, `setup.sh` picks the right model for your RAM. Your code never leaves your Mac.
 
-`MLX` `Apple Silicon` `Claude Code` `Gemma` `Llama` `Qwen` `Python`
+`MLX` `Apple Silicon` `Claude Code` `Python`
 
----
+### [NarrateClaude + Ohm](https://github.com/nicedreamzapp/NarrateClaude) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/NarrateClaude?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/NarrateClaude/stargazers)
+Talk to your Mac, hear it reply in your own cloned voice. 100% private, works on a plane, and the Ohm web chat brings the same loop to any browser at zero API cost.
 
-### [NarrateClaude + Ohm — voice-first AI](https://github.com/nicedreamzapp/NarrateClaude) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/NarrateClaude?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/NarrateClaude/stargazers)
-Talk to your Mac, hear it reply in your own cloned voice. Now also accessible from any browser, anywhere.
-- NarrateClaude — on-device wake-word + cloned voice + local LLM, 100% private, works on a plane
-- Ohm — the same voice loop wrapped in a private web chat I host on my own infrastructure — type from any browser, hear the reply in my own voice
-- VPS proxies the chat to a self-hosted bridge on a Mac mini at home; Claude on the Max plan answers, audio pipes back to the browser
-- Zero cloud-AI cost, zero paid API calls per message
+`Pocket TTS` `Apple Silicon` `Flask`
 
-`Pocket TTS` `Apple Silicon` `Claude Code Max plan` `Flask` `nginx` `Python`
+### [Browser Agent](https://github.com/nicedreamzapp/browser-agent) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/browser-agent?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/browser-agent/stargazers)
+Local MLX models driving Chrome via DevTools Protocol. Handles what other agents can't: cross-origin iframes, Shadow DOM, ProseMirror. [56-second demo →](https://youtu.be/SIuMNa2k6Wc)
 
----
+`MLX` `Chrome DevTools Protocol` `Local AI`
 
-### [Browser Agent — Apple Silicon browser control with no cloud](https://github.com/nicedreamzapp/browser-agent) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/browser-agent?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/browser-agent/stargazers)
-A local browser-control agent powered by MLX + Chrome DevTools Protocol.
-- Handles the cases other agents can't: cross-origin iframes, Shadow DOM, ProseMirror editors
-- Inference via local MLX models — zero cloud calls, no rate limits, no API keys
-- Pairs with Claude Code Local for fully on-device automation pipelines
+### [RealTimeAICam](https://github.com/nicedreamzapp/RealTimeAICam) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/RealTimeAICam?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/RealTimeAICam/stargazers)
+The biggest free open-vocabulary detector that fits on an iPhone: 601 classes, OCR, LiDAR depth, all on-device. The seed of the robot's vision stack.
 
-`MLX` `Apple Silicon` `Chrome DevTools Protocol` `Python` `Local AI`
+`YOLOv8` `CoreML` `Swift` `LiDAR`
 
-<a href="https://youtu.be/SIuMNa2k6Wc"><img src="https://img.youtube.com/vi/SIuMNa2k6Wc/maxresdefault.jpg" width="480" alt="▶ Watch the 56-second demo"></a>
+### [Claude → Phone](https://github.com/nicedreamzapp/claude-screen-to-phone) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-screen-to-phone?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/claude-screen-to-phone/stargazers)
+Control Claude Code from your iPhone via iMessage. Commands by text; screenshots, recordings, and YES / NO / YES_TO_ALL approval buttons come back.
+
+`iMessage` `AppleScript` `macOS Automation`
 
 ---
 
-### [RealTimeAICam — 601 objects on your phone, fully offline](https://github.com/nicedreamzapp/RealTimeAICam) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/RealTimeAICam?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/RealTimeAICam/stargazers)
-The biggest free open-vocabulary detector I could fit on an iPhone — 601 classes, OCR, and LiDAR depth, all running on-device.
-- Open YOLOv8 weights converted to CoreML, no subscription, no telemetry
-- Pairs with the camera and LiDAR sensors directly — depth-aware bounding boxes
-- The seed of the vision stack I'm pulling into the CemaniHomesteadRobot project
+## 🔧 THE DAILY DRIVERS
 
-`YOLOv8` `CoreML` `Swift` `iOS` `LiDAR`
-
----
-
-### [Claude → Phone (iMessage remote)](https://github.com/nicedreamzapp/claude-screen-to-phone) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-screen-to-phone?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/claude-screen-to-phone/stargazers)
-Control Claude Code from your iPhone via iMessage. Driver-friendly. Doctor-friendly. Walking-the-dog-friendly.
-- Send commands by text, get back screenshots, screen recordings, and produced videos automatically
-- Hooks into Claude Code on the Mac, returns multimodal output to your phone
-- Approve/deny prompts arrive as YES / NO / YES_TO_ALL message buttons
-
-`iMessage` `AppleScript` `Claude Code` `macOS Automation` `Python`
+| | Repo | One line |
+|---|---|---|
+| 📦 | **[Cinch](https://github.com/nicedreamzapp/cinch)** | One-page WooCommerce shipping dashboard. Four seconds per order, down from ninety. The tool that pays for everything else. |
+| 🌐 | **[FiaOS](https://github.com/nicedreamzapp/FiaOS)** | The Mac mini in a browser tab: live desktop, real PTY shell, voice. The bridge that gives the whole mesh free Claude. |
+| 🎥 | **[studio-record](https://github.com/nicedreamzapp/studio-record)** | Screen + facecam recorder with a local HTTP API, so Claude can record itself working. |
+| 🛟 | **[claude-failover](https://github.com/nicedreamzapp/claude-failover)** | One command and your `claude -p` agents keep running on a local MLX model when the cloud is down. |
+| 🎬 | **[story-forge](https://github.com/nicedreamzapp/story-forge)** | A 4-minute animated film, end to end, on one laptop. No cloud. |
 
 ---
 
-## THE DAILY DRIVERS
-
-These aren't the top of the star chart, but they're the ones the mesh actually runs every day.
-
-### [Cinch — one-page WooCommerce shipping dashboard](https://github.com/nicedreamzapp/cinch)
-The tool that pays for everything else. Built it for myself after ten years of fighting WordPress, and my partner watched me use it and asked "why aren't you selling that?"
-- Orders from every WooCommerce store I own, merged into a single feed
-- USPS / UPS / FedEx rates pre-loaded on every order; cheapest is highlighted
-- Same-customer orders auto-merge into one card; multi-box shipping with one click
-- Fraud risk flags with the actual reasons listed inline
-- One-tap thermal print — direct from dashboard to label printer, no PDFs
-- End-of-day USPS SCAN manifest with one button
-- In a good run: four seconds per order. Down from a minute and a half.
-- Open-source, self-hosted, your VPS, your WooCommerce keys, your EasyPost account. No SaaS in the middle.
-
-`Flask` `WooCommerce REST` `EasyPost API` `Python` `vanilla JS`
-
----
-
-### [FiaOS — your Mac mini, in a browser tab](https://github.com/nicedreamzapp/FiaOS) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/FiaOS?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/FiaOS/stargazers)
-Open any browser. You're now driving the Mac mini at home — screen, keyboard, mouse, voice.
-- Live remote desktop + a real PTY shell (Claude Code, vim, top — anything you'd run in Terminal)
-- On-device voice loop with a cloned warm voice for the responses
-- Self-hosted via Cloudflare Tunnel — public URL, zero VPS cost, all the compute on Apple Silicon
-- Auto-starts on boot, auto-restarts on crash, runs as a permanent service
-- It's the bridge the VPS uses to call `mini_claude` — the trick that gives every other agent free Opus access
-
-`Python` `WebSockets` `Cloudflare Tunnel` `PTY` `Apple Silicon`
-
----
-
-### [studio-record — screen+facecam with a local HTTP API](https://github.com/nicedreamzapp/studio-record) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/studio-record?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/studio-record/stargazers)
-macOS screen + facecam recorder with virtual backgrounds and a local HTTP API.
-- Pairs with Claude Code via the API on `localhost:17494` — Claude can record itself working
-- Virtual backgrounds without OBS or third-party plugins
-- Outputs ready-to-edit MP4 / WebM, no transcoding step
-
-`Swift` `AVFoundation` `macOS` `HTTP API` `Claude Code`
-
----
-
-## THE LONG-ARC BET
+## 🤖 THE LONG-ARC BET
 
 ### [Cemani Homestead Robot](https://github.com/nicedreamzapp/CemaniHomesteadRobot) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/CemaniHomesteadRobot?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/CemaniHomesteadRobot/stargazers)
-Started with a simple problem: protecting my chickens from predators. Built a 1 kW autonomous tank robot that you text from your phone.
-- Tank drive chassis with Xbox controller override + text-command autonomous modes
-- YOLOv8 601-class object detection on Jetson Orin Nano (same vision base as RealTimeAICam)
-- Dual PTZ ONVIF cameras with depth overlay + 3D LIDAR mapping
-- Full hardware postmortem after a real-world testing injury — Xbox-controller-first safety architecture, 20 failure points documented and fixed
-- Pulls a cart of firewood. Actually.
-
-The honest goal: turn this into a Lego-clip-in modular robotics kit where the same vision + voice + local-AI brain I've built for the desk runs on the robot too.
-
-https://github.com/user-attachments/assets/6a05e239-ce66-46ee-b951-474730370bfe
+Started with protecting my chickens from predators. Now a 1 kW autonomous tank robot you text from your phone: 601-class vision on a Jetson, dual PTZ cameras, 3D LIDAR, and it pulls a cart of firewood. Actually. The honest goal: a Lego-clip-in modular robotics kit running the same local-AI brain as the desk. [VisionBuilder](https://github.com/nicedreamzapp/VisionBuilder) trains its eyes from photos on my phone.
 
 <a href="https://youtu.be/NWnGvvdvRik"><img src="https://img.youtube.com/vi/NWnGvvdvRik/maxresdefault.jpg" width="480" alt="▶ Watch the 53-second demo"></a>
 
-`Teensy` `ESP32` `Jetson Orin Nano` `YOLOv8` `TensorRT` `RPLidar` `Modbus` `PTZ ONVIF` `Robotics` `Python` `Node.js`
+`Jetson Orin Nano` `YOLOv8` `Teensy` `RPLidar` `Robotics`
 
 ---
 
-### [VisionBuilder — train your robot's eyes on the phone](https://github.com/nicedreamzapp/VisionBuilder) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/VisionBuilder?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/VisionBuilder/stargazers)
-Roboflow on your phone — for training your own robot. Privately. On-device. With photos you already took.
-- SAM 2.1 segmentation, MobileCLIP 2 embeddings, YOLO 26 export — all running locally on iOS 26
-- Built so I can train new vision classes for CemaniHomesteadRobot without ever uploading frames to a cloud labeling service
-- Honest WIP — shipping in the open
+## 👨‍👧 THE FAMILY PROJECT
 
-`Swift` `iOS 26` `CoreML` `SAM 2.1` `MobileCLIP 2` `YOLO 26`
-
----
-
-## THE FAMILY PROJECT
-
-### [Brainforest — the tutor I built for my daughter, now a real app](https://nicedreamzwholesale.com/software/brainforest/)
-It started as JaneOS / Bloom, a free web tutor I built for one little kid and gave away. It grew up: **Brainforest is now a full iPhone app, in review with Apple.** 2,000+ K-4 lessons with a friendly narrator that reads everything aloud, works fully offline, one-time $0.99. No ads, no tracking, no internet needed.
-
-- Theme-rotating (unicorns, dinosaurs, space, cats, Bluey), kept from day one
-- Reading, phonics, sight words, addition, subtraction, place value, science, social-emotional learning, letter tracing
-- Difficulty climbs as she masters skills, gently drops if she struggles
-- Click-only safe interface: no microphone, no typing, no chat, built parent-first
-- The original free web version ([JaneOS](https://github.com/nicedreamzapp/JaneOS)) is still live at [jane.nicedreamzwholesale.com](https://jane.nicedreamzwholesale.com)
+### [Brainforest](https://nicedreamzwholesale.com/software/brainforest/) — built for my daughter, in review with Apple
+2,000+ K-4 lessons with a friendly narrator that reads everything aloud. Themes she picks (unicorns, dinosaurs, space, cats, Bluey), difficulty that climbs as she masters skills and gently drops when she struggles, click-only kid-safe interface. Fully offline, one-time $0.99, no ads, no tracking, no internet needed.
 
 `iOS` `Fully Offline` `Adaptive Learning` `Kid-Safe`
 
 ---
 
-## RECEIPTS — DOES LOCAL ACTUALLY WORK?
+## 🧾 RECEIPTS — DOES LOCAL ACTUALLY WORK?
 
-### [ds4-three-way — local AI vs cloud, same prompt, one MacBook](https://github.com/nicedreamzapp/ds4-three-way)
-The day Antirez shipped `ds4`, I gave the same prompt to three different AI engines on the same 128 GB MacBook Pro. Local DeepSeek V4 Flash beat cloud Claude on wall-clock time.
+Same prompt, three engines, one MacBook ([ds4-three-way](https://github.com/nicedreamzapp/ds4-three-way)). Local beat the cloud on wall-clock time:
 
-| Engine | Time | Output | Hosted on |
-|---|---:|---:|---|
-| 🐳 DeepSeek V4 Flash (`ds4` local) | 103 s | 3,259 tokens | Apple Silicon GPU |
-| ☁️ Cloud Claude (Max plan) | 192 s | ~3,500 tokens | Anthropic data center |
-| 🟢 Gemma 4 31B (MLX local) | 131 s | 1,992 tokens | Apple Silicon GPU |
-
-Companion to [claude-code-local](https://github.com/nicedreamzapp/claude-code-local).
+| Engine | Time | Hosted on |
+|---|---:|---|
+| 🐳 DeepSeek V4 Flash (`ds4` local) | **103 s** | Apple Silicon GPU |
+| ☁️ Cloud Claude (Max plan) | 192 s | Anthropic data center |
+| 🟢 Gemma 4 31B (MLX local) | 131 s | Apple Silicon GPU |
 
 ---
 
-## INTERNAL BUILDS (NO PUBLIC REPO)
+## 🛒 THE STORES
 
-**HQ Dashboard** — Central command center at [hq.nicedreamzwholesale.com](https://hq.nicedreamzwholesale.com). Email triage across 4 Gmail accounts, real-time WooCommerce order monitoring, full shipping system with USPS/UPS/FedEx rates + one-click label purchase + thermal printing, eBay listing management, 2FA / rate-limited / WSGI hardened. Hosts Ohm, the LLM-driven chat agent. `Python` `Flask` `Gunicorn` `EasyPost API` `WooCommerce API` `Gmail API` `Anthropic Sonnet` `nginx`
-
-**Ohm — the chat agent that bridges the mesh** — Sonnet 4.6 web chat at hq/ohm. When Ohm needs heavy work done, it tools out to `mini_claude(prompt)` → POST to FiaOS `/api/command` → runs `claude -p` on the mini under my keychain → uses Max plan Opus at zero API cost. Tools available: `bash_vps`, `read_file`, `list_dir`, `wc_orders`, `imessage_to_matt`, `add_to_ohm_inbox`, `now_iso`, `mini_claude`. `Python` `Anthropic API` `SSH` `Flask`
-
-**AI Trading System** — Multi-agent autonomous trading with self-improving feedback loop. 6 named agents (Sentinel, Scout, Arb Scanner, Postmortem, Kalshi Sniper, Trade Gate). `daily-brain` on the VPS runs at 3:30am, reviews every trade through Opus (free, via mini_claude), writes lessons learned, feeds them back into the next decision. `Python` `Node.js` `Anthropic Claude` `Coinbase CDP` `Kalshi API`
-
-**AI Customer Chatbot** — Customer support trained on the full Divine Tribe product lineup. Mistral 7B fine-tuned with RLHF + Claude-powered hybrid RAG/CAG. Knows 134 products, recommends by use case. `Mistral 7B` `RLHF` `Claude` `Flask` `WooCommerce`
+[Divine Tribe](https://ineedhemp.com) (vaporizer hardware, American-owned since 2013) plus [three more stores](https://marijuanaunion.com) — 140+ products, 5,000+ units shipped, all automated by the mesh above. Divine Tribe pays the bills; everything else is downstream.
 
 ---
 
-## E-COMMERCE EMPIRE
-
-4 stores, 140+ products, 5,000+ units shipped. All automated.
-
-| Site | What It Is |
-|------|-----------|
-| [ineedhemp.com](https://ineedhemp.com) | Divine Tribe vaporizers — American-owned since 2013 |
-| [nicedreamzwholesale.com/software](https://nicedreamzwholesale.com/software/) | Software projects — open-source tools, AI agents, builds |
-| [tribeseedbank.com](https://tribeseedbank.com) | Seed bank |
-| [marijuanaunion.com](https://marijuanaunion.com) | Community & marketing hub |
-
-Every store has: SEO-optimized product pages, structured data schema, automated order processing, AI chatbot support.
-
----
-
-## LAB NOTEBOOK
-
-> _Smaller builds, research experiments, and "I wonder if this works" projects._
-
-<table>
-<tr>
-<td width="50%" align="center">
-
-### [BitcoinPredictor](https://github.com/nicedreamzapp/BitcoinPredictor)
-**Real-time Bitcoin Trading with AI**
-
-Live prices · ML predictions · Trading signals · Web dashboard
-
-<img src="https://raw.githubusercontent.com/nicedreamzapp/BitcoinPredictor/refs/heads/main/BitTraderUiScreen.png" width="300">
-
-`Bitcoin` `Trading` `AI` `WebSockets`
-
-</td>
-<td width="50%" align="center">
-
-### [Family Planner](https://github.com/nicedreamzapp/Family-Planner)
-**Skylight-Inspired Family Dashboard**
-
-Voice control · OCR scanning · AI assistant · Runs on old tablets
-
-<img src="https://raw.githubusercontent.com/nicedreamzapp/Family-Planner/main/screenshot.png" width="300">
-
-`Dashboard` `Voice Control` `OCR`
-
-</td>
-</tr>
-<tr>
-<td width="50%" align="center">
-
-### [SpeakAnywhere](https://github.com/nicedreamzapp/SpeakAnywhere)
-**Voice Control for Your Computer**
-
-Whisper-powered · Works anywhere on desktop · Just speak
-
-`Whisper` `Voice` `Accessibility` `Python`
-
-</td>
-<td width="50%" align="center">
-
-### [Parkinson's Vulnerability Predictor](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor)
-**ML for Parkinson's Disease Research**
-
-100% accuracy on test set · 65,000+ cells · 20-gene signature
-
-<img src="https://raw.githubusercontent.com/nicedreamzapp/parkinsons-vulnerability-predictor/main/figures/validation/cross_dataset_vulnerability_comparison.png" width="300">
-
-<a href="https://youtu.be/bC4hgeHS9cg"><img src="https://img.youtube.com/vi/bC4hgeHS9cg/maxresdefault.jpg" width="480" alt="▶ Watch the 64-second demo — narrated walkthrough of the meta-analysis"></a>
-
-`Machine Learning` `Medical` `Research`
-
-</td>
-</tr>
-<tr>
-<td width="50%" align="center">
-
-### [CogVideoX-Mac-Setup](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup)
-**AI Video Generation on Apple Silicon**
-
-CogVideoX-5B · M4 Pro · 4-second videos in 18 minutes
-
-https://github.com/user-attachments/assets/f756588c-2bfa-4a37-af1d-1577b85fd01a
-
-`AI Video` `Apple Silicon` `Diffusion`
-
-</td>
-<td width="50%" align="center">
-
-### [RealTime Fidget](https://github.com/nicedreamzapp/RealTime-Fidget)
-**Photoreal Solar System for iOS**
-
-Three.js + WKWebView · NASA Blue Marble · ACES tonemapping · 60 fps
-
-`Swift` `Three.js` `WebGL` `iOS`
-
-</td>
-</tr>
-<tr>
-<td width="50%" align="center">
-
-### [song-forge](https://github.com/nicedreamzapp/song-forge)
-**Local AI Music Generator**
-
-ACE-Step + Gemma + seed-vc voice swap · Fully on-device · No cloud APIs
-
-`AI Music` `Apple Silicon` `MLX` `seed-vc`
-
-</td>
-<td width="50%" align="center">
-
-### [dan-aquatic-ecology](https://github.com/nicedreamzapp/dan-aquatic-ecology)
-**HSU Master's Thesis project — Aquatic Ecology**
-
-[Live site ↗](https://nicedreamzapp.github.io/dan-aquatic-ecology/) · [▶ 1-min video](https://youtu.be/clXORLW3_1I) · Built end-to-end with Claude Code in one sitting
-
-`HTML` `SVG` `edge-tts` `Playwright` `ffmpeg`
-
-</td>
-</tr>
-<tr>
-<td width="50%" align="center">
-
-### [The Farmstand 3D](https://github.com/nicedreamzapp/the-farmstand-3d)
-**Immersive WebXR Cannabis Marketplace**
-
-A-Frame · Live at marijuanaunion.com/marketplace · Walk around in your browser
-
-`WebXR` `A-Frame` `Three.js` `WooCommerce`
-
-</td>
-<td width="50%" align="center">
-
-### [DisclosureDay](https://github.com/nicedreamzapp/DisclosureDay)
-**SEO + AI chatbot site for the UFO film**
-
-42+ pages · "D.I.S.C.O." AI chatbot · Live at disclosureday.nicedreamzwholesale.com
-
-`SEO` `AI Chatbot` `Web`
-
-</td>
-</tr>
-<tr>
-<td width="50%" align="center">
-
-### [MattPaint](https://github.com/nicedreamzapp/MattPaint)
-**MS Paint for the Web**
-
-Pixel-perfect clone · Zero dependencies · Pure vanilla JS
-
-<img src="https://raw.githubusercontent.com/nicedreamzapp/MattPaint/main/screenshot.png" width="300">
-
-`JavaScript` `Canvas` `Web App`
-
-</td>
-<td width="50%" align="center">
-
-### [Heat-N-Clean Glass Oven](https://github.com/nicedreamzapp/Heat-N-Clean-Glass-Oven)
-**Automated Glass Cleaning Kiln**
-
-Custom built · Temperature controlled · Product design + CAD files
-
-`Hardware` `3D Design` `Automation`
-
-</td>
-</tr>
-<tr>
-<td width="50%" align="center">
-
-### [claude-failover](https://github.com/nicedreamzapp/claude-failover)
-**Backup Brain for Claude Code**
-
-One command and your `claude -p` agents keep running on a local MLX model when Max hits its limit. Default Claude, local only when needed.
-
-`MLX` `Claude Code` `Failover` `Python`
-
-</td>
-<td width="50%" align="center">
-
-### [story-forge](https://github.com/nicedreamzapp/story-forge)
-**Local Generative Cinema**
-
-A 4-minute animated film, end to end, on one laptop. Flux + Wan + Piper + ACE-Step + ffmpeg. No cloud.
-
-`Flux` `Wan` `Piper` `ACE-Step` `ffmpeg`
-
-</td>
-</tr>
-<tr>
-<td width="50%" align="center">
-
-### [x-cleanup-agent](https://github.com/nicedreamzapp/x-cleanup-agent)
-**X Follow-List Cleanup Agent**
-
-395 dormant unfollows in 40 minutes, driven through your own logged-in browser. No scraper, no API key, no stored credentials.
-
-`Claude Code` `AppleScript` `Brave` `Automation`
-
-</td>
-<td width="50%" align="center">
-
-### [job-search-agent](https://github.com/nicedreamzapp/job-search-agent)
-**Daily AI Job-Scoring Agent**
-
-Scores roles across 50+ companies via Ashby, Greenhouse, and Lever, then drafts a 200-word pitch for the top matches. Windows build too.
-
-`Python` `Local AI` `Ashby` `Greenhouse` `Lever`
-
-</td>
-</tr>
-</table>
+<details>
+<summary><b>🗂️ LAB NOTEBOOK — everything else</b> <i>(click to open: experiments, one-offs, internal builds)</i></summary>
+
+<br>
+
+| Project | What it is |
+|---|---|
+| [song-forge](https://github.com/nicedreamzapp/song-forge) | The local AI music engine behind the Song Forge app: ACE-Step + Gemma + seed-vc, fully on-device |
+| [Parkinson's Vulnerability Predictor](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor) | ML on 65,000+ cells, 20-gene signature · [1-min video](https://youtu.be/bC4hgeHS9cg) |
+| [Family Planner](https://github.com/nicedreamzapp/Family-Planner) | Skylight-style family dashboard on old tablets: voice, OCR, AI assistant |
+| [SpeakAnywhere](https://github.com/nicedreamzapp/SpeakAnywhere) | Whisper-powered voice control for the desktop |
+| [RealTime Fidget](https://github.com/nicedreamzapp/RealTime-Fidget) | The photoreal solar system that grew into the RealTime Space app |
+| [CogVideoX-Mac-Setup](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup) | AI video generation on Apple Silicon |
+| [The Farmstand 3D](https://github.com/nicedreamzapp/the-farmstand-3d) | WebXR marketplace, [live](https://marijuanaunion.com/marketplace) |
+| [MattPaint](https://github.com/nicedreamzapp/MattPaint) | Pixel-perfect MS Paint clone, zero dependencies |
+| [Heat-N-Clean Glass Oven](https://github.com/nicedreamzapp/Heat-N-Clean-Glass-Oven) | Custom temperature-controlled cleaning kiln, CAD included |
+| [x-cleanup-agent](https://github.com/nicedreamzapp/x-cleanup-agent) | 395 dormant unfollows in 40 minutes through your own logged-in browser |
+| [job-search-agent](https://github.com/nicedreamzapp/job-search-agent) | Daily AI job scoring across 50+ companies |
+| [dan-aquatic-ecology](https://github.com/nicedreamzapp/dan-aquatic-ecology) | A friend's HSU thesis site, built end-to-end in one sitting |
+| [DisclosureDay](https://github.com/nicedreamzapp/DisclosureDay) | SEO + chatbot site for the UFO film |
+| [BitcoinPredictor](https://github.com/nicedreamzapp/BitcoinPredictor) | Real-time BTC dashboard with ML signals (trading systems retired 2026) |
+| [JaneOS](https://github.com/nicedreamzapp/JaneOS) | The free web tutor that grew into Brainforest, still live at [jane.nicedreamzwholesale.com](https://jane.nicedreamzwholesale.com) |
+
+**Internal builds (no public repo):** HQ Dashboard (central command: orders, email, shipping, agents), Ohm (the LLM chat agent that bridges the mesh), and an AI customer chatbot trained on the full Divine Tribe lineup.
+
+</details>
 
 ---
 
 <div align="center">
 
-## TECH STACK
+## 🧰 TECH STACK
 
-| Category | Technologies |
-|:---------|:------------|
-| **Languages** | `Python` `Swift` `TypeScript` `JavaScript` `C++` `PHP` |
-| **AI / ML** | `Claude (Opus + Sonnet + Haiku)` `MLX` `Gemma 4 31B` `Llama 3.3 70B` `Qwen 3.5 122B` `Mistral 7B` `YOLOv8` `SAM 2.1` `MobileCLIP 2` `CogVideoX` `Whisper` `CoreML` `Piper TTS` |
-| **APIs** | `WooCommerce` `EasyPost` `Gmail` `Google Search Console` `Coinbase CDP` `Kalshi` `eBay` `Reddit` `LinkedIn` |
-| **Infrastructure** | `nginx` `gunicorn` `PM2` `Let's Encrypt` `UFW` `SSH` `Cloudflare Tunnel` `LaunchAgents` `systemd` `cron` |
-| **Mobile** | `iOS` `Xcode` `Metal` `Apple Silicon` `LiDAR` `iMessage bridge` |
-| **Robotics** | `Arduino` `Teensy` `ESP32` `Jetson Orin Nano` `ONVIF` `RPLidar` `Tank Drive` |
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Swift](https://img.shields.io/badge/Swift-F05138?style=for-the-badge&logo=swift&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Apple Silicon](https://img.shields.io/badge/Apple_Silicon-000000?style=for-the-badge&logo=apple&logoColor=white)
+![MLX](https://img.shields.io/badge/MLX-8b5cf6?style=for-the-badge)
+![Claude](https://img.shields.io/badge/Claude-d97757?style=for-the-badge&logo=anthropic&logoColor=white)
+![CoreML](https://img.shields.io/badge/CoreML-2563eb?style=for-the-badge)
+![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+![nginx](https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
+![Jetson](https://img.shields.io/badge/Jetson_Orin-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
+
+`Gemma` `Llama` `Qwen` `YOLOv8` `SAM 2.1` `Whisper` `Piper TTS` `WooCommerce` `EasyPost` `Cloudflare Tunnel` `Teensy` `ESP32` `RPLidar`
+
+</div>
 
 ---
 
-## WHY THIS EXISTS
+## 🌲 WHY THIS EXISTS
 
 I run [Divine Tribe](https://ineedhemp.com) — vaporizer hardware, since 2013. Cinch ships those orders. Everything else is downstream of paying the bills.
 
-**Nice Dreamz LLC** is the umbrella on top. [AirGap AI](https://nicedreamzwholesale.com/airgap) is the showcase: what a full private-AI build looks like for the kind of firm that can't put its data into a cloud chatbot. It's a capability I maintain, not a product I'm pushing. Every tool above is something I run against real workload in my own business. The three-node mesh is the demo: it's been my daily driver for a year and a half.
+**Nice Dreamz LLC** is the umbrella on top. [AirGap AI](https://nicedreamzwholesale.com/airgap) is the showcase: what a full private-AI build looks like for the kind of firm that can't put its data into a cloud chatbot. It's a capability I maintain, not a product I'm pushing. The three-node mesh is the demo: it's been my daily driver for a year and a half. I'm also building the [Cannabis Device Safety Institute](https://cdsi.click) in parallel, a standards body for cannabis-consumption hardware.
 
-I'm also building out the **[Cannabis Device Safety Institute](https://cdsi.click)** in parallel — a standards body for cannabis-consumption hardware, aiming to be first-in-line when federal research funding lands.
-
-The long arc is the robot. Modular, Lego-clip-in, runs the same local AI stack as my laptop and the mini. That's why the vision pipeline shows up in three places (RealTimeAICam, VisionBuilder, CemaniHomesteadRobot) — same eyes, different bodies.
+The long arc is the robot. Same eyes, different bodies.
 
 Still figuring it out. No investors. No team. One MacBook, one Mac mini, one VPS, and a lot of late nights.
 
 ---
 
+<div align="center">
+
 [ineedhemp.com](https://ineedhemp.com) · [GitHub](https://github.com/nicedreamzapp) · [LinkedIn](https://www.linkedin.com/in/matt-macosko-34708235/)
 
 <sub>Built with code, caffeine, and Claude · Humboldt County, CA</sub>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:8b5cf6,50:2563eb,100:3fb950&height=100&section=footer" width="100%">
 
 </div>
