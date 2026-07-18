@@ -69,16 +69,13 @@ Same philosophy as everything else here: on-device where possible, private by de
 
 ---
 
-## NOW SHIPPING — AIRGAP
+## AIRGAP — A SKILL, NOT A PRODUCT
 
-The commercial side of the local-first stack. Three rungs for three buyers, all running the same open-source `claude-code-local` engine underneath.
+AirGap is my name for the full private-AI build: a complete AI workstation on one Mac, wifi off, nothing leaving the building. It started as a packaged offering; these days I treat it as a capability I keep sharp rather than something I sell. Everything it needs is open source in the repos on this page, so any competent IT person can stand one up without me. That's the point.
 
-| | What it is | Price |
-|---|---|---|
-| 🖥️ **[AirGap Box](https://nicedreamzwholesale.com/airgap-box/)** | Pre-configured Mac mini delivered to your office with the stack + 3 agents installed. 90-min Zoom setup. 30 days support. | **$2,995-$3,995** one-time · waitlist open |
-| 🔒 **[AirGap Foundation](https://nicedreamzwholesale.com/airgap/)** | 14-day fixed-scope deployment for law / medical / compliance-sensitive firms. Custom workflows + written compliance memo. | scoped per firm |
+If your firm handles data that can't touch the cloud and you want one built and your team trained on it, email [info@nicedreamzwholesale.com](mailto:info@nicedreamzwholesale.com). One conversation, no waitlist. [What it looks like →](https://nicedreamzwholesale.com/airgap/)
 
-Reading material on why this exists now: ["The Heppner Ruling, Warner v. Gilbarco, and What Confidential AI Actually Has to Mean"](https://nicedreamzwholesale.com/2026/05/22/the-heppner-ruling-warner-v-gilbarco-and-what-confidential-ai-actually-has-to-mean/) — a federal court just ruled that public-AI work is not privileged. On-device just stopped being optional for privileged work.
+Reading material on why this matters now: ["The Heppner Ruling, Warner v. Gilbarco, and What Confidential AI Actually Has to Mean"](https://nicedreamzwholesale.com/2026/05/22/the-heppner-ruling-warner-v-gilbarco-and-what-confidential-ai-actually-has-to-mean/) — a federal court just ruled that public-AI work is not privileged.
 
 ---
 
@@ -157,7 +154,7 @@ Public surfaces of the mesh you can hit from any browser:
 |-----|------|
 | [hq.nicedreamzwholesale.com](https://hq.nicedreamzwholesale.com) | HQ Dashboard — orders, email, shipping, Ohm chat |
 | [fia.nicedreamzwholesale.com](https://fia.nicedreamzwholesale.com) | FiaOS — full Mac mini in a browser tab |
-| [nicedreamzwholesale.com/airgap](https://nicedreamzwholesale.com/airgap) | AirGap AI — private-AI consulting pilot offer |
+| [nicedreamzwholesale.com/airgap](https://nicedreamzwholesale.com/airgap) | AirGap AI — what a full private-AI build looks like |
 | [cdsi.click](https://cdsi.click) | Cannabis Device Safety Institute — standards body site (launch video embedded) |
 | [marijuanaunion.com/marketplace](https://marijuanaunion.com/marketplace) | The Farmstand 3D — WebXR cannabis marketplace |
 | [disclosureday.nicedreamzwholesale.com](https://disclosureday.nicedreamzwholesale.com) | Disclosure Day — SEO + AI chatbot ("D.I.S.C.O.") site |
@@ -566,7 +563,7 @@ Scores roles across 50+ companies via Ashby, Greenhouse, and Lever, then drafts 
 
 I run [Divine Tribe](https://ineedhemp.com) — vaporizer hardware, since 2013. Cinch ships those orders. Everything else is downstream of paying the bills.
 
-**Nice Dreamz LLC** is the consulting umbrella on top. The public surface is [AirGap AI](https://nicedreamzwholesale.com/airgap) — Private AI / Fractional AI work for law, medical, and compliance-sensitive firms — the kind of clients who can't put their data into a cloud chatbot. Every tool above is either something I use on a real engagement or something I built to find out whether the local-AI approach holds up under real workload. The three-node mesh is the demo: it's been my daily driver for a year and a half.
+**Nice Dreamz LLC** is the umbrella on top. [AirGap AI](https://nicedreamzwholesale.com/airgap) is the showcase: what a full private-AI build looks like for the kind of firm that can't put its data into a cloud chatbot. It's a capability I maintain, not a product I'm pushing. Every tool above is something I run against real workload in my own business. The three-node mesh is the demo: it's been my daily driver for a year and a half.
 
 I'm also building out the **[Cannabis Device Safety Institute](https://cdsi.click)** in parallel — a standards body for cannabis-consumption hardware, aiming to be first-in-line when federal research funding lands.
 
