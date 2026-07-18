@@ -54,7 +54,7 @@ The idea: Apple Silicon is finally fast enough that I don't need a cloud subscri
 
 ---
 
-## 📱 ON THE APP STORE
+## 📱 iPHONE APPS — ON THE APP STORE
 
 The newest chapter: real iPhone apps, built start-to-finish on this stack. **Three are live on the App Store**; the fourth is with Apple.
 
@@ -66,6 +66,12 @@ The newest chapter: real iPhone apps, built start-to-finish on this stack. **Thr
 | **[Brainforest](https://nicedreamzwholesale.com/software/brainforest/)** | 2,000+ K-4 lessons with a friendly narrator that reads everything aloud, works fully offline, one-time $0.99 — no ads, no tracking, no internet needed | 🔜 **Coming soon** |
 
 Same philosophy as everything else here: on-device where possible, private by default, pay once (or nothing) instead of subscribing forever.
+
+---
+
+## 🤖 ANDROID APPS — IN REVIEW AT GOOGLE PLAY
+
+The Android side is built and submitted, starting with **Song Forge**. Links land here the day they clear review. Same deal as iPhone: private by default, pay once (or nothing), no subscriptions.
 
 ---
 
@@ -293,15 +299,16 @@ Roboflow on your phone — for training your own robot. Privately. On-device. Wi
 
 ## THE FAMILY PROJECT
 
-### [JaneOS / Bloom — adaptive learning for one little kid](https://github.com/nicedreamzapp/JaneOS) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/JaneOS?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/JaneOS/stargazers)
-A FREE 1st-grade adaptive learning tutor I built for my daughter — and gave away.
-- Voice-driven and theme-rotating (unicorns, dinosaurs, space, cats, Bluey)
-- Covers reading, phonics, sight words, addition, subtraction, place value, science, social-emotional learning, letter tracing
-- Every question generated fresh by AI — never sees the same one twice
-- Difficulty climbs as she masters skills, gently drops if she struggles
-- Click-only safe interface — no microphone, no typing, no chat — built parent-first
+### [Brainforest — the tutor I built for my daughter, now a real app](https://nicedreamzwholesale.com/software/brainforest/)
+It started as JaneOS / Bloom, a free web tutor I built for one little kid and gave away. It grew up: **Brainforest is now a full iPhone app, in review with Apple.** 2,000+ K-4 lessons with a friendly narrator that reads everything aloud, works fully offline, one-time $0.99. No ads, no tracking, no internet needed.
 
-`Claude API` `Piper TTS` `Flask` `Anthropic` `Adaptive Learning`
+- Theme-rotating (unicorns, dinosaurs, space, cats, Bluey), kept from day one
+- Reading, phonics, sight words, addition, subtraction, place value, science, social-emotional learning, letter tracing
+- Difficulty climbs as she masters skills, gently drops if she struggles
+- Click-only safe interface: no microphone, no typing, no chat, built parent-first
+- The original free web version ([JaneOS](https://github.com/nicedreamzapp/JaneOS)) is still live at [jane.nicedreamzwholesale.com](https://jane.nicedreamzwholesale.com)
+
+`iOS` `Fully Offline` `Adaptive Learning` `Kid-Safe`
 
 ---
 
