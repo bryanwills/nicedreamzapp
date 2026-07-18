@@ -29,7 +29,7 @@
 
 ## 🤖 ANDROID APPS — IN REVIEW AT GOOGLE PLAY
 
-The Android side is built and submitted, starting with **Song Forge**. Links land here the day they clear review. Same deal: private by default, pay once (or nothing), no subscriptions.
+All three apps have Android ports built and submitted: **Song Forge**, **RealTime AI Cam**, and **RealTime Space** are in review at Google Play (July 2026), with the source already public in each repo's `android/` folder. Links land here the day they clear. Same deal: private by default, pay once (or nothing), no subscriptions.
 
 ---
 
