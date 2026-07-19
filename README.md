@@ -1,11 +1,13 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:3fb950,50:2563eb,100:8b5cf6&height=180&section=header&text=MATT%20MACOSKO&fontSize=52&fontColor=ffffff&animation=fadeIn&desc=Nice%20Dreamz%20LLC%20%C2%B7%20Humboldt%20County%2C%20CA&descSize=18&descAlignY=75" width="100%">
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:3fb950,50:2563eb,100:8b5cf6&height=180&section=header&text=MATT%20MACOSKO&fontSize=52&fontColor=ffffff&animation=fadeIn" width="100%">
 
-**A three-node ambient-computing mesh, built on Apple Silicon. Code, curiosity, and the right tools.**
+**Nice Dreamz LLC · Humboldt County, CA**
+
+A three-node ambient-computing mesh, built on Apple Silicon. Code, curiosity, and the right tools.
 
 [![GitHub followers](https://img.shields.io/github/followers/nicedreamzapp?style=for-the-badge&color=236ad3&labelColor=1155ba)](https://github.com/nicedreamzapp)
-[![Repos](https://img.shields.io/badge/dynamic/json?label=Public%20Repos&query=%24.public_repos&url=https%3A%2F%2Fapi.github.com%2Fusers%2Fnicedreamzapp&style=for-the-badge&color=58a6ff&labelColor=388bfd)](https://github.com/nicedreamzapp?tab=repositories)
+[![Repos](https://img.shields.io/badge/Public%20Repos-45-58a6ff?style=for-the-badge&labelColor=388bfd)](https://github.com/nicedreamzapp?tab=repositories)
 [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=for-the-badge&label=claude-code-local&color=f5c542&labelColor=b8860b)](https://github.com/nicedreamzapp/claude-code-local)
 
 ### *"If it takes more than 10 minutes, I automate it. If it needs AI, I build it from scratch."*
