@@ -16,22 +16,18 @@ A three-node ambient-computing mesh, built on Apple Silicon. Code, curiosity, an
 
 ---
 
-## 📱 iPHONE APPS — ON THE APP STORE
+## 📱 APPS — iPHONE & ANDROID
 
-[![Song Forge on the App Store](https://img.shields.io/badge/Song_Forge-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929)
-[![RealTime Space on the App Store](https://img.shields.io/badge/RealTime_Space-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788646103)
-[![RealTime AI Cam on the App Store](https://img.shields.io/badge/RealTime_AI_Cam-Download_Free-0D96F6?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6751230739)
+Every app, one row, both stores. Private by default, pay once (or nothing), no subscriptions.
 
-| App | What it is | Status |
-|---|---|---|
-| **[Song Forge](https://apps.apple.com/us/app/id6788616929)** | Describe a song, get a finished original. Any genre, 19 languages, rendered on my Macs at home, never stored. 10 free songs, no account, no email. | ✅ Live · Free |
-| **[RealTime AI Cam](https://apps.apple.com/us/app/id6751230739)** | Point your camera, it names 601 objects. Fully offline. | ✅ Live · Free |
-| **[RealTime Space](https://apps.apple.com/us/app/id6788646103)** | Fly a real-physics starship through the solar system and 8,920 real stars. | ✅ Live · Free |
-| **[Brainforest](https://nicedreamzwholesale.com/software/brainforest/)** | 2,000+ K-4 lessons, reads everything aloud, fully offline, one-time $0.99. No ads, no tracking. Built for my daughter. | 🔜 In review with Apple |
+| App | What it is | iPhone | Android |
+|---|---|---|---|
+| **Song Forge** | Describe a song, get a finished original. Any genre, 19 languages, rendered on my Macs at home, never stored. 10 free songs, no account, no email. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929) | 🔜 In review |
+| **RealTime AI Cam** | Point your camera, it names 601 objects. Fully offline. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6751230739) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.mattmacosko.realtimeaicam) |
+| **RealTime Space** | Fly a real-physics starship through the solar system and 8,920 real stars. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788646103) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.nicedreamz.realtimespace) |
+| **Brainforest** | 2,000+ K-4 lessons, reads everything aloud, fully offline, one-time $0.99. No ads, no tracking. Built for my daughter. | 🔜 In review | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.brainforest.app) |
 
-## 🤖 ANDROID APPS — IN REVIEW AT GOOGLE PLAY
-
-All three apps have Android ports built and submitted: **Song Forge**, **RealTime AI Cam**, and **RealTime Space** are in review at Google Play (July 2026), with the source already public in each repo's `android/` folder. Links land here the day they clear. Same deal: private by default, pay once (or nothing), no subscriptions.
+Android source ships in each repo's `android/` folder.
 
 ---
 
