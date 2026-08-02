@@ -7,7 +7,8 @@
 A three-node ambient-computing mesh, built on Apple Silicon. Code, curiosity, and the right tools.
 
 [![GitHub followers](https://img.shields.io/github/followers/nicedreamzapp?style=for-the-badge&color=236ad3&labelColor=1155ba)](https://github.com/nicedreamzapp)
-[![Repos](https://img.shields.io/badge/Public%20Repos-45-58a6ff?style=for-the-badge&labelColor=388bfd)](https://github.com/nicedreamzapp?tab=repositories)
+[![Repos](https://img.shields.io/badge/Public%20Repos-34-58a6ff?style=for-the-badge&labelColor=388bfd)](https://github.com/nicedreamzapp?tab=repositories)
+[![App Store downloads](https://img.shields.io/badge/App%20Store%20downloads-1%2C013-0D96F6?style=for-the-badge&labelColor=0a6fbd)](#-app-stats)
 [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=for-the-badge&label=claude-code-local&color=f5c542&labelColor=b8860b)](https://github.com/nicedreamzapp/claude-code-local)
 
 ### *"If it takes more than 10 minutes, I automate it. If it needs AI, I build it from scratch."*
@@ -25,9 +26,25 @@ Every app, one row, both stores. Private by default, pay once (or nothing), no s
 | **Song Forge** | Describe a song, get a finished original. Any genre, 19 languages, rendered on my Macs at home, never stored. 10 free songs, no account, no email. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929) | 🔜 In review |
 | **RealTime AI Cam** | Point your camera, it names 601 objects. Fully offline. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6751230739) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.mattmacosko.realtimeaicam) |
 | **RealTime Space** | Fly a real-physics starship through the solar system and 8,920 real stars. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788646103) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.nicedreamz.realtimespace) |
-| **Brainforest** | 2,000+ K-4 lessons, reads everything aloud, fully offline, one-time $0.99. No ads, no tracking. Built for my daughter. | 🔜 In review | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.brainforest.app) |
+| **Brainforest** | 2,000+ K-4 lessons, reads everything aloud, fully offline, one-time $0.99. No ads, no tracking. Built for my daughter. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788301765) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.brainforest.app) |
 
 Android source ships in each repo's `android/` folder.
+
+---
+
+## 📊 APP STATS
+
+> _Pulled straight from App Store Connect and Play Console on **Aug 2, 2026**. Downloads are first-time downloads, lifetime, no re-downloads or updates counted._
+
+| App | Live since | App Store downloads | Store impressions | Google Play |
+|---|---|---:|---:|---|
+| **RealTime AI Cam** | Aug 2025 | 953 | 10,535 | live since Jul 24, 2026 |
+| **Song Forge** | Jul 2026 | 35 | 1,858 | first review, submitted Jul 29 |
+| **RealTime Space** | Jul 2026 | 14 | 663 | live since Jul 31, 2026 |
+| **Brainforest** | Jul 2026 | 11 | 1,802 | live since Jul 31, 2026 |
+| **Total** | | **1,013** | **14,858** | |
+
+**Review record: 4 of 4 approved on the App Store, 3 of 4 approved on Google Play.** Eight App Store version approvals across the four apps, five of them RealTime AI Cam releases, which converts 15.8% of the people who see its listing into a download. Three of the four apps went live inside the last five weeks, so the Android side is still at zero installs while brand-new listings age in. Song Forge Android is in its first Play review; RealTime Space 1.1 is waiting on Apple.
 
 ---
 
@@ -129,7 +146,7 @@ Started with protecting my chickens from predators. Now a 1 kW autonomous tank r
 
 ## 👨‍👧 THE FAMILY PROJECT
 
-### [Brainforest](https://nicedreamzwholesale.com/software/brainforest/) — built for my daughter, in review with Apple
+### [Brainforest](https://nicedreamzwholesale.com/software/brainforest/) — built for my daughter, live on both stores
 2,000+ K-4 lessons with a friendly narrator that reads everything aloud. Themes she picks (unicorns, dinosaurs, space, cats, Bluey), difficulty that climbs as she masters skills and gently drops when she struggles, click-only kid-safe interface. Fully offline, one-time $0.99, no ads, no tracking, no internet needed.
 
 `iOS` `Fully Offline` `Adaptive Learning` `Kid-Safe`
@@ -165,7 +182,7 @@ Same prompt, three engines, one MacBook ([ds4-three-way](https://github.com/nice
 | [Parkinson's Vulnerability Predictor](https://github.com/nicedreamzapp/parkinsons-vulnerability-predictor) | ML on 65,000+ cells, 20-gene signature · [1-min video](https://youtu.be/bC4hgeHS9cg) |
 | [Family Planner](https://github.com/nicedreamzapp/Family-Planner) | Skylight-style family dashboard on old tablets: voice, OCR, AI assistant |
 | [SpeakAnywhere](https://github.com/nicedreamzapp/SpeakAnywhere) | Whisper-powered voice control for the desktop |
-| [RealTime Fidget](https://github.com/nicedreamzapp/RealTime-Fidget) | The photoreal solar system that grew into the RealTime Space app |
+| [RealTime Space](https://github.com/nicedreamzapp/RealTime-Space) | The photoreal solar system engine behind the RealTime Space app, iOS and Android in one repo |
 | [CogVideoX-Mac-Setup](https://github.com/nicedreamzapp/CogVideoX-Mac-Setup) | AI video generation on Apple Silicon |
 | [The Farmstand 3D](https://github.com/nicedreamzapp/the-farmstand-3d) | WebXR marketplace, [live](https://marijuanaunion.com/marketplace) |
 | [MattPaint](https://github.com/nicedreamzapp/MattPaint) | Pixel-perfect MS Paint clone, zero dependencies |
@@ -175,7 +192,7 @@ Same prompt, three engines, one MacBook ([ds4-three-way](https://github.com/nice
 | [dan-aquatic-ecology](https://github.com/nicedreamzapp/dan-aquatic-ecology) | A friend's HSU thesis site, built end-to-end in one sitting |
 | [DisclosureDay](https://github.com/nicedreamzapp/DisclosureDay) | SEO + chatbot site for the UFO film |
 | [BitcoinPredictor](https://github.com/nicedreamzapp/BitcoinPredictor) | Real-time BTC dashboard with ML signals (trading systems retired 2026) |
-| [JaneOS](https://github.com/nicedreamzapp/JaneOS) | The free web tutor that grew into Brainforest, still live at [jane.nicedreamzwholesale.com](https://jane.nicedreamzwholesale.com) |
+| [JaneOS](https://github.com/nicedreamzapp/JaneOS) | The free web tutor that grew into Brainforest |
 
 **Internal builds (no public repo):** HQ Dashboard (central command: orders, email, shipping, agents), Ohm (the LLM chat agent that bridges the mesh), and an AI customer chatbot trained on the full Divine Tribe lineup.
 
