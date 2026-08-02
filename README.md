@@ -7,7 +7,7 @@
 A three-node ambient-computing mesh, built on Apple Silicon. Code, curiosity, and the right tools.
 
 [![GitHub followers](https://img.shields.io/github/followers/nicedreamzapp?style=for-the-badge&color=236ad3&labelColor=1155ba)](https://github.com/nicedreamzapp)
-[![Repos](https://img.shields.io/badge/Public%20Repos-34-58a6ff?style=for-the-badge&labelColor=388bfd)](https://github.com/nicedreamzapp?tab=repositories)
+[![Repos](https://img.shields.io/badge/Public%20Repos-35-58a6ff?style=for-the-badge&labelColor=388bfd)](https://github.com/nicedreamzapp?tab=repositories)
 [![App Store downloads](https://img.shields.io/badge/App%20Store%20downloads-1%2C013-0D96F6?style=for-the-badge&labelColor=0a6fbd)](#-app-stats)
 [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=for-the-badge&label=claude-code-local&color=f5c542&labelColor=b8860b)](https://github.com/nicedreamzapp/claude-code-local)
 
