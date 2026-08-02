@@ -7,7 +7,7 @@
 A three-node ambient-computing mesh, built on Apple Silicon. Code, curiosity, and the right tools.
 
 [![GitHub followers](https://img.shields.io/github/followers/nicedreamzapp?style=for-the-badge&color=236ad3&labelColor=1155ba)](https://github.com/nicedreamzapp)
-[![Repos](https://img.shields.io/badge/Public%20Repos-35-58a6ff?style=for-the-badge&labelColor=388bfd)](https://github.com/nicedreamzapp?tab=repositories)
+[![Repos](https://img.shields.io/badge/Public%20Repos-36-58a6ff?style=for-the-badge&labelColor=388bfd)](https://github.com/nicedreamzapp?tab=repositories)
 [![App Store downloads](https://img.shields.io/badge/App%20Store%20downloads-1%2C013-0D96F6?style=for-the-badge&labelColor=0a6fbd)](#-app-stats)
 [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=for-the-badge&label=claude-code-local&color=f5c542&labelColor=b8860b)](https://github.com/nicedreamzapp/claude-code-local)
 
@@ -147,7 +147,7 @@ Started with protecting my chickens from predators. Now a 1 kW autonomous tank r
 ## 👨‍👧 THE FAMILY PROJECT
 
 ### [Brainforest](https://nicedreamzwholesale.com/software/brainforest/) — built for my daughter, live on both stores
-2,000+ K-4 lessons with a friendly narrator that reads everything aloud. Themes she picks (unicorns, dinosaurs, space, cats, Bluey), difficulty that climbs as she masters skills and gently drops when she struggles, click-only kid-safe interface. Fully offline, one-time $0.99, no ads, no tracking, no internet needed.
+2,000+ K-4 lessons with a friendly narrator that reads everything aloud. Themes she picks (unicorns, dinosaurs, space, cats, Bluey), difficulty that climbs as she masters skills and gently drops when she struggles, click-only kid-safe interface. Fully offline, one-time $0.99, no ads, no tracking, no internet needed. Source is open: [brainforest-app](https://github.com/nicedreamzapp/brainforest-app), iOS and Android in one repo.
 
 `iOS` `Fully Offline` `Adaptive Learning` `Kid-Safe`
 
