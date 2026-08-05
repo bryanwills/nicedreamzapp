@@ -23,7 +23,7 @@ Every app, one row, both stores. Private by default, pay once (or nothing), no s
 
 | App | What it is | iPhone | Android |
 |---|---|---|---|
-| **Song Forge** | Describe a song, get a finished original. Any genre, 19 languages, rendered on my Macs at home, never stored. 10 free songs, no account, no email. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929) | 🔜 In review |
+| **Song Forge** | Describe a song, get a finished original. Any genre, 19 languages, rendered on my Macs at home, never stored. 10 free songs, no account, no email. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.nicedreamz.ownatune) |
 | **RealTime AI Cam** | Point your camera, it names 601 objects. Fully offline. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6751230739) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.mattmacosko.realtimeaicam) |
 | **RealTime Space** | Fly a real-physics starship through the solar system and 8,920 real stars. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788646103) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.nicedreamz.realtimespace) |
 | **Brainforest** | 2,000+ K-4 lessons, reads everything aloud, fully offline, one-time $0.99. No ads, no tracking. Built for my daughter. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788301765) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.brainforest.app) |
@@ -39,12 +39,12 @@ Android source ships in each repo's `android/` folder.
 | App | Live since | App Store downloads | Store impressions | Google Play |
 |---|---|---:|---:|---|
 | **RealTime AI Cam** | Aug 2025 | 953 | 10,535 | live since Jul 24, 2026 |
-| **Song Forge** | Jul 2026 | 35 | 1,858 | first review, submitted Jul 29 |
+| **Song Forge** | Jul 2026 | 35 | 1,858 | live since Aug 2026 |
 | **RealTime Space** | Jul 2026 | 14 | 663 | live since Jul 31, 2026 |
 | **Brainforest** | Jul 2026 | 11 | 1,802 | live since Jul 31, 2026 |
 | **Total** | | **1,013** | **14,858** | |
 
-**Review record: 4 of 4 approved on the App Store, 3 of 4 approved on Google Play.** Eight App Store version approvals across the four apps, five of them RealTime AI Cam releases, which converts 15.8% of the people who see its listing into a download. Three of the four apps went live inside the last five weeks, so the Android side is still at zero installs while brand-new listings age in. Song Forge Android is in its first Play review; RealTime Space 1.1 is waiting on Apple.
+**Review record: 4 of 4 approved on the App Store, 4 of 4 approved on Google Play.** Eight App Store version approvals across the four apps, five of them RealTime AI Cam releases, which converts 15.8% of the people who see its listing into a download. Three of the four apps went live inside the last five weeks, so the Android side is still at zero installs while brand-new listings age in. RealTime Space 1.1 is waiting on Apple.
 
 ---
 
