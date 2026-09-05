@@ -111,6 +111,11 @@ Local MLX models driving Chrome via DevTools Protocol. Handles what other agents
 
 `MLX` `Chrome DevTools Protocol` `Local AI`
 
+### [Browser Broker](https://github.com/nicedreamzapp/browser-broker) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/browser-broker?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/browser-broker/stargazers)
+One logged-in browser, many agents, nobody fights. Leases tabs to agents in an off-screen window that still renders — hidden, not headless, with your real logins. ~300 lines, one dependency.
+
+`Chrome DevTools Protocol` `Multi-agent` `Local AI`
+
 ### [RealTimeAICam](https://github.com/nicedreamzapp/RealTimeAICam) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/RealTimeAICam?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/RealTimeAICam/stargazers)
 The biggest free open-vocabulary detector that fits on an iPhone: 601 classes, OCR, LiDAR depth, all on-device. The seed of the robot's vision stack.
 
