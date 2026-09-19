@@ -8,7 +8,7 @@ A three-node ambient-computing mesh, built on Apple Silicon. Code, curiosity, an
 
 [![GitHub followers](https://img.shields.io/github/followers/nicedreamzapp?style=for-the-badge&color=236ad3&labelColor=1155ba)](https://github.com/nicedreamzapp)
 [![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fnicedreamzapp&query=%24.public_repos&label=Public%20Repos&color=58a6ff&labelColor=388bfd&style=for-the-badge)](https://github.com/nicedreamzapp?tab=repositories)
-[![App Store downloads](https://img.shields.io/badge/App%20Store%20downloads-1%2C013-0D96F6?style=for-the-badge&labelColor=0a6fbd)](#-app-stats)
+[![App Store downloads](https://img.shields.io/badge/App%20Store%20downloads-1%2C386-0D96F6?style=for-the-badge&labelColor=0a6fbd)](#-app-stats)
 [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=for-the-badge&label=claude-code-local&color=f5c542&labelColor=b8860b)](https://github.com/nicedreamzapp/claude-code-local)
 
 ### *"If it takes more than 10 minutes, I automate it. If it needs AI, I build it from scratch."*
@@ -25,7 +25,7 @@ A three-node ambient-computing mesh, built on Apple Silicon. Code, curiosity, an
 - **Upstream in Apple's MLX**: [Muse Glimmer (Meta) text model support](https://github.com/ml-explore/mlx-lm/pull/1710) merged into `ml-explore/mlx-lm` (+302 lines). Thanks to [@zcbenz](https://github.com/zcbenz) for the review and merge.
 - **[nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx)**: first open Apple Silicon runtime for NVIDIA Nemotron Omni's vision and audio towers, **23/23 parity tests** against NVIDIA's PyTorch reference.
 - **[Agent-12](https://github.com/nicedreamzapp/agent12)**: a filesystem-judged local agent leaderboard, independently reproduced by [@galashko](https://github.com/galashko).
-- **Shipped apps**: 4 apps live on both the App Store and Google Play (Hive Strike live on Play, in App Store review), 1,000+ App Store downloads.
+- **Shipped apps**: 4 apps live on both the App Store and Google Play (Hive Strike live on Play, in App Store review), 1,386 App Store downloads and 133 Google Play installs.
 
 ---
 
@@ -48,17 +48,18 @@ Android source ships in each repo's `android/` folder.
 
 ## 📊 APP STATS
 
-> _Pulled straight from App Store Connect and Play Console on **Aug 2, 2026**. Downloads are first-time downloads, lifetime, no re-downloads or updates counted._
+> _Refreshed **Sep 19, 2026**. App Store numbers are lifetime first-time downloads from Apple's sales reports (through Sep 17), no re-downloads or updates counted. Google Play numbers are the current installed audience from Play Console._
 
-| App | Live since | App Store downloads | Store impressions | Google Play |
-|---|---|---:|---:|---|
-| **RealTime AI Cam** | Aug 2025 | 953 | 10,535 | live since Jul 24, 2026 |
-| **Song Forge** | Jul 2026 | 35 | 1,858 | live since Aug 2026 |
-| **RealTime Space** | Jul 2026 | 14 | 663 | live since Jul 31, 2026 |
-| **Brainforest** | Jul 2026 | 11 | 1,802 | live since Jul 31, 2026 |
-| **Total** | | **1,013** | **14,858** | |
+| App | Live since | App Store downloads | Google Play installed |
+|---|---|---:|---:|
+| **RealTime AI Cam** | Aug 2025 | 1,077 | 81 |
+| **Song Forge** | Jul 2026 | 126 | 34 |
+| **RealTime Space** | Jul 2026 | 125 | 14 |
+| **Brainforest** | Jul 2026 | 58 | 4 |
+| **Hive Strike** | Sep 2026 | in review | 0 (just launched) |
+| **Total** | | **1,386** | **133** |
 
-**Review record: 4 of 4 approved on the App Store, 4 of 4 approved on Google Play.** Eight App Store version approvals across the four apps, five of them RealTime AI Cam releases, which converts 15.8% of the people who see its listing into a download. Three of the four apps went live inside the last five weeks, so the Android side is still at zero installs while brand-new listings age in. RealTime Space 1.1 is waiting on Apple.
+**Review record: every app approved on both stores.** Four of four on the App Store and five of five on Google Play; Hive Strike 1.4.1 is waiting on Apple's review. Song Forge and RealTime Space have each gone from about a dozen App Store downloads to 125+ since August.
 
 ---
 
