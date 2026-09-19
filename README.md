@@ -112,7 +112,7 @@ If your firm handles data that can't touch the cloud and you want one built and 
 > _Sorted by GitHub stars._
 
 ### [Claude Code Local](https://github.com/nicedreamzapp/claude-code-local) &nbsp; [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=flat-square&color=f5c542)](https://github.com/nicedreamzapp/claude-code-local/stargazers) [![Forks](https://img.shields.io/github/forks/nicedreamzapp/claude-code-local?style=flat-square&color=58a6ff)](https://github.com/nicedreamzapp/claude-code-local/network/members)
-Run Claude Code 100% on-device on Apple Silicon. Three models (Gemma 4 31B / Llama 3.3 70B / Qwen 3.5 122B), four modes (code, browser, voice, phone), Anthropic-compatible MLX server, `setup.sh` picks the right model for your RAM. Your code never leaves your Mac.
+Run Claude Code 100% on-device on Apple Silicon. Current lineup led by Qwen 3.8 27B and Gemma 4 31B, four modes (code, browser, voice, phone), Anthropic-compatible MLX server, `setup.sh` picks the right model for your RAM. Your code never leaves your Mac.
 
 `MLX` `Apple Silicon` `Claude Code` `Python`
 
@@ -177,13 +177,14 @@ Started with protecting my chickens from predators. Now a 1 kW autonomous tank r
 
 ## 🧾 RECEIPTS — DOES LOCAL ACTUALLY WORK?
 
-Same prompt, three engines, one MacBook ([ds4-three-way](https://github.com/nicedreamzapp/ds4-three-way)). Local beat the cloud on wall-clock time:
+Four real jobs in four real browser tabs at once, each answer checked by script, no AI judge (Sep 16, 2026, M5 Max, [browser-agent](https://github.com/nicedreamzapp/browser-agent) + [browser-broker](https://github.com/nicedreamzapp/browser-broker)):
 
-| Engine | Time | Hosted on |
-|---|---:|---|
-| 🐳 DeepSeek V4 Flash (`ds4` local) | **103 s** | Apple Silicon GPU |
-| ☁️ Cloud Claude (Max plan) | 192 s | Anthropic data center |
-| 🟢 Gemma 4 31B (MLX local) | 131 s | Apple Silicon GPU |
+| Local model | Right answers | All four tabs at once |
+|---|---:|---:|
+| 🟢 Gemma 4 31B (MLX, bf16) | **8/8** | **110 s** |
+| 🟣 Qwen 3.8 27B (MLX, bf16) | 8/8 | 176 s |
+
+Every model we run is also scored on real agent tasks at the open [Agent-12 leaderboard](https://nicedreamzapp.github.io/agent12/).
 
 ---
 
