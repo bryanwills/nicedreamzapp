@@ -161,7 +161,7 @@ Control Claude Code from your iPhone via iMessage. Commands by text; screenshots
 | 🌐 | **[FiaOS](https://github.com/nicedreamzapp/FiaOS)** | The Mac mini in a browser tab: live desktop, real PTY shell, voice. The bridge that gives the whole mesh free Claude. |
 | 🎥 | **[studio-record](https://github.com/nicedreamzapp/studio-record)** | Screen + facecam recorder with a local HTTP API, so Claude can record itself working. |
 | 🛟 | **[claude-failover](https://github.com/nicedreamzapp/claude-failover)** | One command and your `claude -p` agents keep running on a local MLX model when the cloud is down. |
-| 🎬 | **[story-forge](https://github.com/nicedreamzapp/story-forge)** | A 4-minute animated film, end to end, on one laptop. No cloud. |
+| 🎬 | **[story-forge](https://github.com/nicedreamzapp/story-forge)** | A whole film studio on one laptop. A director keeps going until every shot passes a local vision judge, then cuts, scores and voices the film. Two finished films, no cloud. |
 
 ---
 
@@ -220,7 +220,7 @@ Every model we run is also scored on real agent tasks at the open [Agent-12 lead
 | [MattPaint](https://github.com/nicedreamzapp/MattPaint) | Pixel-perfect MS Paint clone, zero dependencies |
 | [Heat-N-Clean Glass Oven](https://github.com/nicedreamzapp/Heat-N-Clean-Glass-Oven) | Custom temperature-controlled cleaning kiln, CAD included |
 | [x-cleanup-agent](https://github.com/nicedreamzapp/x-cleanup-agent) | 395 dormant unfollows in 40 minutes through your own logged-in browser |
-| [job-search-agent](https://github.com/nicedreamzapp/job-search-agent) | Daily AI job scoring across 50+ companies |
+| [job-search-agent](https://github.com/nicedreamzapp/job-search-agent) | Daily AI job scoring against your own background, straight from public Ashby, Greenhouse and Lever boards |
 | [dan-aquatic-ecology](https://github.com/nicedreamzapp/dan-aquatic-ecology) | A friend's HSU thesis site, built end-to-end in one sitting |
 | [DisclosureDay](https://github.com/nicedreamzapp/DisclosureDay) | SEO + chatbot site for the UFO film |
 | [BitcoinPredictor](https://github.com/nicedreamzapp/BitcoinPredictor) | Real-time BTC dashboard with ML signals (trading systems retired 2026) |
