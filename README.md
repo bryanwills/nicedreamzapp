@@ -12,6 +12,8 @@ Protecting them needed a camera that could see at night. That needed a vision mo
 
 [![GitHub followers](https://img.shields.io/github/followers/nicedreamzapp?style=for-the-badge&color=236ad3&labelColor=1155ba)](https://github.com/nicedreamzapp)
 [![Stars](https://img.shields.io/github/stars/nicedreamzapp/claude-code-local?style=for-the-badge&label=claude-code-local&color=f5c542&labelColor=b8860b)](https://github.com/nicedreamzapp/claude-code-local)
+[![App downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fnicedreamzwholesale.com%2Fsoftware%2Fbadge-downloads.json&style=for-the-badge&logo=appstore&logoColor=white&labelColor=1a7f37)](#-app-stats)
+[![New this week](https://img.shields.io/endpoint?url=https%3A%2F%2Fnicedreamzwholesale.com%2Fsoftware%2Fbadge-week.json&style=for-the-badge&logo=apple&logoColor=white&labelColor=0b6bcb)](#-app-stats)
 
 </div>
 
@@ -25,7 +27,7 @@ Protecting them needed a camera that could see at night. That needed a vision mo
 - **Upstream in Apple's MLX**: [Muse Glimmer (Meta) text model support](https://github.com/ml-explore/mlx-lm/pull/1710) merged into `ml-explore/mlx-lm` (+302 lines). Thanks to [@zcbenz](https://github.com/zcbenz) for the review and merge.
 - **[nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx)**: first open Apple Silicon runtime for NVIDIA Nemotron Omni's vision and audio towers, **23/23 parity tests** against NVIDIA's PyTorch reference.
 - **[Agent-12](https://github.com/nicedreamzapp/agent12)**: a filesystem-judged local agent leaderboard, independently reproduced by [@galashko](https://github.com/galashko).
-- **Shipped apps**: 4 apps live on both the App Store and Google Play (Hive Strike live on Play, in App Store review), 1,386 App Store downloads and 133 Google Play installs.
+- <!--APPS-LINE:START-->**Shipped apps**: 5 apps on the App Store and Google Play, **1,874 downloads** so far (1,515 App Store, 359 Google Play), 109 new on iPhone in the last week.<!--APPS-LINE:END-->
 
 ---
 
@@ -33,38 +35,36 @@ Protecting them needed a camera that could see at night. That needed a vision mo
 
 Every app, one row, both stores. Private by default, pay once (or nothing), no subscriptions.
 
-| App | What it is | iPhone | Android |
-|---|---|---|---|
-| **Song Forge** | Describe a song, get a finished original. Any genre, 19 languages, rendered on my Macs at home, never stored. 10 free songs, no account, no email. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.nicedreamz.ownatune) |
-| **RealTime AI Cam** | Point your camera, it names 601 objects. Fully offline. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6751230739) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.mattmacosko.realtimeaicam) |
-| **RealTime Space** | Fly a real-physics starship through the solar system and 8,920 real stars. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788646103) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.nicedreamz.realtimespace) |
-| **Brainforest** | 2,000+ K-4 lessons, reads everything aloud, fully offline, one-time $1.99. No ads, no tracking. Built for my daughter. | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788301765) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.brainforest.app) |
-
-| **Hive Strike** | One bee against sixteen worlds, sixteen bosses and forty-eight kinds of insect. Every sprite, background, animated scene and music bed generated locally on one Mac, no cloud, no stock art. | ![In review](https://img.shields.io/badge/In_review-6e7681?style=flat-square&logo=apple&logoColor=white) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.nicedreamz.hivestrike) |
+| App | What it is | Downloads | iPhone | Android |
+|---|---|---|---|---|
+| **Song Forge** | Describe a song, get a finished original. Any genre, 19 languages, rendered on my Macs at home, never stored. 10 free songs, no account, no email. | [![downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fnicedreamzwholesale.com%2Fsoftware%2Fbadge-song-forge.json&style=flat-square)](#-app-stats) | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788616929) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.nicedreamz.ownatune) |
+| **RealTime AI Cam** | Point your camera, it names 601 objects. Fully offline. | [![downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fnicedreamzwholesale.com%2Fsoftware%2Fbadge-realtime-ai-cam.json&style=flat-square)](#-app-stats) | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6751230739) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.mattmacosko.realtimeaicam) |
+| **RealTime Space** | Fly a real-physics starship through the solar system and 8,920 real stars. | [![downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fnicedreamzwholesale.com%2Fsoftware%2Fbadge-realtime-space.json&style=flat-square)](#-app-stats) | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788646103) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.nicedreamz.realtimespace) |
+| **Brainforest** | 2,000+ K-4 lessons, reads everything aloud, fully offline, one-time $1.99. No ads, no tracking. Built for my daughter. | [![downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fnicedreamzwholesale.com%2Fsoftware%2Fbadge-brainforest.json&style=flat-square)](#-app-stats) | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6788301765) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.brainforest.app) |
+| **Hive Strike** | One bee against sixteen worlds, sixteen bosses and forty-eight kinds of insect. Every sprite, background, animated scene and music bed generated locally on one Mac, no cloud, no stock art. | [![downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fnicedreamzwholesale.com%2Fsoftware%2Fbadge-hive-strike.json&style=flat-square)](#-app-stats) | [![App Store](https://img.shields.io/badge/App_Store-0D96F6?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/id6808332314) | [![Google Play](https://img.shields.io/badge/Google_Play-01875f?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.nicedreamz.hivestrike) |
 
 Android source ships in each repo's `android/` folder.
 
 ---
 
-<details>
-<summary><h2>📊 APP STATS <i>(click for the real download numbers)</i></h2></summary>
+## 📊 APP STATS
 
-<br>
+<!--APP-STATS:START-->
+> _Updated automatically **Sep 27, 2026** from Apple's sales reports and Google Play's install reports. Downloads are first-time App Store downloads (no updates or re-downloads) plus Google Play installs; Google runs about two weeks behind._
 
-> _Refreshed **Sep 19, 2026**. App Store numbers are lifetime first-time downloads from Apple's sales reports (through Sep 17), no re-downloads or updates counted. Google Play numbers are the current installed audience from Play Console._
+| App | Live since | Downloads | App Store | Google Play | New on iPhone, last 7 days | App Store rating |
+|---|---|---:|---:|---:|---:|:---:|
+| **RealTime AI Cam** | Aug 2025 | **1,330** | 1,123 | 207 | 44 | ★ 5.0 (2) |
+| **Song Forge** | Jul 2026 | **270** | 149 | 121 | 16 | – |
+| **RealTime Space** | Jul 2026 | **203** | 178 | 25 | 43 | – |
+| **Brainforest** | Jul 2026 | **70** | 65 | 5 | 6 | – |
+| **Hive Strike** | Sep 2026 | **1** | 0 | 1 | 0 | – |
+| **Total** | | **1,874** | **1,515** | **359** | **109** | |
 
-| App | Live since | App Store downloads | Google Play installed |
-|---|---|---:|---:|
-| **RealTime AI Cam** | Aug 2025 | 1,077 | 81 |
-| **Song Forge** | Jul 2026 | 126 | 34 |
-| **RealTime Space** | Jul 2026 | 125 | 14 |
-| **Brainforest** | Jul 2026 | 58 | 4 |
-| **Hive Strike** | Sep 2026 | in review | 0 (just launched) |
-| **Total** | | **1,386** | **133** |
+**New iPhone downloads per week, last 8 weeks:** 56 → 48 → 39 → 50 → 44 → 52 → 87 → 109 (+22 vs the week before).
+<!--APP-STATS:END-->
 
-**Review record: every app approved on both stores.** Four of four on the App Store and five of five on Google Play; Hive Strike 1.4.1 is waiting on Apple's review. Song Forge and RealTime Space have each gone from about a dozen App Store downloads to 125+ since August.
-
-</details>
+**Review record: every app approved on both stores.** Five of five on the App Store and five of five on Google Play.
 
 ---
 

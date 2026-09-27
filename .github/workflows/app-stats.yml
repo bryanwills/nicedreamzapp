@@ -1,0 +1,19 @@
+name: app stats
+on:
+  schedule:
+    - cron: "30 16 * * *"   # 9:30am Pacific, after the Mac mini's morning refresh
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/app_stats.py
+      - run: |
+          if git diff --quiet README.md; then echo "no change"; exit 0; fi
+          git config user.name "app-stats bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "App stats: $(date -u +%Y-%m-%d)"
+          git push
