@@ -27,7 +27,7 @@ Protecting them needed a camera that could see at night. That needed a vision mo
 - **Upstream in Apple's MLX**: [Muse Glimmer (Meta) text model support](https://github.com/ml-explore/mlx-lm/pull/1710) merged into `ml-explore/mlx-lm` (+302 lines). Thanks to [@zcbenz](https://github.com/zcbenz) for the review and merge.
 - **[nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx)**: first open Apple Silicon runtime for NVIDIA Nemotron Omni's vision and audio towers, **23/23 parity tests** against NVIDIA's PyTorch reference.
 - **[Agent-12](https://github.com/nicedreamzapp/agent12)**: a filesystem-judged local agent leaderboard, independently reproduced by [@galashko](https://github.com/galashko).
-- <!--APPS-LINE:START-->**Shipped apps**: 5 apps on the App Store and Google Play, **2,268 downloads** so far (1,514 App Store, 754 Google Play), 40 new on iPhone in the last week.<!--APPS-LINE:END-->
+- <!--APPS-LINE:START-->**Shipped apps**: 5 apps on the App Store and Google Play, **2,268 downloads** so far (1,514 App Store, 754 Google Play), 34 new on iPhone in the last week.<!--APPS-LINE:END-->
 
 ---
 
@@ -50,18 +50,18 @@ Android source ships in each repo's `android/` folder.
 ## 📊 APP STATS
 
 <!--APP-STATS:START-->
-> _Updated automatically **Oct 23, 2026** from Apple's sales reports and Google Play's install reports. Downloads are first-time App Store downloads (no updates or re-downloads) plus Google Play installs; Google runs about two weeks behind._
+> _Updated automatically **Oct 24, 2026** from Apple's sales reports and Google Play's install reports. Downloads are first-time App Store downloads (no updates or re-downloads) plus Google Play installs; Google runs about two weeks behind._
 
 | App | Live since | Downloads | App Store | Google Play | New on iPhone, last 7 days | App Store rating |
 |---|---|---:|---:|---:|---:|:---:|
-| **RealTime AI Cam** | Aug 2025 | **1,695** | 1,170 | 525 | 15 | ★ 5.0 (2) |
-| **Song Forge** | Jul 2026 | **283** | 113 | 170 | 5 | – |
-| **RealTime Space** | Jul 2026 | **215** | 167 | 48 | 16 | – |
-| **Brainforest** | Jul 2026 | **69** | 62 | 7 | 3 | ★ 5.0 (1) |
+| **RealTime AI Cam** | Aug 2025 | **1,695** | 1,170 | 525 | 12 | ★ 5.0 (2) |
+| **Song Forge** | Jul 2026 | **283** | 113 | 170 | 4 | – |
+| **RealTime Space** | Jul 2026 | **215** | 167 | 48 | 15 | – |
+| **Brainforest** | Jul 2026 | **69** | 62 | 7 | 2 | ★ 5.0 (1) |
 | **Hive Strike** | Sep 2026 | **6** | 2 | 4 | 1 | – |
-| **Total** | | **2,268** | **1,514** | **754** | **40** | |
+| **Total** | | **2,268** | **1,514** | **754** | **34** | |
 
-**New iPhone downloads per week, last 8 weeks:** 40 → 47 → 90 → 108 → 92 → 140 → 75 → 40 (-35 vs the week before).
+**New iPhone downloads per week, last 8 weeks:** 37 → 46 → 89 → 114 → 149 → 93 → 61 → 34 (-27 vs the week before).
 <!--APP-STATS:END-->
 
 **Review record: every app approved on both stores.** Five of five on the App Store and five of five on Google Play.
